@@ -1,0 +1,1663 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  loginId               String                 @unique
+  email                 String                 @unique
+  passwordHash          String
+  role                  Role
+  status                UserStatus             @default(ACTIVE)
+  fullName              String
+  phone                 String?
+  photoUrl              String?
+  preferredLang         String                 @default("az")
+  failedLogins          Int                    @default(0)
+  lockedUntil           DateTime?
+  totpSecret            String?
+  totpEnabled           Boolean                @default(false)
+  lastLoginAt           DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  aiSessions            AIChatSession[]
+  auditLogs             AuditLog[]             @relation("AuditActor")
+  loginLogs             LoginLog[]
+  notifications         Notification[]
+  refreshTokens         RefreshToken[]
+  requests              Request[]
+  student               Student?
+  teacher               Teacher?
+  // Должность руководства (RECTOR, VICE_RECTOR, DEAN, HEAD_OF_DEPARTMENT, TUTOR) и её область в оргструктуре
+  position              String?
+  facultyId             String?
+  departmentId          String?
+  faculty               Faculty?               @relation(fields: [facultyId], references: [id])
+  department            Department?            @relation(fields: [departmentId], references: [id])
+  tutorGroups           AcademicGroup[]        @relation("GroupTutor")
+  bankVersionsAuthored  QuestionBankVersion[]  @relation("BankAuthor")
+  bankVersionsReviewed  QuestionBankVersion[]  @relation("BankReviewer")
+  proctorRooms          ProctorAssignment[]    @relation("ProctorRooms")
+  proctorAuthorizations ProctorAuthorization[] @relation("ProctorAuthorizations")
+
+  @@index([role, status])
+  @@index([email])
+}
+
+model Student {
+  userId             String                 @id
+  faculty            String
+  specialty          String
+  groupName          String
+  course             Int
+  semester           Int
+  level              StudyLevel             @default(BACHELOR)
+  birthDate          DateTime?
+  attendance         Attendance[]
+  grades             Grade[]
+  payments           Payment[]
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submissions        Submission[]
+  ElectiveChoice     ElectiveChoice[]
+  StudentProject     StudentProject[]
+  enrollments        SubjectEnrollment[]
+  examAuthorizations ProctorAuthorization[]
+  examAttempts       ExamAttempt[]
+  examResults        ExamResult[]
+  paperSheets        PaperAnswerSheet[]
+  resits             ResitEligibility[]
+  retakes            RetakeEnrollment[]
+
+  @@index([groupName])
+  @@index([level])
+}
+
+// Право роли с областью действия. Каталог и значения по умолчанию — в коде (rbac/permissions.ts),
+// строки в БД можно менять через Admin Panel → Roles & Permissions
+model RolePermission {
+  id         String          @id @default(cuid())
+  role       Role
+  permission String
+  scope      PermissionScope
+  updatedAt  DateTime        @default(now()) @updatedAt
+  updatedBy  String?
+
+  @@unique([role, permission])
+  @@index([role])
+}
+
+// Системные настройки (Admin Panel → Settings); при отсутствии строки действует значение из env
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @default(now()) @updatedAt
+  updatedBy String?
+}
+
+model Teacher {
+  userId                String               @id
+  department            String
+  title                 String
+  experience            Int                  @default(0)
+  assignments           Assignment[]
+  gradesGiven           Grade[]              @relation("GradesByTeacher")
+  materials             Material[]
+  scheduleSlots         ScheduleSlot[]       @relation("TeacherSchedule")
+  timetableRequirements LessonRequirement[]
+  timetableLessons      ScheduleLesson[]
+  supervisedProjects    StudentProject[]     @relation("ProjectSupervisor")
+  questionBanks         QuestionBank[]
+  summerCourses         SummerRetakeCourse[] @relation("SummerCourses")
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subject {
+  id                    String                 @id @default(cuid())
+  code                  String                 @unique
+  name                  String
+  credits               Int
+  semester              Int
+  description           String?
+  color                 String?
+  isActive              Boolean                @default(true)
+  createdAt             DateTime               @default(now())
+  assignments           Assignment[]
+  attendance            Attendance[]
+  grades                Grade[]
+  materials             Material[]
+  schedules             ScheduleSlot[]
+  timetableRequirements LessonRequirement[]
+  timetableLessons      ScheduleLesson[]
+  departmentId          String?
+  department            Department?            @relation(fields: [departmentId], references: [id])
+  curriculum            CurriculumItem[]
+  offerings             SubjectOffering[]
+  prerequisiteFor       OfferingPrerequisite[] @relation("OfferingPrereq")
+  enrollments           SubjectEnrollment[]
+  exams                 Exam[]
+  questionBank          QuestionBank?
+  resits                ResitEligibility[]
+  summerCourses         SummerRetakeCourse[]
+  retakes               RetakeEnrollment[]
+}
+
+model Grade {
+  id           String         @id @default(cuid())
+  studentId    String
+  subjectId    String
+  teacherId    String?
+  value        Decimal        @db.Decimal(5, 2)
+  maxValue     Decimal        @default(100) @db.Decimal(5, 2)
+  type         GradeType      @default(MIDTERM)
+  comment      String?
+  academicYear String         @default("2025-2026")
+  term         Term           @default(SPRING)
+  semester     Int            @default(6)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  // Journal: null = черновик (студент не видит), заполнено = опубликовано
+  publishedAt  DateTime?
+  publishedBy  String?
+  student      Student        @relation(fields: [studentId], references: [userId])
+  subject      Subject        @relation(fields: [subjectId], references: [id])
+  teacher      Teacher?       @relation("GradesByTeacher", fields: [teacherId], references: [userId])
+  history      GradeHistory[]
+
+  @@index([studentId, subjectId])
+  @@index([studentId, academicYear, term])
+  @@index([subjectId, academicYear, term])
+}
+
+// Академический период. CLOSED — оценки этого периода не меняются обычным путём (backend-lock)
+model AcademicPeriod {
+  id           String       @id @default(cuid())
+  academicYear String
+  term         Term
+  status       PeriodStatus @default(OPEN)
+  closedAt     DateTime?
+  closedBy     String?
+  note         String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([academicYear, term])
+}
+
+model GradeHistory {
+  id        String   @id @default(cuid())
+  gradeId   String
+  oldValue  Decimal  @db.Decimal(5, 2)
+  newValue  Decimal  @db.Decimal(5, 2)
+  changedBy String
+  reason    String?
+  changedAt DateTime @default(now())
+  grade     Grade    @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+
+  @@index([gradeId])
+}
+
+// Аудитория. type — вид помещения (classroom / lecture_hall / lab / computer_lab / gym / ...),
+// features — оборудование (projector, computers, ...). Корпус — строка building (отдельной сущности нет).
+model Room {
+  id           String              @id @default(cuid())
+  code         String              @unique
+  name         String?
+  building     String?
+  floor        Int?
+  capacity     Int                 @default(30)
+  type         String              @default("classroom")
+  features     String[]            @default([])
+  isActive     Boolean             @default(true)
+  note         String?
+  createdAt    DateTime            @default(now())
+  slots        ScheduleSlot[]
+  lessons      ScheduleLesson[]
+  workstations ExamWorkstation[]
+  proctors     ProctorAssignment[]
+
+  @@index([building])
+  @@index([type, capacity])
+}
+
+model ScheduleSlot {
+  id           String     @id @default(cuid())
+  subjectId    String
+  teacherId    String?
+  roomId       String?
+  groupName    String
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  room         String
+  type         String     @default("lecture")
+  shift        Shift      @default(SHIFT_1)
+  level        StudyLevel @default(BACHELOR)
+  weekParity   WeekParity @default(BOTH)
+  academicYear String     @default("2025-2026")
+  term         Term       @default(SPRING)
+  // Связь с опубликованным занятием Timetable (null — слот создан до появления версий)
+  lessonId     String?
+  // Поток: одно занятие нескольких групп (одно время/аудитория) — не конфликт
+  streamKey    String?
+  roomRef      Room?      @relation(fields: [roomId], references: [id])
+  subject      Subject    @relation(fields: [subjectId], references: [id])
+  teacher      Teacher?   @relation("TeacherSchedule", fields: [teacherId], references: [userId])
+
+  @@index([groupName, dayOfWeek])
+  @@index([teacherId, dayOfWeek])
+  @@index([roomId, dayOfWeek])
+  @@index([academicYear, term])
+}
+
+model Announcement {
+  id        String               @id @default(cuid())
+  title     String
+  body      String
+  audience  AnnouncementAudience @default(ALL)
+  groupName String?
+  priority  String               @default("NORMAL")
+  pinned    Boolean              @default(false)
+  createdBy String
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  reads     AnnouncementRead[]
+
+  @@index([audience, createdAt])
+  @@index([groupName])
+}
+
+model AnnouncementRead {
+  id             String       @id @default(cuid())
+  announcementId String
+  userId         String
+  readAt         DateTime     @default(now())
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, userId])
+  @@index([userId])
+}
+
+model Payment {
+  id            String            @id @default(cuid())
+  studentId     String
+  amount        Decimal           @db.Decimal(10, 2)
+  currency      String            @default("AZN")
+  type          PaymentType       @default(TUITION)
+  status        PaymentStatus     @default(PENDING)
+  description   String
+  invoiceNumber String            @unique
+  dueDate       DateTime
+  paidAt        DateTime?
+  providerRef   String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  student       Student           @relation(fields: [studentId], references: [userId])
+  resit         ResitEligibility?
+
+  @@index([studentId, status])
+  @@index([status, dueDate])
+}
+
+model CalendarEvent {
+  id          String            @id @default(cuid())
+  eventDate   DateTime
+  endDate     DateTime?
+  type        CalendarEventType
+  title       String
+  description String?
+  groupName   String?
+  level       StudyLevel?
+  createdBy   String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  endTime     String?
+  roomCode    String?
+  startTime   String?
+
+  @@index([eventDate])
+  @@index([type])
+  @@index([groupName])
+}
+
+model Assignment {
+  id          String           @id @default(cuid())
+  subjectId   String
+  teacherId   String
+  title       String
+  description String
+  dueDate     DateTime
+  maxGrade    Decimal          @default(100) @db.Decimal(5, 2)
+  status      AssignmentStatus @default(PUBLISHED)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
+  subject     Subject          @relation(fields: [subjectId], references: [id])
+  teacher     Teacher          @relation(fields: [teacherId], references: [userId])
+  submissions Submission[]
+  materials   Material[]
+
+  @@index([subjectId])
+}
+
+model Submission {
+  id           String     @id @default(cuid())
+  assignmentId String
+  studentId    String
+  submittedAt  DateTime?
+  status       String     @default("PENDING")
+  grade        Decimal?   @db.Decimal(5, 2)
+  feedback     String?
+  fileName     String?
+  studentNotes String?
+  gradedAt     DateTime?
+  gradedBy     String?
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      Student    @relation(fields: [studentId], references: [userId])
+
+  @@unique([assignmentId, studentId])
+}
+
+model Attendance {
+  id           String           @id @default(cuid())
+  studentId    String
+  subjectId    String
+  classDate    DateTime
+  status       AttendanceStatus
+  markedBy     String
+  academicYear String           @default("2025-2026")
+  term         Term             @default(SPRING)
+  semester     Int              @default(6)
+  createdAt    DateTime         @default(now())
+  student      Student          @relation(fields: [studentId], references: [userId])
+  subject      Subject          @relation(fields: [subjectId], references: [id])
+
+  @@unique([studentId, subjectId, classDate])
+  @@index([studentId])
+  @@index([studentId, academicYear, term])
+}
+
+model Material {
+  id           String      @id @default(cuid())
+  subjectId    String
+  teacherId    String
+  title        String
+  type         String
+  url          String?
+  fileName     String?
+  assignmentId String?
+  createdAt    DateTime    @default(now())
+  subject      Subject     @relation(fields: [subjectId], references: [id])
+  teacher      Teacher     @relation(fields: [teacherId], references: [userId])
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+
+  @@index([subjectId])
+  @@index([assignmentId])
+}
+
+model Request {
+  id          String        @id @default(cuid())
+  userId      String
+  type        RequestType
+  status      RequestStatus @default(PENDING)
+  description String
+  adminNote   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  user        User          @relation(fields: [userId], references: [id])
+  examAppeal  ExamAppeal?
+
+  @@index([userId, status])
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  family    String
+  userAgent String?
+  ip        String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([family])
+}
+
+model LoginLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  loginId   String
+  success   Boolean
+  reason    String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([loginId, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String
+  targetId   String?
+  diff       Json?
+  ip         String?
+  userAgent  String?
+  // SUCCESS | DENIED (отказ по правам) | FAILED
+  result     String   @default("SUCCESS")
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
+
+  @@index([targetType, targetId])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+}
+
+model AIChatSession {
+  id           String          @id @default(cuid())
+  userId       String
+  feature      AIFeature
+  title        String?
+  totalTokens  Int             @default(0)
+  costUsdMilli Int             @default(0)
+  ip           String?
+  userAgent    String?
+  flagged      Boolean         @default(false)
+  flagReason   String?
+  flaggedAt    DateTime?
+  flaggedById  String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  messages     AIChatMessage[]
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([feature, createdAt])
+  @@index([flagged, createdAt])
+  @@index([createdAt])
+}
+
+model AIChatMessage {
+  id        String        @id @default(cuid())
+  sessionId String
+  role      String
+  content   String
+  tokensIn  Int?
+  tokensOut Int?
+  model     String?
+  stub      Boolean       @default(false)
+  latencyMs Int?
+  createdAt DateTime      @default(now())
+  session   AIChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  createdAt DateTime         @default(now())
+  readAt    DateTime?
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@index([userId, type])
+}
+
+// Статус разбора аномалии IT-аудитором. Сами аномалии вычисляются из LoginLog/AuditLog,
+// здесь хранится только решение аудитора по конкретному детерминированному ключу.
+model SecurityFindingReview {
+  key          String        @id
+  type         String
+  status       FindingStatus @default(OPEN)
+  note         String?
+  reviewedById String?
+  reviewedAt   DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+
+  @@index([status])
+}
+
+enum FindingStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  FALSE_POSITIVE
+}
+
+enum AssignmentStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+}
+
+enum NotificationType {
+  ACADEMIC
+  ASSIGNMENT
+  SCHEDULE
+  ADMINISTRATIVE
+  REQUEST
+  PAYMENT
+}
+
+// Роли фиксированы (enum); права (permissions) и их область (scope) хранятся в RolePermission
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+  SUPER_ADMIN
+  PROCTOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+  ARCHIVED
+}
+
+// Область действия права: OWN — свои данные,
+// ASSIGNED — назначенные (преподаватель: пары «предмет × группа» из расписания), ALL — без ограничений
+enum PermissionScope {
+  OWN
+  ASSIGNED
+  ALL
+}
+
+enum GradeType {
+  MIDTERM
+  FINAL
+  QUIZ
+  HOMEWORK
+  PROJECT
+  SEMINAR
+}
+
+enum PeriodStatus {
+  OPEN
+  CLOSED
+}
+
+enum Term {
+  FALL
+  SPRING
+  SUMMER
+}
+
+enum StudyLevel {
+  BACHELOR
+  MASTER
+  PHD
+}
+
+enum Shift {
+  SHIFT_1
+  SHIFT_2
+}
+
+enum WeekParity {
+  BOTH
+  UPPER
+  LOWER
+}
+
+enum CalendarEventType {
+  HOLIDAY
+  MOURNING
+  EXAM
+  LECTURE_CANCELLED
+  ACADEMIC
+  OTHER
+}
+
+enum AnnouncementAudience {
+  ALL
+  STUDENTS
+  TEACHERS
+  ADMINS
+  GROUP
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  TUITION
+  RETAKE
+  LIBRARY
+  DORM
+  ALT_GROUP
+  OTHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  EXCUSED
+  LATE
+}
+
+enum RequestType {
+  CERTIFICATE
+  APPEAL
+  TRANSFER
+  OTHER
+}
+
+// UNDER_REVIEW / PARTIALLY_APPROVED / WITHDRAWN используются апелляциями по экзамену (Request.type = APPEAL + ExamAppeal)
+enum RequestStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  PARTIALLY_APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
+enum AIFeature {
+  TUTOR_CHAT
+  GPA_WHATIF
+  REQUEST_DRAFTER
+  MATERIAL_SEARCH
+  QUESTION_GEN
+  DROPOUT_ANALYSIS
+  AUDIT_ANALYSIS
+  TRANSLATE
+}
+
+// ═════════════════════════ Timetable (Admin Panel → Расписание) ═════════════════════════
+// Живое (опубликованное) расписание — ScheduleSlot; его читают студенты, преподаватели, журнал и посещаемость.
+// Черновики, версии и генерация — ScheduleVersion / ScheduleLesson. Публикация атомарно переносит версию в ScheduleSlot.
+
+enum TimetableStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TimetableJobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+  CANCELLED
+}
+
+enum TimetableRuleScope {
+  GLOBAL
+  TEACHER
+  GROUP
+  ROOM
+  BUILDING
+  SUBJECT
+}
+
+// UNAVAILABLE — нельзя (hard) / нежелательно (soft); PREFERRED — желательно; NO_LATE — не ставить поздние пары;
+// MAX_PER_DAY — максимум занятий в день; ALLOWED_BUILDINGS — разрешённые корпуса
+enum TimetableRuleKind {
+  UNAVAILABLE
+  PREFERRED
+  NO_LATE
+  MAX_PER_DAY
+  ALLOWED_BUILDINGS
+}
+
+// Типы занятий (расширяемый справочник). roomTypes — допустимые типы аудиторий (пусто = любые)
+model LessonType {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  roomTypes String[] @default([])
+  // false — занятию не нужна аудитория (консультация онлайн и т. п.)
+  needsRoom Boolean  @default(true)
+  color     String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+}
+
+// Временная сетка: пары с началом/концом. level — для какого уровня (null — для всех)
+model TimeSlot {
+  id        String      @id @default(cuid())
+  code      String      @unique
+  label     String
+  startTime String
+  endTime   String
+  level     StudyLevel?
+  shift     String?
+  sortOrder Int         @default(0)
+  isActive  Boolean     @default(true)
+}
+
+// Параметры генерации на период: рабочие дни, лимиты, веса мягких ограничений, лимит времени солвера
+model TimetableConfig {
+  id              String   @id @default(cuid())
+  academicYear    String
+  term            Term
+  workingDays     Int[]    @default([1, 2, 3, 4, 5, 6])
+  maxConsecutive  Int      @default(4)
+  maxDailyLessons Int      @default(5)
+  softWeights     Json     @default("{}")
+  timeLimitSec    Int      @default(60)
+  updatedBy       String?
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([academicYear, term])
+}
+
+// Ограничения и предпочтения: доступность преподавателей/групп/аудиторий, корпуса, поздние пары.
+// targetId — id существующей сущности (teacher userId, room id, subject id) или имя группы/корпуса
+model TimetableRule {
+  id           String             @id @default(cuid())
+  scope        TimetableRuleScope
+  targetId     String?
+  kind         TimetableRuleKind
+  hard         Boolean            @default(false)
+  days         Int[]              @default([])
+  timeSlotIds  String[]           @default([])
+  value        Json?
+  weight       Int                @default(1)
+  note         String?
+  academicYear String?
+  term         Term?
+  createdBy    String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+
+  @@index([scope, targetId])
+  @@index([academicYear, term])
+}
+
+// Учебная нагрузка (что обязано попасть в расписание): предмет × группы (поток) × преподаватель × тип × пар в неделю
+model LessonRequirement {
+  id               String           @id @default(cuid())
+  academicYear     String
+  term             Term
+  subjectId        String
+  groupNames       String[]
+  teacherId        String?
+  lessonTypeCode   String
+  sessionsPerWeek  Int              @default(1)
+  // сколько подряд идущих пар занимает одно занятие
+  durationSlots    Int              @default(1)
+  weekParity       WeekParity       @default(BOTH)
+  level            StudyLevel       @default(BACHELOR)
+  roomType         String?
+  requiredFeatures String[]         @default([])
+  isActive         Boolean          @default(true)
+  note             String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now()) @updatedAt
+  subject          Subject          @relation(fields: [subjectId], references: [id])
+  teacher          Teacher?         @relation(fields: [teacherId], references: [userId])
+  lessons          ScheduleLesson[]
+
+  @@index([academicYear, term])
+  @@index([teacherId])
+  @@index([groupNames], type: Gin)
+}
+
+model ScheduleVersion {
+  id           String           @id @default(cuid())
+  academicYear String
+  term         Term
+  number       Int
+  name         String?
+  status       TimetableStatus  @default(DRAFT)
+  parentId     String?
+  note         String?
+  stats        Json?
+  createdBy    String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @default(now()) @updatedAt
+  publishedAt  DateTime?
+  publishedBy  String?
+  archivedAt   DateTime?
+  lessons      ScheduleLesson[]
+  jobs         TimetableJob[]
+
+  @@unique([academicYear, term, number])
+  @@index([academicYear, term, status])
+}
+
+// Занятие версии расписания (еженедельный шаблон: день недели + пара + чётность недели)
+model ScheduleLesson {
+  id             String             @id @default(cuid())
+  versionId      String
+  requirementId  String?
+  sessionIndex   Int                @default(0)
+  subjectId      String
+  teacherId      String?
+  roomId         String?
+  groupNames     String[]
+  lessonTypeCode String
+  dayOfWeek      Int
+  timeSlotId     String?
+  startTime      String
+  endTime        String
+  weekParity     WeekParity         @default(BOTH)
+  level          StudyLevel         @default(BACHELOR)
+  locked         Boolean            @default(false)
+  override       Boolean            @default(false)
+  note           String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @default(now()) @updatedAt
+  version        ScheduleVersion    @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  requirement    LessonRequirement? @relation(fields: [requirementId], references: [id], onDelete: SetNull)
+  subject        Subject            @relation(fields: [subjectId], references: [id])
+  teacher        Teacher?           @relation(fields: [teacherId], references: [userId])
+  room           Room?              @relation(fields: [roomId], references: [id])
+
+  @@index([versionId, dayOfWeek])
+  @@index([versionId, teacherId])
+  @@index([versionId, roomId])
+  @@index([versionId, subjectId])
+  @@index([groupNames], type: Gin)
+}
+
+// Фоновая задача генерации/перегенерации (выполняется в worker thread)
+model TimetableJob {
+  id           String             @id @default(cuid())
+  versionId    String?
+  academicYear String
+  term         Term
+  kind         String             @default("GENERATE")
+  status       TimetableJobStatus @default(QUEUED)
+  scope        Json?
+  params       Json?
+  progress     Int                @default(0)
+  phase        String?
+  result       Json?
+  error        String?
+  createdBy    String?
+  createdAt    DateTime           @default(now())
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  version      ScheduleVersion?   @relation(fields: [versionId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([versionId])
+}
+
+// ───────────────────────── Оргструктура университета ─────────────────────────
+// Факультет → Кафедра → Специальность (код) → Академическая группа. Student.groupName = AcademicGroup.name;
+// строки Student.faculty / Student.specialty остаются (заполняются из справочника) — существующий код их использует.
+model Faculty {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  shortName   String?
+  sortOrder   Int               @default(0)
+  departments Department[]
+  users       User[]
+  examScopes  ExamWindowScope[]
+}
+
+model Department {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  facultyId   String
+  faculty     Faculty     @relation(fields: [facultyId], references: [id])
+  specialties Specialty[]
+  subjects    Subject[]
+  users       User[]
+
+  @@index([facultyId])
+}
+
+model Specialty {
+  id            String            @id @default(cuid())
+  code          String
+  name          String
+  level         StudyLevel        @default(BACHELOR)
+  durationYears Int               @default(4)
+  totalCredits  Int               @default(240)
+  departmentId  String
+  department    Department        @relation(fields: [departmentId], references: [id])
+  groups        AcademicGroup[]
+  curriculum    CurriculumItem[]
+  offerings     SubjectOffering[]
+  examScopes    ExamWindowScope[]
+
+  @@unique([code, name, level])
+  @@index([departmentId])
+}
+
+model AcademicGroup {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  specialtyId String
+  course      Int
+  level       StudyLevel        @default(BACHELOR)
+  tutorId     String?
+  specialty   Specialty         @relation(fields: [specialtyId], references: [id])
+  tutor       User?             @relation("GroupTutor", fields: [tutorId], references: [id])
+  examScopes  ExamWindowScope[]
+
+  @@index([specialtyId])
+  @@index([tutorId])
+}
+
+// Учебный план специальности: предмет в семестре (1..8 для бакалавриата), кредиты, обязательный/выборный
+model CurriculumItem {
+  id            String           @id @default(cuid())
+  specialtyId   String
+  subjectId     String
+  semester      Int
+  credits       Int
+  kind          String           @default("MANDATORY")
+  control       String           @default("EXAM")
+  // ELECTIVE: альтернативы с одинаковым electiveGroup — студент выбирает одну, кредиты считаются один раз
+  electiveGroup String?
+  choices       ElectiveChoice[]
+  specialty     Specialty        @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+  subject       Subject          @relation(fields: [subjectId], references: [id])
+
+  @@unique([specialtyId, subjectId])
+  @@index([specialtyId, semester])
+}
+
+// Выбор студентом выборного предмета из учебного плана
+model ElectiveChoice {
+  id               String         @id @default(cuid())
+  studentId        String
+  curriculumItemId String
+  createdAt        DateTime       @default(now())
+  student          Student        @relation(fields: [studentId], references: [userId], onDelete: Cascade)
+  item             CurriculumItem @relation(fields: [curriculumItemId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, curriculumItemId])
+}
+
+// Практика и выпускная работа студента. type: PRACTICE | THESIS; status: PLANNED | IN_PROGRESS | SUBMITTED | DEFENDED | COMPLETED
+model StudentProject {
+  id           String    @id @default(cuid())
+  studentId    String
+  type         String
+  title        String
+  organization String?
+  supervisorId String?
+  startDate    DateTime?
+  endDate      DateTime?
+  status       String    @default("PLANNED")
+  grade        Decimal?  @db.Decimal(5, 2)
+  note         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  student      Student   @relation(fields: [studentId], references: [userId], onDelete: Cascade)
+  supervisor   Teacher?  @relation("ProjectSupervisor", fields: [supervisorId], references: [userId])
+
+  @@index([studentId])
+  @@index([type, status])
+}
+
+// ═════════════════════════ Exam Management System ═════════════════════════
+// Архитектура: docs/exam-system/ARCHITECTURE.md. Все академические правила проверяются на backend;
+// попытки, снапшоты вопросов и результаты исторически неизменяемы (триггеры БД в миграции exam_system).
+
+enum ExamKind {
+  FINAL
+  RESIT
+}
+
+enum ExamDelivery {
+  COMPUTER
+  PAPER
+}
+
+enum ExamWindowStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  CANCELLED
+}
+
+enum QuestionBankStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+enum ExamAttemptStatus {
+  AUTHORIZED
+  IN_PROGRESS
+  SUBMITTED
+  AUTO_SUBMITTED
+  TERMINATED
+  VOID
+}
+
+// Статус предмета у студента в одном учебном цикле (SubjectEnrollment)
+enum EnrollmentStatus {
+  ENROLLED
+  COMPLETED
+  RESIT_ELIGIBLE
+  RESIT_PAYMENT_PENDING
+  RESIT_PAID
+  RESIT_FORFEITED
+  RETAKE_REQUIRED
+  RETAKE_REGISTERED
+}
+
+enum ResitStatus {
+  ELIGIBLE
+  PAYMENT_PENDING
+  PAID
+  USED
+  FORFEITED
+}
+
+enum RetakeMode {
+  SUMMER
+  NEXT_OFFERING
+}
+
+enum RetakeStatus {
+  PENDING
+  REGISTERED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaperSheetStatus {
+  GENERATED
+  SCANNED
+  MANUAL_REVIEW_REQUIRED
+  VERIFIED
+  SCORED
+}
+
+// Предложение предмета: в каком учебном году / семестре / на каком курсе предмет реально преподаётся.
+// Следующее доступное предложение для retake вычисляется по этим строкам (никаких формул «год + 1»).
+model SubjectOffering {
+  id                 String                 @id @default(cuid())
+  subjectId          String
+  specialtyId        String?
+  academicYear       String
+  term               Term
+  course             Int
+  semester           Int
+  // Информационно: чередование (EVERY_YEAR | EVEN_YEARS | ODD_YEARS). Доступность определяется наличием строк.
+  cycle              String                 @default("EVERY_YEAR")
+  isAvailable        Boolean                @default(true)
+  startsAt           DateTime
+  enrollmentOpensAt  DateTime?
+  enrollmentClosesAt DateTime?
+  createdAt          DateTime               @default(now())
+  subject            Subject                @relation(fields: [subjectId], references: [id])
+  specialty          Specialty?             @relation(fields: [specialtyId], references: [id])
+  prerequisites      OfferingPrerequisite[]
+  enrollments        SubjectEnrollment[]
+  retakes            RetakeEnrollment[]
+
+  @@unique([subjectId, specialtyId, academicYear, term])
+  @@index([subjectId, startsAt])
+}
+
+model OfferingPrerequisite {
+  offeringId        String
+  requiredSubjectId String
+  offering          SubjectOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  requiredSubject   Subject         @relation("OfferingPrereq", fields: [requiredSubjectId], references: [id])
+
+  @@id([offeringId, requiredSubjectId])
+}
+
+// «Студент × предмет × учебный цикл» — единственный источник статуса предмета (Final → Resit → Retake)
+model SubjectEnrollment {
+  id           String             @id @default(cuid())
+  studentId    String
+  subjectId    String
+  offeringId   String?
+  academicYear String
+  term         Term
+  semester     Int
+  // 1 — обычное изучение, 2+ — повторное прохождение (retake)
+  attemptNo    Int                @default(1)
+  // CURRICULUM | RETAKE_SUMMER | RETAKE_OFFERING | IMPORT
+  source       String             @default("CURRICULUM")
+  status       EnrollmentStatus   @default(ENROLLED)
+  // Снимок Entry Score (MIDTERM + SEMINAR) на момент допуска к экзамену
+  entryScore   Decimal?           @db.Decimal(5, 2)
+  retakeOfId   String?            @unique
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  student      Student            @relation(fields: [studentId], references: [userId])
+  subject      Subject            @relation(fields: [subjectId], references: [id])
+  offering     SubjectOffering?   @relation(fields: [offeringId], references: [id])
+  retakeOf     SubjectEnrollment? @relation("RetakeChain", fields: [retakeOfId], references: [id])
+  retakeNext   SubjectEnrollment? @relation("RetakeChain")
+  attempts     ExamAttempt[]
+  results      ExamResult[]
+  resits       ResitEligibility[]
+  retake       RetakeEnrollment?  @relation("RetakeFailed")
+  paperSheets  PaperAnswerSheet[]
+
+  @@unique([studentId, subjectId, academicYear, term, attemptNo])
+  @@index([studentId, status])
+  @@index([subjectId, academicYear, term])
+}
+
+model ExamWindow {
+  id               String            @id @default(cuid())
+  title            String
+  kind             ExamKind
+  // Цикл: FALL — зимний, SPRING — весенний (resit весенних предметов — летом), SUMMER — летние retake
+  academicYear     String
+  term             Term
+  startDate        DateTime          @db.Date
+  endDate          DateTime          @db.Date
+  // 1 = Пн … 7 = Вс
+  allowedWeekdays  Int[]
+  // Допустимое время НАЧАЛА: startTime <= t < endTime (Asia/Baku)
+  startTime        String
+  endTime          String
+  maxPerWeek       Int               @default(3)
+  questionDeadline DateTime
+  status           ExamWindowStatus  @default(DRAFT)
+  finalWindowId    String?
+  version          Int               @default(1)
+  createdBy        String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  finalWindow      ExamWindow?       @relation("ResitOf", fields: [finalWindowId], references: [id])
+  resitWindows     ExamWindow[]      @relation("ResitOf")
+  scopes           ExamWindowScope[]
+  exams            Exam[]
+
+  @@index([status, startDate])
+  @@index([academicYear, term])
+}
+
+// Кому назначено окно. Пустой список — все студенты с enrollment по предмету в этом цикле.
+model ExamWindowScope {
+  id          String         @id @default(cuid())
+  windowId    String
+  facultyId   String?
+  specialtyId String?
+  groupName   String?
+  window      ExamWindow     @relation(fields: [windowId], references: [id], onDelete: Cascade)
+  faculty     Faculty?       @relation(fields: [facultyId], references: [id])
+  specialty   Specialty?     @relation(fields: [specialtyId], references: [id])
+  group       AcademicGroup? @relation(fields: [groupName], references: [name])
+
+  @@index([windowId])
+}
+
+model Exam {
+  id                String                 @id @default(cuid())
+  windowId          String
+  subjectId         String
+  delivery          ExamDelivery           @default(COMPUTER)
+  questionCount     Int                    @default(25)
+  durationMin       Int                    @default(120)
+  rulesVersion      Int                    @default(1)
+  // Утверждённая версия банка, зафиксированная для экзамена (при первом старте / генерации бланков)
+  bankVersionId     String?
+  createdAt         DateTime               @default(now())
+  window            ExamWindow             @relation(fields: [windowId], references: [id], onDelete: Cascade)
+  subject           Subject                @relation(fields: [subjectId], references: [id])
+  bankVersion       QuestionBankVersion?   @relation(fields: [bankVersionId], references: [id])
+  authorizations    ProctorAuthorization[]
+  attempts          ExamAttempt[]
+  results           ExamResult[]
+  paperSheets       PaperAnswerSheet[]
+  eligibilityChecks ExamEligibilityCheck[]
+
+  @@unique([windowId, subjectId])
+  @@index([subjectId])
+}
+
+model QuestionBank {
+  id        String                @id @default(cuid())
+  subjectId String                @unique
+  ownerId   String
+  createdAt DateTime              @default(now())
+  subject   Subject               @relation(fields: [subjectId], references: [id])
+  owner     Teacher               @relation(fields: [ownerId], references: [userId])
+  versions  QuestionBankVersion[]
+}
+
+model QuestionBankVersion {
+  id              String             @id @default(cuid())
+  bankId          String
+  version         Int
+  status          QuestionBankStatus @default(DRAFT)
+  authorId        String
+  basedOnId       String?
+  submittedAt     DateTime?
+  reviewStartedAt DateTime?
+  reviewerId      String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+  approvedAt      DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  bank            QuestionBank       @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  author          User               @relation("BankAuthor", fields: [authorId], references: [id])
+  reviewer        User?              @relation("BankReviewer", fields: [reviewerId], references: [id])
+  questions       Question[]
+  exams           Exam[]
+  attempts        ExamAttempt[]
+  paperSheets     PaperAnswerSheet[]
+
+  @@unique([bankId, version])
+  @@index([status])
+}
+
+// Текст вопроса и вариантов — простая разметка (**жирный**, *курсив*, `код`, x^{2}, x_{i}), рендер на клиенте без HTML
+model Question {
+  id          String                @id @default(cuid())
+  versionId   String
+  ordinal     Int
+  body        String
+  // Изображение (data URL png/jpeg/webp, до 400 КБ)
+  image       String?
+  contentHash String
+  version     QuestionBankVersion   @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  options     QuestionOption[]
+  attemptRefs ExamAttemptQuestion[]
+  paperRefs   PaperSheetQuestion[]
+
+  @@unique([versionId, contentHash])
+  @@index([versionId, ordinal])
+}
+
+// Правильный ответ — это ID варианта (isCorrect), а не буква: после перемешивания буквы меняются
+model QuestionOption {
+  id         String   @id @default(cuid())
+  questionId String
+  label      String
+  body       String
+  isCorrect  Boolean  @default(false)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, label])
+}
+
+model ExamWorkstation {
+  id             String                 @id @default(cuid())
+  code           String
+  roomId         String
+  // sha256 ключа устройства. null — ключ не выдан, ПК не может работать как экзаменационный
+  keyHash        String?                @unique
+  keyIssuedAt    DateTime?
+  // Разрешённая подсеть ПК (CIDR), дополнительно к глобальной EXAM_ALLOWED_NETWORKS
+  allowedCidr    String?
+  isActive       Boolean                @default(true)
+  lastSeenAt     DateTime?
+  lastSeenIp     String?
+  createdAt      DateTime               @default(now())
+  room           Room                   @relation(fields: [roomId], references: [id])
+  authorizations ProctorAuthorization[]
+  attempts       ExamAttempt[]
+
+  @@unique([roomId, code])
+}
+
+// Проктор закреплён за аудиторией (компьютерным классом)
+model ProctorAssignment {
+  id        String   @id @default(cuid())
+  proctorId String
+  roomId    String
+  createdAt DateTime @default(now())
+  proctor   User     @relation("ProctorRooms", fields: [proctorId], references: [id], onDelete: Cascade)
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([proctorId, roomId])
+}
+
+// Журнал решений о допуске (кто, когда, почему)
+model ExamEligibilityCheck {
+  id        String   @id @default(cuid())
+  examId    String
+  studentId String
+  eligible  Boolean
+  reasons   String[]
+  checkedBy String?
+  createdAt DateTime @default(now())
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@index([examId, studentId])
+}
+
+// Разрешение проктора: одноразовый короткоживущий токен, привязанный к студенту, экзамену, окну и ПК
+model ProctorAuthorization {
+  id              String          @id @default(cuid())
+  examId          String
+  studentId       String
+  proctorId       String
+  workstationId   String
+  tokenHash       String          @unique
+  idChecked       Boolean
+  passportChecked Boolean
+  expiresAt       DateTime
+  usedAt          DateTime?
+  revokedAt       DateTime?
+  revokeReason    String?
+  ip              String?
+  createdAt       DateTime        @default(now())
+  exam            Exam            @relation(fields: [examId], references: [id])
+  student         Student         @relation(fields: [studentId], references: [userId])
+  proctor         User            @relation("ProctorAuthorizations", fields: [proctorId], references: [id])
+  workstation     ExamWorkstation @relation(fields: [workstationId], references: [id])
+  attempt         ExamAttempt?
+
+  @@index([workstationId, usedAt])
+  @@index([studentId])
+}
+
+model ExamAttempt {
+  id              String                @id @default(cuid())
+  examId          String
+  studentId       String
+  enrollmentId    String
+  kind            ExamKind
+  authorizationId String                @unique
+  workstationId   String
+  bankVersionId   String?
+  rulesVersion    Int
+  windowVersion   Int
+  status          ExamAttemptStatus     @default(AUTHORIZED)
+  startedAt       DateTime?
+  expiresAt       DateTime?
+  submittedAt     DateTime?
+  // STUDENT | SYSTEM | PROCTOR
+  submittedBy     String?
+  terminateReason String?
+  createdAt       DateTime              @default(now())
+  exam            Exam                  @relation(fields: [examId], references: [id])
+  student         Student               @relation(fields: [studentId], references: [userId])
+  enrollment      SubjectEnrollment     @relation(fields: [enrollmentId], references: [id])
+  authorization   ProctorAuthorization  @relation(fields: [authorizationId], references: [id])
+  workstation     ExamWorkstation       @relation(fields: [workstationId], references: [id])
+  bankVersion     QuestionBankVersion?  @relation(fields: [bankVersionId], references: [id])
+  questions       ExamAttemptQuestion[]
+  result          ExamResult?
+
+  @@index([studentId, kind, createdAt])
+  @@index([status, expiresAt])
+  @@index([workstationId, status])
+}
+
+// Неизменяемый снапшот: вопрос, его позиция и порядок вариантов (ID). Изменяется только выбранный ответ.
+model ExamAttemptQuestion {
+  id               String      @id @default(cuid())
+  attemptId        String
+  questionId       String
+  position         Int
+  optionOrder      String[]
+  // null — SKIP (по умолчанию)
+  selectedOptionId String?
+  answeredAt       DateTime?
+  seq              Int         @default(0)
+  attempt          ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question         Question    @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, position])
+  @@unique([attemptId, questionId])
+}
+
+model ExamResult {
+  id                String            @id @default(cuid())
+  attemptId         String?           @unique
+  sheetId           String?           @unique
+  examId            String?
+  studentId         String
+  enrollmentId      String
+  kind              ExamKind
+  // COMPUTER | PAPER | IMPORT (перенос результатов прошлых семестров из Journal) | ABSENT
+  source            String
+  correct           Int
+  wrong             Int
+  skipped           Int
+  examScore         Decimal           @db.Decimal(5, 2)
+  entryScore        Decimal           @db.Decimal(5, 2)
+  total             Decimal           @db.Decimal(5, 2)
+  letter            String
+  passed            Boolean
+  // MIN_EXAM_SCORE | TOTAL_BELOW_PASS | BOTH | ABSENT | TERMINATED
+  failReason        String?
+  rulesVersion      Int
+  createdAt         DateTime          @default(now())
+  publishedAt       DateTime?
+  // Пересмотр по апелляции: исходные баллы не меняются, действующий результат = revised*, если заполнено
+  revisedExamScore  Decimal?          @db.Decimal(5, 2)
+  revisedTotal      Decimal?          @db.Decimal(5, 2)
+  revisedLetter     String?
+  revisedPassed     Boolean?
+  revisedAt         DateTime?
+  revisedByAppealId String?
+  appeals           ExamAppeal[]
+  attempt           ExamAttempt?      @relation(fields: [attemptId], references: [id])
+  sheet             PaperAnswerSheet? @relation(fields: [sheetId], references: [id])
+  exam              Exam?             @relation(fields: [examId], references: [id])
+  student           Student           @relation(fields: [studentId], references: [userId])
+  enrollment        SubjectEnrollment @relation(fields: [enrollmentId], references: [id])
+
+  @@index([studentId, createdAt])
+  @@index([examId])
+  @@index([enrollmentId])
+}
+
+model PaperAnswerSheet {
+  id            String               @id @default(cuid())
+  examId        String
+  studentId     String
+  enrollmentId  String
+  sheetCode     String               @unique
+  bankVersionId String
+  status        PaperSheetStatus     @default(GENERATED)
+  createdBy     String?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  exam          Exam                 @relation(fields: [examId], references: [id])
+  student       Student              @relation(fields: [studentId], references: [userId])
+  enrollment    SubjectEnrollment    @relation(fields: [enrollmentId], references: [id])
+  bankVersion   QuestionBankVersion  @relation(fields: [bankVersionId], references: [id])
+  questions     PaperSheetQuestion[]
+  scans         PaperScan[]
+  result        ExamResult?
+
+  @@unique([examId, studentId])
+}
+
+// Снапшот бумажного бланка + результат OMR по позиции. finalOptionId — после ручной проверки (null — SKIP).
+model PaperSheetQuestion {
+  id            String           @id @default(cuid())
+  sheetId       String
+  questionId    String
+  position      Int
+  optionOrder   String[]
+  // индекс закрашенного кружка 0..4 (A..E), null — пусто
+  detectedIndex Int?
+  confidence    Decimal?         @db.Decimal(5, 3)
+  // DOUBLE | EMPTY | LOW_CONFIDENCE
+  flags         String[]         @default([])
+  reviewed      Boolean          @default(false)
+  finalOptionId String?
+  correctedBy   String?
+  correctedAt   DateTime?
+  sheet         PaperAnswerSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  question      Question         @relation(fields: [questionId], references: [id])
+
+  @@unique([sheetId, position])
+}
+
+model PaperScan {
+  id         String           @id @default(cuid())
+  sheetId    String
+  mimeType   String
+  data       Bytes
+  quality    Decimal?         @db.Decimal(5, 3)
+  note       String?
+  uploadedBy String
+  createdAt  DateTime         @default(now())
+  sheet      PaperAnswerSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+
+  @@index([sheetId])
+}
+
+// Право на 25% resit в конкретном цикле (cycleKey = "2026-2027:FALL"). Лимит — 2 на студента в цикле.
+model ResitEligibility {
+  id            String            @id @default(cuid())
+  enrollmentId  String
+  studentId     String
+  subjectId     String
+  cycleKey      String
+  credits       Int
+  creditPrice   Decimal           @db.Decimal(10, 2)
+  feeAmount     Decimal           @db.Decimal(10, 2)
+  status        ResitStatus       @default(ELIGIBLE)
+  paymentId     String?           @unique
+  usedAttemptId String?           @unique
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  enrollment    SubjectEnrollment @relation(fields: [enrollmentId], references: [id])
+  student       Student           @relation(fields: [studentId], references: [userId])
+  subject       Subject           @relation(fields: [subjectId], references: [id])
+  payment       Payment?          @relation(fields: [paymentId], references: [id])
+
+  @@unique([enrollmentId, cycleKey])
+  @@index([studentId, cycleKey, status])
+}
+
+model SummerRetakePeriod {
+  id                   String               @id @default(cuid())
+  title                String
+  academicYear         String
+  startDate            DateTime             @db.Date
+  endDate              DateTime             @db.Date
+  registrationClosesAt DateTime
+  // OPEN | CLOSED
+  status               String               @default("OPEN")
+  createdAt            DateTime             @default(now())
+  courses              SummerRetakeCourse[]
+}
+
+model SummerRetakeCourse {
+  id            String             @id @default(cuid())
+  periodId      String
+  subjectId     String
+  teacherId     String?
+  // Расписание летних занятий, напр. «Пн/Ср/Пт 10:00–12:00, A101»
+  schedule      String?
+  maxStudents   Int                @default(30)
+  minAttendance Int                @default(75)
+  // FINAL_EXAM | PROJECT | COURSEWORK — форма итогового контроля летнего курса
+  assessment    String             @default("FINAL_EXAM")
+  createdAt     DateTime           @default(now())
+  period        SummerRetakePeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  subject       Subject            @relation(fields: [subjectId], references: [id])
+  teacher       Teacher?           @relation("SummerCourses", fields: [teacherId], references: [userId])
+  retakes       RetakeEnrollment[]
+
+  @@unique([periodId, subjectId])
+}
+
+// Повторное прохождение предмета (НЕ 25% resit): новый академический enrollment
+model RetakeEnrollment {
+  id                 String              @id @default(cuid())
+  studentId          String
+  subjectId          String
+  failedEnrollmentId String              @unique
+  mode               RetakeMode?
+  summerCourseId     String?
+  offeringId         String?
+  newEnrollmentId    String?             @unique
+  status             RetakeStatus        @default(PENDING)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  student            Student             @relation(fields: [studentId], references: [userId])
+  subject            Subject             @relation(fields: [subjectId], references: [id])
+  failedEnrollment   SubjectEnrollment   @relation("RetakeFailed", fields: [failedEnrollmentId], references: [id])
+  summerCourse       SummerRetakeCourse? @relation(fields: [summerCourseId], references: [id])
+  offering           SubjectOffering?    @relation(fields: [offeringId], references: [id])
+
+  @@index([studentId, status])
+}
+
+// ═════════ Апелляция по экзамену = специализация существующей заявки (Request.type = APPEAL) ═════════
+// Статус живёт в Request.status; здесь — привязка к результату, снимок баллов, решение и эскалация.
+model ExamAppeal {
+  id                String           @id @default(cuid())
+  requestId         String           @unique
+  resultId          String
+  studentId         String
+  subjectId         String
+  // Снимок на момент подачи
+  originalExamScore Decimal          @db.Decimal(5, 2)
+  entryScore        Decimal          @db.Decimal(5, 2)
+  originalTotal     Decimal          @db.Decimal(5, 2)
+  appealOpenAt      DateTime
+  appealDeadline    DateTime
+  // Рассмотрение
+  reviewStartedAt   DateTime?
+  reviewerId        String?
+  escalatedAt       DateTime?
+  escalatedById     String?
+  escalationReason  String?
+  // Решение (вычисляется по позициям)
+  outcome           String?
+  revisedExamScore  Decimal?         @db.Decimal(5, 2)
+  revisedTotal      Decimal?         @db.Decimal(5, 2)
+  decisionNote      String?
+  decidedAt         DateTime?
+  decidedById       String?
+  withdrawnAt       DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  request           Request          @relation(fields: [requestId], references: [id])
+  result            ExamResult       @relation(fields: [resultId], references: [id])
+  items             ExamAppealItem[]
+
+  @@index([resultId])
+  @@index([studentId])
+}
+
+// Спорный вопрос: ссылка + неизменяемый снимок (номер, текст, ответ студента, баллы) и решение проверяющего
+model ExamAppealItem {
+  id              String     @id @default(cuid())
+  appealId        String
+  position        Int
+  questionId      String
+  reason          String
+  explanation     String
+  questionText    String
+  answerText      String?
+  answerState     String
+  awardedPoints   Int
+  maxPoints       Int
+  newPoints       Int?
+  outcome         String?
+  reviewerComment String?
+  decidedAt       DateTime?
+  decidedById     String?
+  appeal          ExamAppeal @relation(fields: [appealId], references: [id], onDelete: Cascade)
+
+  @@unique([appealId, position])
+}

@@ -1,0 +1,304 @@
+/* ============================================================
+   Academic Portal — Dark theme overrides
+   Подключается на всех страницах. Активируется через data-theme="dark"
+   на <html>. Реализован через CSS custom properties + overrides.
+   ============================================================ */
+
+:root {
+  --c-bg:      #f1f5f9;
+  --c-card:    #ffffff;
+  --c-surface: #f8fafc;
+  --c-surface2:#eef2f6;
+  --c-input-bg:#ffffff;
+  --c-text1:   #0f172a;
+  --c-text2:   #475569;
+  --c-text3:   #94a3b8;
+  --c-border:  #e2e8f0;
+  --c-th-bg:   #f8fafc;
+  --c-tr-hover:#f8fafc;
+  --c-modal-bg:#ffffff;
+  --c-shadow:  rgba(0,0,0,.05);
+}
+
+[data-theme="dark"] {
+  --sidebar:   #070d17;
+  --border:    #1e2a3a;
+  --muted:     #94a3b8;
+  --c-bg:      #0f172a;
+  --c-card:    #1e293b;
+  --c-surface: #162032;
+  --c-surface2:#1a2740;
+  --c-input-bg:#1e293b;
+  --c-text1:   #e2e8f0;
+  --c-text2:   #94a3b8;
+  --c-text3:   #64748b;
+  --c-border:  #1e2a3a;
+  --c-th-bg:   #162032;
+  --c-tr-hover:#162032;
+  --c-modal-bg:#1e293b;
+  --c-shadow:  rgba(0,0,0,.4);
+}
+
+/* ── Base overrides for dark ── */
+[data-theme="dark"] body                       { background: var(--c-bg); color: var(--c-text1); }
+[data-theme="dark"] .main                      { background: var(--c-bg); }
+[data-theme="dark"] .card,
+[data-theme="dark"] .stat-card                 { background: var(--c-card); border-color: var(--c-border); color: var(--c-text1); box-shadow: 0 1px 3px var(--c-shadow); }
+[data-theme="dark"] .page-title                { color: var(--c-text1); }
+[data-theme="dark"] .card-title                { color: var(--c-text1); }
+[data-theme="dark"] .stat-val                  { color: var(--c-text1); }
+[data-theme="dark"] .stat-label                { color: var(--c-text2); }
+
+[data-theme="dark"] table                      { color: var(--c-text1); }
+[data-theme="dark"] th                         { background: var(--c-th-bg); color: var(--c-text2); border-bottom-color: var(--c-border); }
+[data-theme="dark"] td                         { border-top-color: var(--c-border); color: var(--c-text1); }
+[data-theme="dark"] tr:hover td,
+[data-theme="dark"] .tr-hover:hover td         { background: var(--c-tr-hover); }
+
+[data-theme="dark"] .input,
+[data-theme="dark"] select.input,
+[data-theme="dark"] textarea.input             { background: var(--c-input-bg); border-color: var(--c-border); color: var(--c-text1); }
+[data-theme="dark"] .input::placeholder        { color: var(--c-text3); }
+[data-theme="dark"] select.input option        { background: var(--c-card); color: var(--c-text1); }
+
+[data-theme="dark"] .btn-outline               { background: var(--c-card); color: var(--c-text2); border-color: var(--c-border); }
+[data-theme="dark"] .btn-outline:hover         { background: var(--c-surface); color: var(--c-text1); }
+
+[data-theme="dark"] .lang-switcher             { background: var(--c-surface); border-color: var(--c-border) !important; }
+[data-theme="dark"] .lang-btn                  { color: var(--c-text3); }
+[data-theme="dark"] .lang-btn.active           { background: var(--c-card); color: var(--c-text1); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+
+[data-theme="dark"] .filter-bar                { background: var(--c-surface); }
+[data-theme="dark"] .filter-btn                { color: var(--c-text3); }
+[data-theme="dark"] .filter-btn.active         { background: var(--c-card); color: var(--c-text1); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+
+[data-theme="dark"] .modal                     { background: var(--c-modal-bg); color: var(--c-text1); }
+[data-theme="dark"] .modal-title               { color: var(--c-text1); }
+[data-theme="dark"] .form-label                { color: var(--c-text2); }
+
+[data-theme="dark"] .tabs                      { border-color: var(--c-border); }
+[data-theme="dark"] .tab-btn                   { color: var(--c-text3); }
+[data-theme="dark"] .tab-btn.active            { color: #60a5fa; border-bottom-color: #60a5fa; }
+
+[data-theme="dark"] .schedule-grid             { background: var(--c-border); }
+[data-theme="dark"] .schedule-grid > div       { background: var(--c-card); color: var(--c-text1); }
+[data-theme="dark"] .schedule-grid .time-head,
+[data-theme="dark"] .schedule-grid .dow-head   { background: var(--c-th-bg); color: var(--c-text3); }
+
+[data-theme="dark"] .empty                     { color: var(--c-text3); }
+[data-theme="dark"] .prog                      { background: #334155; }
+
+/* Sidebar stays dark — make it even darker */
+[data-theme="dark"] .sidebar                   { background: var(--sidebar); border-right: 1px solid var(--c-border); }
+
+/* Badges — легкое подсвечивание в dark */
+[data-theme="dark"] .badge-gray                { background: #334155; color: #cbd5e1; }
+
+/* Chip (colored with subject bg) uses inline styles, оставляем как есть */
+
+/* Toast — keep dark always */
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  width: 44px; height: 24px; border-radius: 99px; border: none; cursor: pointer;
+  position: relative; transition: background .25s; flex-shrink: 0; padding: 0;
+  background: #cbd5e1;
+}
+.theme-toggle.dark { background: #3b82f6; }
+.theme-toggle-knob {
+  position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff;
+  top: 3px; left: 3px; transition: transform .25s; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.theme-toggle.dark .theme-toggle-knob { transform: translateX(20px); }
+.theme-toggle-icon { font-size: 11px; position: absolute; top: 5px; pointer-events: none; }
+.theme-toggle.dark .theme-toggle-icon  { right: 6px; color: #fff; }
+.theme-toggle.light .theme-toggle-icon { left: 6px;  color: #f59e0b; }
+
+/* Icons for theme button */
+[data-theme="dark"] .page-header svg { color: var(--c-text2); }
+
+/* ── Additional dark fixes ── */
+[data-theme="dark"] .chip { background: #334155 !important; color: #cbd5e1 !important; }
+[data-theme="dark"] .modal-title { color: var(--c-text1); }
+[data-theme="dark"] .empty { color: var(--c-text3); }
+[data-theme="dark"] code { background: #334155; color: #cbd5e1; padding: 1px 5px; border-radius: 4px; }
+
+/* Stat-card текст в dark */
+[data-theme="dark"] .stat-card .stat-val,
+[data-theme="dark"] .stat-card > div { color: var(--c-text1); }
+[data-theme="dark"] .stat-label { color: var(--c-text2); }
+
+/* (старый filter-инверсию удалили — заменили attribute-селекторами ниже) */
+
+/* Headers внутри detail modal */
+[data-theme="dark"] #detail-modal-body h3,
+[data-theme="dark"] #ad-modal-body h3 { color: var(--c-text1) !important; }
+
+/* Role-card текст в dark для login */
+[data-theme="dark"] .role-card div[style*="color:#0f172a"] { color: var(--c-text1) !important; }
+
+/* Schedule slots — preserve inline color but ensure contrast */
+[data-theme="dark"] .schedule-grid .slot { filter: brightness(1.1); }
+
+/* AI fab положение чтобы не перекрывал sidebar на mobile */
+@media(max-width:768px){.ai-fab{z-index:260}}
+
+/* Fix hover on rows in dark */
+[data-theme="dark"] tr[style*="cursor:pointer"]:hover td { background: #1a2740 !important; }
+
+/* Badges в dark остаются как есть (они semantic)
+ but badge-gray нужно усилить */
+[data-theme="dark"] .badge-info { background: rgba(59,130,246,.2); color: #93c5fd; }
+[data-theme="dark"] .badge-success { background: rgba(16,185,129,.2); color: #34d399; }
+[data-theme="dark"] .badge-warning { background: rgba(245,158,11,.2); color: #fbbf24; }
+[data-theme="dark"] .badge-danger { background: rgba(239,68,68,.2); color: #f87171; }
+[data-theme="dark"] .badge-purple { background: rgba(139,92,246,.2); color: #c4b5fd; }
+
+/* Legend items in dark */
+[data-theme="dark"] .card-pad > div[style*="background:#f8fafc"] { background: var(--c-surface) !important; }
+
+/* ═════════════════════════════════════════════════════════════
+   GLOBAL INLINE-STYLE OVERRIDES FOR DARK THEME
+   Переопределяем все светлые пастельные фоны на семантичные
+   полупрозрачные в тёмной теме + инвертируем текст внутри.
+   ═════════════════════════════════════════════════════════════ */
+
+/* Light blue (#f0f9ff / #dbeafe / #eff6ff) → dark blue tint */
+[data-theme="dark"] [style*="background:#f0f9ff"],
+[data-theme="dark"] [style*="background: #f0f9ff"],
+[data-theme="dark"] [style*="background:#eff6ff"],
+[data-theme="dark"] [style*="background: #eff6ff"],
+[data-theme="dark"] [style*="background:#dbeafe"],
+[data-theme="dark"] [style*="background: #dbeafe"] {
+  background: rgba(59,130,246,.15) !important;
+  border-color: rgba(59,130,246,.3) !important;
+}
+
+/* Light green (#f0fdf4 / #d1fae5 / #dcfce7) */
+[data-theme="dark"] [style*="background:#f0fdf4"],
+[data-theme="dark"] [style*="background: #f0fdf4"],
+[data-theme="dark"] [style*="background:#d1fae5"],
+[data-theme="dark"] [style*="background: #d1fae5"],
+[data-theme="dark"] [style*="background:#dcfce7"] {
+  background: rgba(16,185,129,.15) !important;
+  border-color: rgba(16,185,129,.3) !important;
+}
+
+/* Light amber/yellow (#fef3c7 / #fed7aa / #ffedd5) */
+[data-theme="dark"] [style*="background:#fef3c7"],
+[data-theme="dark"] [style*="background: #fef3c7"],
+[data-theme="dark"] [style*="background:#fed7aa"],
+[data-theme="dark"] [style*="background:#ffedd5"] {
+  background: rgba(245,158,11,.18) !important;
+  border-color: rgba(245,158,11,.3) !important;
+}
+
+/* Light red (#fee2e2 / #fecaca) */
+[data-theme="dark"] [style*="background:#fee2e2"],
+[data-theme="dark"] [style*="background: #fee2e2"],
+[data-theme="dark"] [style*="background:#fecaca"] {
+  background: rgba(239,68,68,.18) !important;
+  border-color: rgba(239,68,68,.3) !important;
+}
+
+/* Light purple (#ede9fe / #f5f3ff) */
+[data-theme="dark"] [style*="background:#ede9fe"],
+[data-theme="dark"] [style*="background: #ede9fe"],
+[data-theme="dark"] [style*="background:#f5f3ff"] {
+  background: rgba(139,92,246,.18) !important;
+  border-color: rgba(139,92,246,.3) !important;
+}
+
+/* Light cyan (#cffafe / #ecfeff) */
+[data-theme="dark"] [style*="background:#cffafe"],
+[data-theme="dark"] [style*="background:#ecfeff"] {
+  background: rgba(6,182,212,.18) !important;
+  border-color: rgba(6,182,212,.3) !important;
+}
+
+/* Light gray surfaces (#f8fafc / #f1f5f9) */
+[data-theme="dark"] [style*="background:#f8fafc"],
+[data-theme="dark"] [style*="background: #f8fafc"],
+[data-theme="dark"] [style*="background:#f1f5f9"],
+[data-theme="dark"] [style*="background: #f1f5f9"] {
+  background: var(--c-surface) !important;
+}
+
+/* Pure white backgrounds inside content */
+[data-theme="dark"] [style*="background:#fff"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background:#ffffff"] {
+  background: var(--c-card) !important;
+}
+
+/* Text colors — inline dark text needs to become light */
+[data-theme="dark"] [style*="color:#0f172a"],
+[data-theme="dark"] [style*="color: #0f172a"] { color: var(--c-text1) !important; }
+[data-theme="dark"] [style*="color:#1e293b"] { color: var(--c-text1) !important; }
+[data-theme="dark"] [style*="color:#334155"] { color: var(--c-text2) !important; }
+[data-theme="dark"] [style*="color:#475569"] { color: var(--c-text2) !important; }
+[data-theme="dark"] [style*="color:#64748b"] { color: var(--c-text3) !important; }
+
+/* Dark text accents — brighten for dark theme */
+[data-theme="dark"] [style*="color:#1e40af"] { color: #93c5fd !important; }
+[data-theme="dark"] [style*="color:#065f46"] { color: #6ee7b7 !important; }
+[data-theme="dark"] [style*="color:#991b1b"] { color: #fca5a5 !important; }
+[data-theme="dark"] [style*="color:#92400e"] { color: #fcd34d !important; }
+[data-theme="dark"] [style*="color:#5b21b6"] { color: #c4b5fd !important; }
+[data-theme="dark"] [style*="color:#3b82f6"] { color: #60a5fa !important; }
+[data-theme="dark"] [style*="color:#22c55e"] { color: #4ade80 !important; }
+[data-theme="dark"] [style*="color:#10b981"] { color: #34d399 !important; }
+[data-theme="dark"] [style*="color:#f59e0b"] { color: #fbbf24 !important; }
+[data-theme="dark"] [style*="color:#ef4444"] { color: #f87171 !important; }
+[data-theme="dark"] [style*="color:#0891b2"] { color: #22d3ee !important; }
+[data-theme="dark"] [style*="color:#0369a1"] { color: #7dd3fc !important; }
+[data-theme="dark"] [style*="color:#0284c7"] { color: #7dd3fc !important; }
+[data-theme="dark"] [style*="color:#7c3aed"] { color: #a78bfa !important; }
+
+/* Borders */
+[data-theme="dark"] [style*="border:1px solid #bae6fd"],
+[data-theme="dark"] [style*="border:1px solid #bbf7d0"],
+[data-theme="dark"] [style*="border:1px solid #fde68a"],
+[data-theme="dark"] [style*="border:1px solid #fca5a5"],
+[data-theme="dark"] [style*="border:1px solid #93c5fd"],
+[data-theme="dark"] [style*="border:1px solid #cbd5e1"],
+[data-theme="dark"] [style*="border:1px solid #e2e8f0"] {
+  border-color: var(--c-border) !important;
+}
+
+/* Demo-card in login dark */
+[data-theme="dark"] .demo-card code { background: #334155; color: #93c5fd; }
+
+/* Watermark ещё deeper for dark */
+[data-theme="dark"] .main::before { opacity: .05 !important; }
+
+/* Theme toggle wrapper with sun/moon emojis */
+.theme-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.theme-toggle-wrap .sun, .theme-toggle-wrap .moon {
+  font-size: 15px;
+  transition: opacity .2s, transform .2s;
+  cursor: pointer;
+  line-height: 1;
+}
+/* Light theme: sun bright, moon dim */
+.theme-toggle-wrap .sun  { opacity: 1;   transform: scale(1.05); }
+.theme-toggle-wrap .moon { opacity: 0.4; transform: scale(0.9); }
+/* Dark theme: moon bright, sun dim */
+[data-theme="dark"] .theme-toggle-wrap .sun  { opacity: 0.4; transform: scale(0.9); }
+[data-theme="dark"] .theme-toggle-wrap .moon { opacity: 1;   transform: scale(1.05); }
+
+/* ── Branding ── */
+.sb-sub{display:block;margin-top:1px;font-size:10.5px;font-weight:500;color:#94a3b8;letter-spacing:.02em}
+.sb-logo-text{line-height:1.2}
+.app-footer{margin:28px 0 8px;padding-top:12px;border-top:1px solid var(--c-border,#e2e8f0);text-align:center;font-size:12px;color:var(--c-text2,#64748b)}
+/* ── View as role (SUPER_ADMIN preview) ── */
+#va-banner{position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;gap:14px;align-items:center;justify-content:center;padding:6px 12px;background:#b45309;color:#fff;font-size:13px;font-weight:600}
+#va-banner button{border:1px solid rgba(255,255,255,.7);background:transparent;color:#fff;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;font-family:inherit}
+#va-banner button:hover{background:rgba(255,255,255,.18)}
+body.va-active #app,body.va-active .app{margin-top:34px}
+.sb-logo .sb-logo-text{font-size:14px}

@@ -1,0 +1,7 @@
+{
+    "forbidden":  "Giriş qadağandır",
+    "not_found":  "Tapılmadı",
+    "validation_failed":  "Məlumatların doğrulanması uğursuz oldu",
+    "internal_error":  "Daxili server xətası",
+    "unauthorized":  "İcazəsiz giriş"
+}

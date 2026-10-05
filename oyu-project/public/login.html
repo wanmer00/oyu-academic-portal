@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Odlar Yurdu University — Academic Portal</title>
+<meta name="description" content="Odlar Yurdu University — Academic Management Portal">
+<meta property="og:title" content="Odlar Yurdu University — Academic Portal">
+<meta property="og:image" content="/img/logo.png">
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="stylesheet" href="/css/theme.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--sidebar:#0d1b2a;--primary:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--border:#e2e8f0;--muted:#64748b;--teacher:#7c3aed;--leader:#0891b2;--audit:#991b1b}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased}
+[data-theme="dark"] body{background:#0f172a;color:#e2e8f0}
+[data-theme="dark"] #login-screen{background:#0f172a}
+[data-theme="dark"] .login-right{background:#0f172a}
+[data-theme="dark"] .role-card{background:#1e293b;border-color:#1e2a3a}
+[data-theme="dark"] .role-card:hover{border-color:#2563eb;background:#1a2740}
+[data-theme="dark"] .role-card.active{border-color:#2563eb;background:#1a2740}
+[data-theme="dark"] .role-card.teacher-role.active{border-color:#7c3aed;background:#22183b}
+[data-theme="dark"] .role-card.leader-role.active{border-color:#0891b2;background:#0c2a33}
+[data-theme="dark"] .role-card.audit-role.active{border-color:#991b1b;background:#331018}
+[data-theme="dark"] .role-card div{color:#e2e8f0 !important}
+[data-theme="dark"] #login-welcome-text,[data-theme="dark"] #login-desc-text{color:#e2e8f0}
+[data-theme="dark"] #login-welcome-text{color:#fff}
+[data-theme="dark"] #login-desc-text{color:#94a3b8}
+[data-theme="dark"] #lbl-loginid,[data-theme="dark"] #lbl-pw{color:#cbd5e1}
+[data-theme="dark"] .input{background:#1e293b;border-color:#1e2a3a;color:#e2e8f0}
+[data-theme="dark"] .input::placeholder{color:#64748b}
+[data-theme="dark"] .demo-card{color:#cbd5e1 !important}
+[data-theme="dark"] .lang-switcher-top{background:rgba(30,41,59,.95)}
+[data-theme="dark"] .lang-btn{color:#94a3b8}
+.input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#fff;color:#0f172a;font-size:14px;outline:none;transition:border-color .15s;font-family:inherit}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover:not(:disabled){background:#1d4ed8}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed}
+
+/* LOGIN SCREEN — 1:1 со старой версией */
+#login-screen{position:fixed;inset:0;z-index:100;display:flex;background:#f8fafc}
+.login-left{width:45%;background:linear-gradient(160deg,#0d1b2a 0%,#1e3a5f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;position:relative;overflow:hidden}
+.login-right{flex:1;display:flex;align-items:center;justify-content:center;padding:48px;overflow-y:auto}
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.role-card{border:2px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .15s;text-align:center;background:#fff}
+.role-card:hover{border-color:#2563eb;background:#f0f9ff}
+.role-card.active{border-color:var(--primary);background:#eff6ff}
+.role-card.teacher-role.active{border-color:var(--teacher);background:#f5f3ff}
+.role-card.leader-role.active{border-color:var(--leader);background:#ecfeff}
+.role-card.audit-role.active{border-color:var(--audit);background:#fef2f2}
+.lang-switcher-top{position:absolute;top:20px;right:20px;display:flex;gap:4px;background:rgba(255,255,255,.9);border-radius:8px;padding:4px;z-index:10}
+.lang-btn{padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:transparent;color:#64748b;font-family:inherit}
+.lang-btn.active{background:var(--primary);color:#fff}
+@media(max-width:900px){
+  .login-left{display:none}
+  .login-right{width:100%}
+}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-left">
+    <div style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(37,99,235,.12)"></div>
+    <div style="position:absolute;bottom:-60px;left:-60px;width:250px;height:250px;border-radius:50%;background:rgba(37,99,235,.08)"></div>
+    <div style="position:relative;text-align:center">
+      <div style="width:200px;height:200px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 8px 32px rgba(37,99,235,.45),0 0 0 6px rgba(255,255,255,.08);overflow:hidden">
+        <img src="/img/logo.png" alt="Odlar Yurdu University" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.outerHTML='<span style=\'font-weight:900;font-size:38px;color:#0d1b2a;letter-spacing:1px\'>OYU</span>'">
+      </div>
+      <h1 style="color:#fff;font-size:26px;font-weight:700;margin-bottom:10px" id="left-title">Odlar Yurdu University</h1>
+      <p style="color:#94a3b8;font-size:15px;line-height:1.6" id="left-subtitle">Tələbə · Müəllim · Rəhbərlik · Super Admin</p>
+      <div style="margin-top:36px;display:flex;flex-direction:column;gap:12px;text-align:left">
+        <div style="color:#cbd5e1;font-size:14px" id="left-f1">🎓 Tələbə — dərs, qiymət, tapşırıq</div>
+        <div style="color:#cbd5e1;font-size:14px" id="left-f2">👨‍🏫 Müəllim — jurnal, analitika</div>
+        <div style="color:#cbd5e1;font-size:14px" id="left-f3">🏛 Rəhbərlik — statistika, idarəetmə</div>
+        <div style="color:#cbd5e1;font-size:14px" id="left-f4">🛡 Super Admin — təhlükəsizlik və audit</div>
+        <div style="color:#cbd5e1;font-size:14px" id="left-f5">🌍 AZ · RU · EN dil dəstəyi</div>
+      </div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="lang-switcher-top">
+      <div class="theme-toggle-wrap" style="margin-right:6px">
+        <span class="sun" data-theme-toggle title="Light">☀️</span>
+        <button class="theme-toggle light" data-theme-toggle title="Tema"><span class="theme-toggle-knob"></span></button>
+        <span class="moon" data-theme-toggle title="Dark">🌙</span>
+      </div>
+      <button class="lang-btn" data-lang="az">🇦🇿 AZ</button>
+      <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+      <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+    </div>
+    <div style="width:100%;max-width:460px">
+      <h2 style="font-size:24px;font-weight:700;margin-bottom:6px" id="login-welcome-text">Xoş gəldiniz</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:22px" id="login-desc-text">Rolunuzu seçin və daxil olun</p>
+
+      <!-- Role selector — 4 роли -->
+      <div class="role-selector" style="grid-template-columns:1fr 1fr;gap:10px">
+        <div class="role-card active" id="role-student" data-role="STUDENT" onclick="selectRole('STUDENT')">
+          <div style="font-size:24px;margin-bottom:6px">🎓</div>
+          <div style="font-size:13px;font-weight:700;color:#0f172a" id="r-stu-1">Tələbə</div>
+          <div style="font-size:11px;color:var(--muted)">Student</div>
+        </div>
+        <div class="role-card teacher-role" id="role-teacher" data-role="TEACHER" onclick="selectRole('TEACHER')">
+          <div style="font-size:24px;margin-bottom:6px">👨‍🏫</div>
+          <div style="font-size:13px;font-weight:700;color:#0f172a" id="r-tch-1">Müəllim</div>
+          <div style="font-size:11px;color:var(--muted)">Teacher</div>
+        </div>
+        <div class="role-card leader-role" id="role-leadership" data-role="ADMIN" onclick="selectRole('ADMIN')">
+          <div style="font-size:24px;margin-bottom:6px">🏛</div>
+          <div style="font-size:13px;font-weight:700;color:#0f172a" id="r-lead-1">Rəhbərlik</div>
+          <div style="font-size:11px;color:var(--muted)">Leadership</div>
+        </div>
+        <div class="role-card audit-role" id="role-auditor" data-role="SUPER_ADMIN" onclick="selectRole('SUPER_ADMIN')">
+          <div style="font-size:24px;margin-bottom:6px">🛡</div>
+          <div style="font-size:13px;font-weight:700;color:#0f172a" id="r-aud-1">Super Admin</div>
+          <div style="font-size:11px;color:var(--muted)">Super Admin</div>
+        </div>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" autocomplete="on">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px" id="lbl-loginid">Login ID</label>
+          <input class="input" id="inp-id" name="loginId" placeholder="0123456789" autocomplete="username" required maxlength="20">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px" id="lbl-pw">Şifrə</label>
+          <input class="input" id="inp-pw" name="password" type="password" autocomplete="current-password" required maxlength="200">
+        </div>
+        <div id="login-err" style="display:none;background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;color:#991b1b;font-size:13px;margin-bottom:12px">Login ID və ya şifrə yanlışdır</div>
+        <button type="submit" class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:12px;font-size:15px">Daxil ol</button>
+      </form>
+
+      <div id="demo-box" hidden style="margin-top:20px;padding:14px 16px;background:#f0f9ff;border-radius:10px;border:1px solid #bae6fd">
+        <div style="font-size:12px;color:#0369a1;font-weight:700;margin-bottom:10px" id="demo-title">Demo Girişlər (klik edin):</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="demo-card" data-login="student1.demo" data-pw="Demo@Portal2026" data-role="STUDENT" style="cursor:pointer;font-size:11.5px;color:#0284c7;padding:6px;border-radius:6px;transition:background .15s">🎓 <b>Tələbə</b><br><code style="font-size:10.5px">student1.demo</code><br><code style="font-size:10.5px">Demo@Portal2026</code></div>
+          <div class="demo-card" data-login="teacher1.demo" data-pw="Demo@Portal2026" data-role="TEACHER" style="cursor:pointer;font-size:11.5px;color:#7c3aed;padding:6px;border-radius:6px;transition:background .15s">👨‍🏫 <b>Müəllim</b><br><code style="font-size:10.5px">teacher1.demo</code><br><code style="font-size:10.5px">Demo@Portal2026</code></div>
+          <div class="demo-card" data-login="rector.demo" data-pw="Demo@Portal2026" data-role="ADMIN" style="cursor:pointer;font-size:11.5px;color:#0891b2;padding:6px;border-radius:6px;transition:background .15s">🏛 <b>Rəhbərlik</b><br><code style="font-size:10.5px">rector.demo</code><br><code style="font-size:10.5px">Demo@Portal2026</code></div>
+          <div class="demo-card" data-login="proctor.demo" data-pw="Demo@Portal2026" data-role="STUDENT" style="cursor:pointer;font-size:11.5px;color:#b45309;padding:6px;border-radius:6px;transition:background .15s">🧑‍✈️ <b>Nəzarətçi</b><br><code style="font-size:10.5px">proctor.demo</code><br><code style="font-size:10.5px">Demo@Portal2026</code></div>
+          <div class="demo-card" data-login="superadmin.demo" data-pw="Demo@Portal2026" data-role="SUPER_ADMIN" style="cursor:pointer;font-size:11.5px;color:#991b1b;padding:6px;border-radius:6px;transition:background .15s">🛡 <b>Super Admin</b><br><code style="font-size:10.5px">superadmin.demo</code><br><code style="font-size:10.5px">Demo@Portal2026</code></div>
+        </div>
+      </div>
+      <p style="margin-top:22px;text-align:center;font-size:12px;color:var(--muted)">© 2026 Elchin Abdullaev</p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/config.js"></script>
+<script src="/js/api.js"></script>
+<script>
+// ── Language switcher ──
+async function setLang(lang) {
+  await AP.i18n.load(lang);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  applyLang();
+}
+function applyLang() {
+  const L = AP.i18n.getLang();
+  const T = {
+    az: { welcome:'Xoş gəldiniz', desc:'Rolunuzu seçin və daxil olun', subtitle:'Tələbə · Müəllim · Rəhbərlik · Super Admin',
+          f1:'🎓 Tələbə — dərs, qiymət, tapşırıq', f2:'👨‍🏫 Müəllim — jurnal, analitika',
+          f3:'🏛 Rəhbərlik — statistika, idarəetmə', f4:'🛡 Super Admin — təhlükəsizlik və audit', f5:'🌍 AZ · RU · EN dil dəstəyi',
+          stu:'Tələbə', tch:'Müəllim', lead:'Rəhbərlik', aud:'Super Admin',
+          lbl_id:'Login ID', lbl_pw:'Şifrə', btn:'Daxil ol', demo:'Demo Girişlər (klik edin):', err:'Login ID və ya şifrə yanlışdır' },
+    ru: { welcome:'Добро пожаловать', desc:'Выберите роль и войдите', subtitle:'Студент · Преподаватель · Руководство · Супер-админ',
+          f1:'🎓 Студент — занятия, оценки, задания', f2:'👨‍🏫 Преподаватель — журнал, аналитика',
+          f3:'🏛 Руководство — статистика, управление', f4:'🛡 Супер-админ — безопасность и аудит', f5:'🌍 Поддержка AZ · RU · EN',
+          stu:'Студент', tch:'Преподаватель', lead:'Руководство', aud:'Супер-админ',
+          lbl_id:'Login ID', lbl_pw:'Пароль', btn:'Войти', demo:'Демо входы (клик):', err:'Неверный Login ID или пароль' },
+    en: { welcome:'Welcome', desc:'Select your role and sign in', subtitle:'Student · Teacher · Leadership · Super Admin',
+          f1:'🎓 Student — classes, grades, tasks', f2:'👨‍🏫 Teacher — journal, analytics',
+          f3:'🏛 Leadership — statistics, management', f4:'🛡 Super Admin — security and audit', f5:'🌍 AZ · RU · EN supported',
+          stu:'Student', tch:'Teacher', lead:'Leadership', aud:'Super Admin',
+          lbl_id:'Login ID', lbl_pw:'Password', btn:'Sign in', demo:'Demo logins (click):', err:'Invalid Login ID or password' },
+  }[L];
+  document.getElementById('login-welcome-text').textContent = T.welcome;
+  document.getElementById('login-desc-text').textContent = T.desc;
+  document.getElementById('left-subtitle').textContent = T.subtitle;
+  document.getElementById('left-f1').textContent = T.f1;
+  document.getElementById('left-f2').textContent = T.f2;
+  document.getElementById('left-f3').textContent = T.f3;
+  document.getElementById('left-f4').textContent = T.f4;
+  document.getElementById('left-f5').textContent = T.f5;
+  document.getElementById('r-stu-1').textContent  = T.stu;
+  document.getElementById('r-tch-1').textContent  = T.tch;
+  document.getElementById('r-lead-1').textContent = T.lead;
+  document.getElementById('r-aud-1').textContent  = T.aud;
+  document.getElementById('lbl-loginid').textContent = T.lbl_id;
+  document.getElementById('lbl-pw').textContent    = T.lbl_pw;
+  document.getElementById('login-btn').textContent = T.btn;
+  document.getElementById('demo-title').textContent = T.demo;
+  document.getElementById('login-err').textContent  = T.err;
+  document.documentElement.lang = L;
+}
+
+// ── Role selector ──
+let selectedRole = 'STUDENT';
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.toggle('active', c.dataset.role === role));
+}
+
+// ── Login handler ──
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+  btn.disabled = true;
+  const btnText = btn.textContent;
+  btn.textContent = AP.i18n.getLang() === 'ru' ? 'Входим...' : AP.i18n.getLang() === 'en' ? 'Signing in...' : 'Daxil olunur...';
+
+  try {
+    const user = await AP.api.login(
+      document.getElementById('inp-id').value.trim(),
+      document.getElementById('inp-pw').value
+    );
+    redirectByRole(user.role);
+  } catch (e2) {
+    err.textContent = e2.networkError
+      ? (AP.i18n.getLang() === 'ru' ? 'Сервер недоступен' : AP.i18n.getLang() === 'en' ? 'Server unreachable' : 'Server əlçatmazdır')
+      : (e2.message || 'Error');
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = btnText;
+  }
+}
+
+function redirectByRole(role) {
+  if (role === 'ADMIN' || role === 'SUPER_ADMIN') location.href = '/admin-dashboard.html';
+  else if (role === 'PROCTOR') location.href = '/proctor.html';
+  else location.href = '/portal.html';
+}
+
+// Демо-логины показываем только при локальной разработке
+if (['localhost', '127.0.0.1'].includes(location.hostname)) document.getElementById('demo-box').hidden = false;
+
+// ── Demo-card click → auto-fill + select role ──
+document.querySelectorAll('.demo-card').forEach(card => {
+  card.addEventListener('mouseover', () => card.style.background = '#e0f2fe');
+  card.addEventListener('mouseout',  () => card.style.background = '');
+  card.addEventListener('click', () => {
+    document.getElementById('inp-id').value = card.dataset.login;
+    document.getElementById('inp-pw').value = card.dataset.pw;
+    selectRole(card.dataset.role);
+  });
+});
+
+// ── Lang buttons ──
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+// ── Init ──
+(async function() {
+  await AP.i18n.load(AP.i18n.getLang());
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === AP.i18n.getLang()));
+  applyLang();
+
+  // Auto-login if already authenticated
+  try {
+    const user = await AP.api.refresh();
+    if (user) redirectByRole(user.role);
+  } catch {}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+    "forbidden":  "Forbidden",
+    "not_found":  "Not found",
+    "validation_failed":  "Validation failed",
+    "internal_error":  "Internal server error",
+    "unauthorized":  "Unauthorized"
+}

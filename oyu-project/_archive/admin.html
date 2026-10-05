@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OYU Admin Panel — Odlar Yurdu Universiteti</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+input,select,textarea{font-family:inherit}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hamburger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;cursor:pointer;border:1px solid;background:none;font-size:1.1rem}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:98;animation:fadeIn 0.2s}
+@media(max-width:1024px){.ag4{grid-template-columns:repeat(2,1fr)!important}.ag2{grid-template-columns:1fr!important}}
+@media(max-width:768px){
+  .ag4{grid-template-columns:1fr!important}
+  .sidebar{position:fixed;transform:translateX(-248px);transition:transform 0.25s ease;z-index:99}
+  .sidebar.mob-open{transform:translateX(0)}
+  .mob-overlay.mob-open{display:block}
+  .main-content{margin-left:0!important}
+  .hamburger{display:flex!important}
+  .hide-mobile{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef} = React;
+
+// ═══ THEME ═══
+const themes={
+  light:{bg:"#f1f5f9",bgCard:"#ffffff",bgSidebar:"#0d1b2a",bgInput:"#f8fafc",text:"#0f172a",textSec:"#64748b",textMuted:"#94a3b8",border:"#e2e8f0",borderLight:"#f1f5f9",accent:"#2563eb",accentBg:"rgba(37,99,235,0.08)",success:"#10b981",successBg:"rgba(16,185,129,0.08)",warning:"#f59e0b",warningBg:"rgba(245,158,11,0.08)",danger:"#ef4444",dangerBg:"rgba(239,68,68,0.08)",purple:"#7c3aed",purpleBg:"rgba(124,58,237,0.08)",shadow:"0 1px 3px rgba(0,0,0,.05)",shadowLg:"0 20px 60px rgba(0,0,0,.15)"},
+  dark:{bg:"#0f172a",bgCard:"#1e293b",bgSidebar:"#0a0f1a",bgInput:"#1e293b",text:"#e2e8f0",textSec:"#94a3b8",textMuted:"#64748b",border:"#1e2a3a",borderLight:"#1e2a3a",accent:"#3b82f6",accentBg:"rgba(59,130,246,0.12)",success:"#34d399",successBg:"rgba(52,211,153,0.1)",warning:"#fbbf24",warningBg:"rgba(251,191,36,0.1)",danger:"#f87171",dangerBg:"rgba(248,113,113,0.1)",purple:"#a78bfa",purpleBg:"rgba(167,139,250,0.1)",shadow:"0 1px 3px rgba(0,0,0,.2)",shadowLg:"0 20px 60px rgba(0,0,0,.4)"}
+};
+
+// ═══ INITIAL DATA ═══
+const INIT_USERS=[
+  {id:1,name:"Həsənov Əli",email:"ali@stud.oyu.edu.az",role:"student",faculty:"Texnologiya",status:"active",lastLogin:"2026-04-03"},
+  {id:2,name:"Məmmədova Aynur",email:"aynur@stud.oyu.edu.az",role:"student",faculty:"Texnologiya",status:"active",lastLogin:"2026-04-02"},
+  {id:3,name:"Dos. Rəşad Həsənov",email:"rashad@oyu.edu.az",role:"teacher",faculty:"Texnologiya",status:"active",lastLogin:"2026-04-03"},
+  {id:4,name:"Prof. Pərvin Kərimova",email:"parvin@oyu.edu.az",role:"teacher",faculty:"Dillər",status:"active",lastLogin:"2026-04-03"},
+  {id:5,name:"Quliyev Orxan",email:"orxan@stud.oyu.edu.az",role:"student",faculty:"İqtisadiyyat",status:"inactive",lastLogin:"2026-03-15"},
+  {id:6,name:"İsmayılova Günel",email:"gunel@stud.oyu.edu.az",role:"student",faculty:"Humanitar",status:"active",lastLogin:"2026-04-01"},
+  {id:7,name:"Babayev Kamran",email:"kamran@stud.oyu.edu.az",role:"student",faculty:"Texnologiya",status:"suspended",lastLogin:"2026-02-20"},
+  {id:8,name:"Prof. Əhməd Vəliyev",email:"ahmed@oyu.edu.az",role:"admin",faculty:"Rektorluq",status:"active",lastLogin:"2026-04-03"},
+  {id:9,name:"Nəsirova Fidan",email:"fidan@stud.oyu.edu.az",role:"student",faculty:"Texnologiya",status:"active",lastLogin:"2026-04-02"},
+  {id:10,name:"Prof. Elşən Bağırov",email:"elshan@oyu.edu.az",role:"teacher",faculty:"İqtisadiyyat",status:"active",lastLogin:"2026-04-03"},
+  {id:11,name:"Sultanova Nigar",email:"nigar@stud.oyu.edu.az",role:"student",faculty:"Dillər",status:"active",lastLogin:"2026-04-02"},
+  {id:12,name:"Rəhimov Elvin",email:"elvin@stud.oyu.edu.az",role:"student",faculty:"İqtisadiyyat",status:"active",lastLogin:"2026-04-01"},
+];
+const INIT_COURSES=[
+  {id:1,name:"Verilənlər Bazası",code:"IT-301",teacher:"Dos. Rəşad Həsənov",faculty:"Texnologiya",students:42,status:"active",semester:"2025-2026 Yaz",credits:6},
+  {id:2,name:"Web Proqramlaşdırma",code:"IT-302",teacher:"Dos. N. Məmmədov",faculty:"Texnologiya",students:38,status:"active",semester:"2025-2026 Yaz",credits:5},
+  {id:3,name:"Süni İntellekt",code:"IT-401",teacher:"Prof. M. Vəliyev",faculty:"Texnologiya",students:35,status:"active",semester:"2025-2026 Yaz",credits:6},
+  {id:4,name:"Maliyyə Menecmenti",code:"EC-301",teacher:"Prof. E. Bağırov",faculty:"İqtisadiyyat",students:50,status:"active",semester:"2025-2026 Yaz",credits:5},
+  {id:5,name:"İngilis dili (C1)",code:"LN-201",teacher:"Prof. P. Kərimova",faculty:"Dillər",students:30,status:"active",semester:"2025-2026 Yaz",credits:3},
+  {id:6,name:"Kompüter Şəbəkələri",code:"IT-303",teacher:"Dos. K. Əliyev",faculty:"Texnologiya",students:40,status:"active",semester:"2025-2026 Yaz",credits:5},
+  {id:7,name:"Rəqəmsal Marketinq",code:"EC-201",teacher:"Dos. S. Babayev",faculty:"İqtisadiyyat",students:45,status:"inactive",semester:"2024-2025 Yaz",credits:4},
+  {id:8,name:"Psixologiyaya Giriş",code:"HM-101",teacher:"Dos. K. Həsənova",faculty:"Humanitar",students:55,status:"active",semester:"2025-2026 Yaz",credits:4},
+];
+const INIT_ASSIGNMENTS=[
+  {id:1,title:"SQL Sorğuları - Tapşırıq 5",course:"Verilənlər Bazası",teacher:"Dos. R. Həsənov",due:"2026-04-07",subs:38,total:42,status:"active"},
+  {id:2,title:"React Portfolio Layihəsi",course:"Web Proqramlaşdırma",teacher:"Dos. N. Məmmədov",due:"2026-04-10",subs:22,total:38,status:"active"},
+  {id:3,title:"Maşın Öyrənmə Modeli",course:"Süni İntellekt",teacher:"Prof. M. Vəliyev",due:"2026-04-15",subs:10,total:35,status:"active"},
+  {id:4,title:"TCP/IP Protokol Analizi",course:"Kompüter Şəbəkələri",teacher:"Dos. K. Əliyev",due:"2026-04-05",subs:40,total:40,status:"completed"},
+  {id:5,title:"Maliyyə Hesabat Analizi",course:"Maliyyə Menecmenti",teacher:"Prof. E. Bağırov",due:"2026-04-12",subs:30,total:50,status:"active"},
+  {id:6,title:"Essay: Technology & Society",course:"İngilis dili (C1)",teacher:"Prof. P. Kərimova",due:"2026-04-12",subs:15,total:30,status:"active"},
+];
+const INIT_AUDIT=[
+  {id:1,user:"Prof. Əhməd Vəliyev",action:"Yeni istifadəçi yaratdı",target:"Həsənov Əli",time:"3 dəq əvvəl",type:"create",ip:"192.168.1.45"},
+  {id:2,user:"Admin",action:"Kurs statusu dəyişdirildi",target:"Rəqəmsal Marketinq → Deaktiv",time:"15 dəq əvvəl",type:"update",ip:"192.168.1.1"},
+  {id:3,user:"Dos. R. Həsənov",action:"Qiymət daxil etdi",target:"IT-301 - 42 tələbə",time:"1 saat əvvəl",type:"update",ip:"192.168.1.78"},
+  {id:4,user:"Admin",action:"Rol yaratdı",target:"Kafedra Müdiri",time:"2 saat əvvəl",type:"create",ip:"192.168.1.1"},
+  {id:5,user:"Prof. P. Kərimova",action:"Tapşırıq yaratdı",target:"Essay: Technology & Society",time:"3 saat əvvəl",type:"create",ip:"192.168.1.92"},
+  {id:6,user:"Admin",action:"İstifadəçi deaktiv edildi",target:"Babayev Kamran",time:"5 saat əvvəl",type:"delete",ip:"192.168.1.1"},
+  {id:7,user:"Sistem",action:"Avtomatik yedəkləmə",target:"Database backup",time:"6 saat əvvəl",type:"system",ip:"—"},
+  {id:8,user:"Admin",action:"Ayarlar yeniləndi",target:"Email konfiqurasiya",time:"1 gün əvvəl",type:"update",ip:"192.168.1.1"},
+];
+const INIT_ROLES=[
+  {id:1,name:"Super Admin",slug:"super_admin",users:1,perms:["all"],color:"#EF4444"},
+  {id:2,name:"Admin",slug:"admin",users:2,perms:["users.manage","courses.manage","assignments.manage","roles.manage","settings.manage","notifications.manage"],color:"#2563eb"},
+  {id:3,name:"Müəllim",slug:"teacher",users:15,perms:["courses.view","courses.edit_own","assignments.manage_own","grades.manage","students.view"],color:"#10B981"},
+  {id:4,name:"Tələbə",slug:"student",users:450,perms:["courses.view_enrolled","assignments.submit","grades.view_own","profile.edit"],color:"#F59E0B"},
+  {id:5,name:"Kafedra Müdiri",slug:"dept_head",users:8,perms:["courses.manage_dept","users.view_dept","reports.dept"],color:"#8B5CF6"},
+];
+const INIT_NOTIFS=[
+  {id:1,title:"ICSEGT 2026 Konfransı",msg:"Tələbə məqalələrinin qəbulu başladı.",aud:"all",date:"2026-04-01",status:"sent"},
+  {id:2,title:"Yaz imtahan cədvəli",msg:"İmtahan cədvəli elan edildi.",aud:"students",date:"2026-03-28",status:"sent"},
+  {id:3,title:"Elmi seminar",msg:"Cümə axşamı 11:00-da konfrans zalında.",aud:"teachers",date:"2026-04-02",status:"sent"},
+  {id:4,title:"Texniki xidmət",msg:"5 Aprel 02:00-06:00 arasında texniki xidmət.",aud:"all",date:"2026-04-03",status:"draft"},
+];
+const INIT_MEDIA=["Campus","Building","Library","Lab","Conference","Students","Rector","Graduation"].map((name,i)=>({id:i+1,name,size:120+i*45}));
+const WEEKLY=[{d:"B.e",v:45},{d:"Ç.a",v:52},{d:"Çr",v:68},{d:"C.a",v:42},{d:"Cm",v:58},{d:"Ş",v:20},{d:"B",v:8}];
+const MONTHLY=[{m:"Okt",v:380},{m:"Noy",v:395},{m:"Dek",v:400},{m:"Yan",v:420},{m:"Fev",v:435},{m:"Mar",v:450}];
+const ALL_PERMS=["users.view","users.manage","courses.view","courses.manage","assignments.manage","grades.manage","roles.manage","settings.manage","notifications.manage","reports.view","audit.view","media.manage"];
+const FACULTIES=["Texnologiya","İqtisadiyyat","Humanitar","Dillər","Rektorluq"];
+const SEMESTERS=["2025-2026 Yaz","2025-2026 Payız","2024-2025 Yaz","2024-2025 Payız"];
+
+// ═══ UTILS ═══
+const validateEmail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const today=()=>new Date().toISOString().split("T")[0];
+const slugify=s=>s.toLowerCase().replace(/\s+/g,"_").replace(/[^a-z0-9_]/g,"");
+
+// ═══ COMPONENTS ═══
+const Avatar=({name,size=36})=>{
+  const ini=(name||"?").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+  const cols=["#2563eb","#10B981","#F59E0B","#EF4444","#8B5CF6","#EC4899","#06B6D4"];
+  return React.createElement("div",{role:"img","aria-label":name,style:{width:size,height:size,borderRadius:"50%",background:cols[(name||"A").charCodeAt(0)%cols.length],display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:size*0.35,fontWeight:700,flexShrink:0}},ini);
+};
+
+const Badge=({children,bg,color})=>React.createElement("span",{style:{fontSize:"0.72rem",fontWeight:600,padding:"3px 10px",borderRadius:20,background:bg,color,whiteSpace:"nowrap"}},children);
+
+// FIX BUG-016: guard against division by zero
+const MiniChart=({data,dk,color,t,h=70})=>{
+  const mx=Math.max(1,...data.map(d=>d[dk]));
+  return React.createElement("div",{style:{display:"flex",alignItems:"flex-end",gap:3,height:h,padding:"4px 0"}},
+    data.map((d,i)=>React.createElement("div",{key:i,style:{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2}},
+      React.createElement("div",{style:{width:"100%",background:color,borderRadius:3,minHeight:2,height:`${(d[dk]/mx)*100}%`,opacity:0.7+((d[dk]/mx)*0.3),transition:"height 0.3s"}}),
+      React.createElement("span",{style:{fontSize:"0.58rem",color:t.textMuted}},d.d||d.m)
+    ))
+  );
+};
+
+// FIX BUG-017 (Modal): add Escape key + aria attributes
+const Modal=({open,onClose,title,children,t,wide})=>{
+  useEffect(()=>{
+    if(!open)return;
+    const h=e=>{if(e.key==="Escape")onClose();};
+    document.addEventListener("keydown",h);
+    return()=>document.removeEventListener("keydown",h);
+  },[open,onClose]);
+  if(!open)return null;
+  return React.createElement("div",{role:"dialog","aria-modal":"true","aria-label":title,style:{position:"fixed",inset:0,zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:24},onClick:onClose},
+    React.createElement("div",{style:{position:"absolute",inset:0,background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)"}}),
+    React.createElement("div",{onClick:e=>e.stopPropagation(),style:{position:"relative",background:t.bgCard,borderRadius:12,boxShadow:t.shadowLg,width:"100%",maxWidth:wide?720:520,maxHeight:"85vh",overflow:"auto",border:`1px solid ${t.border}`,animation:"slideUp 0.25s ease"}},
+      React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"18px 24px",borderBottom:`1px solid ${t.border}`}},
+        React.createElement("h3",{style:{fontSize:"1.1rem",fontWeight:700,color:t.text}},title),
+        React.createElement("button",{onClick:onClose,"aria-label":"Bağla",style:{background:"none",border:"none",cursor:"pointer",color:t.textMuted,fontSize:"1.2rem",lineHeight:1}},"✕")
+      ),
+      React.createElement("div",{style:{padding:24}},children)
+    )
+  );
+};
+
+// NEW: Confirmation Dialog
+const ConfirmDialog=({open,message,onConfirm,onCancel,t})=>{
+  useEffect(()=>{
+    if(!open)return;
+    const h=e=>{if(e.key==="Escape")onCancel();};
+    document.addEventListener("keydown",h);
+    return()=>document.removeEventListener("keydown",h);
+  },[open,onCancel]);
+  if(!open)return null;
+  return React.createElement("div",{role:"alertdialog","aria-modal":"true",style:{position:"fixed",inset:0,zIndex:10000,display:"flex",alignItems:"center",justifyContent:"center",padding:24},onClick:onCancel},
+    React.createElement("div",{style:{position:"absolute",inset:0,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(4px)"}}),
+    React.createElement("div",{onClick:e=>e.stopPropagation(),style:{position:"relative",background:t.bgCard,borderRadius:12,boxShadow:t.shadowLg,width:"100%",maxWidth:400,border:`1px solid ${t.border}`,padding:28,animation:"slideUp 0.2s ease"}},
+      React.createElement("div",{style:{width:52,height:52,borderRadius:12,background:t.dangerBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.4rem",marginBottom:16}},"⚠️"),
+      React.createElement("h3",{style:{fontSize:"1rem",fontWeight:700,color:t.text,marginBottom:8}},"Əminsinizmi?"),
+      React.createElement("p",{style:{fontSize:"0.88rem",color:t.textSec,marginBottom:24}},message),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end"}},
+        React.createElement("button",{onClick:onCancel,style:{padding:"9px 20px",borderRadius:8,background:"transparent",color:t.textSec,fontWeight:500,fontSize:"0.86rem",border:`1px solid ${t.border}`,cursor:"pointer"}},"Ləğv et"),
+        React.createElement("button",{onClick:()=>{onConfirm();onCancel();},style:{padding:"9px 20px",borderRadius:8,background:t.danger,color:"#fff",fontWeight:600,fontSize:"0.86rem",border:"none",cursor:"pointer"}},"Sil")
+      )
+    )
+  );
+};
+
+// NEW: Empty State
+const EmptyState=({icon="🔍",title="Nəticə tapılmadı",subtitle,t})=>
+  React.createElement("div",{style:{padding:"48px 24px",textAlign:"center"}},
+    React.createElement("div",{style:{fontSize:"2.5rem",marginBottom:12}},icon),
+    React.createElement("h4",{style:{fontSize:"1rem",fontWeight:700,color:t.text,marginBottom:6}},title),
+    subtitle&&React.createElement("p",{style:{fontSize:"0.84rem",color:t.textSec}},subtitle)
+  );
+
+// Field with error
+const Field=({label,error,children})=>React.createElement("div",{style:{marginBottom:14}},
+  React.createElement("label",{style:{fontSize:"0.78rem",fontWeight:600,color:"#64748B",display:"block",marginBottom:5}},label),
+  children,
+  error&&React.createElement("p",{style:{fontSize:"0.74rem",color:"#EF4444",marginTop:4}},error)
+);
+
+// ═══ MAIN APP ═══
+function AdminPanel(){
+  const[dark,setDark]=useState(false);
+  const[page,setPage]=useState("dashboard");
+  const[toast,setToast]=useState(null);
+  const[modal,setModal]=useState(null);
+  const[confirm,setConfirm]=useState(null);
+  const[mobileOpen,setMobileOpen]=useState(false);
+  const toastTimer=useRef(null);
+
+  // Data state — FIX BUG-005: all data in state
+  const[users,setUsers]=useState(INIT_USERS);
+  const[courses,setCourses]=useState(INIT_COURSES);
+  const[assignments,setAssignments]=useState(INIT_ASSIGNMENTS);
+  const[roles,setRoles]=useState(INIT_ROLES);
+  const[notifs,setNotifs]=useState(INIT_NOTIFS);
+  const[mediaList,setMediaList]=useState(INIT_MEDIA);
+
+  // Filters
+  const[uf,setUf]=useState({role:"all",status:"all",search:""});
+  const[cf,setCf]=useState({status:"all",search:""});
+  const[af,setAf]=useState({course:"all",search:""});
+  const[globalSearch,setGlobalSearch]=useState("");
+
+  // Pagination
+  const[up,setUp]=useState(1);
+
+  // Selection
+  const[selUsers,setSelUsers]=useState([]);
+
+  // Drag
+  const[dragOver,setDragOver]=useState(false);
+
+  // FIX BUG-006: Feature toggles in state
+  const[features,setFeatures]=useState({
+    "Tələbə Portalı":true,"Müəllim Portalı":true,"Online Ödəniş":false,
+    "Erasmus+ Müraciəti":true,"Kitabxana":true,"Email Bildirişlər":false
+  });
+
+  // FIX BUG-007: Settings in controlled state
+  const[settings,setSettings]=useState({
+    name:"Odlar Yurdu Universiteti",short:"OYU",email:"info@oyu.edu.az",phone:"+994 55 465 85 27"
+  });
+
+  // Form state
+  const emptyUser={name:"",email:"",phone:"",role:"student",faculty:"Texnologiya",password:""};
+  const emptyCourse={name:"",code:"",credits:"",teacher:"",faculty:"Texnologiya",semester:"2025-2026 Yaz",status:"active"};
+  const emptyAssign={title:"",course:"",teacher:"",due:"",total:""};
+  const emptyRole={name:"",slug:"",perms:[],color:"#2563eb"};
+  const emptyNotif={title:"",msg:"",aud:"all"};
+
+  const[newUser,setNewUser]=useState(emptyUser);
+  const[newCourse,setNewCourse]=useState(emptyCourse);
+  const[newAssign,setNewAssign]=useState(emptyAssign);
+  const[newRole,setNewRole]=useState(emptyRole);
+  const[newNotif,setNewNotif]=useState(emptyNotif);
+  const[editUserData,setEditUserData]=useState(null);
+  const[editCourseData,setEditCourseData]=useState(null);
+  const[formErrors,setFormErrors]=useState({});
+
+  const t=dark?themes.dark:themes.light;
+
+  // FIX BUG-018: cleanup setTimeout
+  const show=(msg,type="success")=>{
+    if(toastTimer.current)clearTimeout(toastTimer.current);
+    setToast({msg,type});
+    toastTimer.current=setTimeout(()=>setToast(null),3000);
+  };
+  useEffect(()=>()=>{if(toastTimer.current)clearTimeout(toastTimer.current);},[]);
+
+  // FIX BUG-001: reset pagination on filter change
+  useEffect(()=>setUp(1),[uf]);
+  // FIX BUG-009: clear selection on filter change
+  useEffect(()=>setSelUsers([]),[uf]);
+
+  // Close mobile sidebar on page change
+  useEffect(()=>setMobileOpen(false),[page]);
+
+  const closeModal=()=>{setModal(null);setFormErrors({});};
+
+  const inp={width:"100%",padding:"10px 14px",borderRadius:8,border:`1px solid ${t.border}`,fontSize:"0.88rem",background:t.bgInput,color:t.text,outline:"none",fontFamily:"inherit",transition:"border-color 0.15s"};
+  const inpErr={...inp,borderColor:"#EF4444",boxShadow:"0 0 0 3px rgba(239,68,68,0.1)"};
+  const btnP={padding:"8px 16px",borderRadius:8,background:t.accent,color:"#fff",fontWeight:600,fontSize:"0.86rem",border:"none",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6,fontFamily:"inherit",transition:"all 0.15s"};
+  const btnG={padding:"8px 16px",borderRadius:8,background:"transparent",color:t.textSec,fontWeight:500,fontSize:"0.84rem",border:`1px solid ${t.border}`,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4,fontFamily:"inherit"};
+
+  // Filtered data
+  const fu=users.filter(u=>{
+    if(uf.role!=="all"&&u.role!==uf.role)return false;
+    if(uf.status!=="all"&&u.status!==uf.status)return false;
+    const s=(uf.search||globalSearch).toLowerCase();
+    if(s&&!u.name.toLowerCase().includes(s)&&!u.email.toLowerCase().includes(s))return false;
+    return true;
+  });
+  const PP=8,tp=Math.max(1,Math.ceil(fu.length/PP)),pu=fu.slice((up-1)*PP,up*PP);
+  const fc=courses.filter(c=>{
+    if(cf.status!=="all"&&c.status!==cf.status)return false;
+    if(cf.search&&!c.name.toLowerCase().includes(cf.search.toLowerCase())&&!c.code.toLowerCase().includes(cf.search.toLowerCase()))return false;
+    return true;
+  });
+  const fa=assignments.filter(a=>{
+    if(af.course!=="all"&&a.course!==af.course)return false;
+    if(af.search&&!a.title.toLowerCase().includes(af.search.toLowerCase()))return false;
+    return true;
+  });
+
+  const stBadge=s=>{
+    const m={active:{bg:t.successBg,c:t.success,l:"Aktiv"},inactive:{bg:t.warningBg,c:t.warning,l:"Deaktiv"},suspended:{bg:t.dangerBg,c:t.danger,l:"Dayandırılıb"},completed:{bg:t.accentBg,c:t.accent,l:"Tamamlanıb"},draft:{bg:t.warningBg,c:t.warning,l:"Qaralama"},sent:{bg:t.successBg,c:t.success,l:"Göndərilib"}};
+    const x=m[s]||m.active;
+    return React.createElement(Badge,{bg:x.bg,color:x.c},x.l);
+  };
+  const rlBadge=r=>{
+    const m={admin:{bg:t.dangerBg,c:t.danger,l:"Admin"},teacher:{bg:t.successBg,c:t.success,l:"Müəllim"},student:{bg:t.warningBg,c:t.warning,l:"Tələbə"}};
+    const x=m[r]||m.student;
+    return React.createElement(Badge,{bg:x.bg,color:x.c},x.l);
+  };
+
+  // ── User CRUD ──
+  const doDeleteUser=id=>{
+    setUsers(p=>p.filter(u=>u.id!==id));
+    // FIX BUG-022: remove from selection
+    setSelUsers(p=>p.filter(x=>x!==id));
+    show("İstifadəçi silindi");
+  };
+  const doBulkDelete=()=>{
+    setUsers(p=>p.filter(u=>!selUsers.includes(u.id)));
+    show(selUsers.length+" istifadəçi silindi");
+    setSelUsers([]);
+  };
+  // FIX BUG-012+BUG-010+BUG-023: validation + password field + email format
+  const doCreateUser=()=>{
+    const e={};
+    if(!newUser.name.trim())e.name="Ad tələb olunur";
+    if(!newUser.email.trim())e.email="Email tələb olunur";
+    else if(!validateEmail(newUser.email))e.email="Düzgün email formatı daxil edin";
+    if(!newUser.password.trim())e.password="Şifrə tələb olunur";
+    else if(newUser.password.length<6)e.password="Minimum 6 simvol";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    const maxId=Math.max(0,...users.map(u=>u.id));
+    setUsers(p=>[...p,{id:maxId+1,name:newUser.name,email:newUser.email,role:newUser.role,faculty:newUser.faculty,status:"active",lastLogin:today()}]);
+    setNewUser(emptyUser);setFormErrors({});closeModal();show("İstifadəçi yaradıldı!");
+  };
+  const doEditUser=()=>{
+    const e={};
+    if(!editUserData.name.trim())e.editName="Ad tələb olunur";
+    if(!editUserData.email.trim())e.editEmail="Email tələb olunur";
+    else if(!validateEmail(editUserData.email))e.editEmail="Düzgün email formatı daxil edin";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    setUsers(p=>p.map(u=>u.id===editUserData.id?{...u,...editUserData}:u));
+    setEditUserData(null);setFormErrors({});closeModal();show("İstifadəçi yeniləndi!");
+  };
+
+  // ── Course CRUD ──
+  // FIX BUG-011: teacher + faculty fields
+  const doCreateCourse=()=>{
+    const e={};
+    if(!newCourse.name.trim())e.courseName="Kurs adı tələb olunur";
+    if(!newCourse.code.trim())e.courseCode="Kurs kodu tələb olunur";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    const maxId=Math.max(0,...courses.map(c=>c.id));
+    setCourses(p=>[...p,{id:maxId+1,name:newCourse.name,code:newCourse.code,teacher:newCourse.teacher,faculty:newCourse.faculty,students:0,status:newCourse.status,semester:newCourse.semester,credits:Number(newCourse.credits)||0}]);
+    setNewCourse(emptyCourse);setFormErrors({});closeModal();show("Kurs yaradıldı!");
+  };
+  const doEditCourse=()=>{
+    const e={};
+    if(!editCourseData.name.trim())e.editCourseName="Kurs adı tələb olunur";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    setCourses(p=>p.map(c=>c.id===editCourseData.id?{...c,...editCourseData}:c));
+    setEditCourseData(null);setFormErrors({});closeModal();show("Kurs yeniləndi!");
+  };
+  const doDeleteCourse=id=>{setCourses(p=>p.filter(c=>c.id!==id));show("Kurs silindi");};
+
+  // ── Assignment CRUD ── FIX BUG-003
+  const doCreateAssign=()=>{
+    const e={};
+    if(!newAssign.title.trim())e.assignTitle="Tapşırıq adı tələb olunur";
+    if(!newAssign.course)e.assignCourse="Kurs seçin";
+    if(!newAssign.due)e.assignDue="Son tarix tələb olunur";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    const maxId=Math.max(0,...assignments.map(a=>a.id));
+    setAssignments(p=>[...p,{id:maxId+1,title:newAssign.title,course:newAssign.course,teacher:newAssign.teacher||"—",due:newAssign.due,subs:0,total:Number(newAssign.total)||0,status:"active"}]);
+    setNewAssign(emptyAssign);setFormErrors({});closeModal();show("Tapşırıq yaradıldı!");
+  };
+  const doDeleteAssign=id=>{setAssignments(p=>p.filter(a=>a.id!==id));show("Tapşırıq silindi");};
+
+  // ── Role CRUD ──
+  const doCreateRole=()=>{
+    const e={};
+    if(!newRole.name.trim())e.roleName="Rol adı tələb olunur";
+    if(!newRole.slug.trim())e.roleSlug="Slug tələb olunur";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    const maxId=Math.max(0,...roles.map(r=>r.id));
+    setRoles(p=>[...p,{id:maxId+1,name:newRole.name,slug:newRole.slug,users:0,perms:newRole.perms,color:newRole.color}]);
+    setNewRole(emptyRole);setFormErrors({});closeModal();show("Rol yaradıldı!");
+  };
+  const doDeleteRole=id=>{setRoles(p=>p.filter(r=>r.id!==id));show("Rol silindi");};
+
+  // ── Notif CRUD ── FIX BUG-004
+  const doCreateNotif=()=>{
+    const e={};
+    if(!newNotif.title.trim())e.notifTitle="Başlıq tələb olunur";
+    if(!newNotif.msg.trim())e.notifMsg="Mətn tələb olunur";
+    if(Object.keys(e).length){setFormErrors(e);return;}
+    const maxId=Math.max(0,...notifs.map(n=>n.id));
+    setNotifs(p=>[...p,{id:maxId+1,title:newNotif.title,msg:newNotif.msg,aud:newNotif.aud,date:today(),status:"sent"}]);
+    setNewNotif(emptyNotif);setFormErrors({});closeModal();show("Bildiriş göndərildi!");
+  };
+  const doDeleteNotif=id=>{setNotifs(p=>p.filter(n=>n.id!==id));show("Bildiriş silindi");};
+
+  // ── Media ──
+  const doDeleteMedia=id=>{setMediaList(p=>p.filter(m=>m.id!==id));show("Şəkil silindi");};
+
+  const menu=[
+    {id:"dashboard",label:"İdarə Paneli",ico:"📊"},
+    {id:"users",label:"İstifadəçilər",ico:"👥"},
+    {id:"courses",label:"Kurslar",ico:"📚"},
+    {id:"assignments",label:"Tapşırıqlar",ico:"📋"},
+    {id:"portal",label:"Portal İdarəsi",ico:"🎓"},
+    {id:"roles",label:"Rollar & İcazələr",ico:"🛡️"},
+    {id:"notifications",label:"Bildirişlər",ico:"🔔"},
+    {id:"media",label:"Media / Şəkillər",ico:"🖼️"},
+    {id:"audit",label:"Audit Logları",ico:"📄"},
+    {id:"settings",label:"Sistem Ayarları",ico:"⚙️"},
+  ];
+
+  // ═══ PAGES ═══
+  const Dashboard=()=>React.createElement("div",null,
+    React.createElement("div",{style:{marginBottom:24}},
+      React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:700,letterSpacing:"-0.3px",color:t.text}},"İdarə Paneli"),
+      React.createElement("p",{style:{color:t.textSec,fontSize:"0.86rem",marginTop:4}},"Xoş gəldiniz! Sistemin ümumi görünüşü.")
+    ),
+    // Stat cards — portal style with border-left accent
+    React.createElement("div",{className:"ag4",style:{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:24}},
+      [{l:"Tələbələr",v:users.filter(u=>u.role==="student").length.toString(),ch:"+12",i:"🎓",bc:"#3b82f6"},
+       {l:"Müəllimlər",v:users.filter(u=>u.role==="teacher").length.toString(),ch:"+2",i:"👨‍🏫",bc:"#10b981"},
+       {l:"Aktiv Kurslar",v:courses.filter(c=>c.status==="active").length.toString(),ch:"+1",i:"📚",bc:"#f59e0b"},
+       {l:"Tapşırıqlar",v:assignments.length.toString(),ch:"+3",i:"📋",bc:"#8b5cf6"}
+      ].map(k=>
+        React.createElement("div",{key:k.l,style:{background:t.bgCard,borderRadius:12,padding:20,border:`1px solid ${t.border}`,borderLeft:`4px solid ${k.bc}`,boxShadow:t.shadow,cursor:"pointer",transition:"all 0.2s"},
+          onMouseEnter:e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,0.08)"},
+          onMouseLeave:e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=t.shadow}},
+          React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}},
+            React.createElement("div",null,
+              React.createElement("p",{style:{fontSize:"0.78rem",color:t.textSec,fontWeight:500,marginBottom:8}},k.l),
+              React.createElement("h3",{style:{fontSize:"1.6rem",fontWeight:700,color:t.text,letterSpacing:"-0.5px"}},k.v)
+            ),
+            React.createElement("div",{style:{width:40,height:40,borderRadius:8,background:k.bc+"14",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.1rem"}},k.i)
+          ),
+          React.createElement("div",{style:{marginTop:10,fontSize:"0.78rem"}},
+            React.createElement("span",{style:{color:t.success,fontWeight:600}},k.ch),
+            React.createElement("span",{style:{color:t.textMuted,marginLeft:4}},"bu ay")
+          )
+        )
+      )
+    ),
+    // Portal Sync Status — NEW
+    React.createElement("div",{style:{background:t.bgCard,borderRadius:12,padding:18,border:`1px solid ${t.border}`,boxShadow:t.shadow,marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"wrap"}},
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:14}},
+        React.createElement("div",{style:{width:42,height:42,borderRadius:8,background:"linear-gradient(135deg,#2563eb,#7c3aed)",display:"flex",alignItems:"center",justifyContent:"center"}},
+          React.createElement("span",{style:{fontSize:"1.2rem"}},"🔗")
+        ),
+        React.createElement("div",null,
+          React.createElement("div",{style:{fontSize:"0.9rem",fontWeight:700,color:t.text}},"Portal Sinxronizasiya"),
+          React.createElement("div",{style:{fontSize:"0.78rem",color:t.textSec,marginTop:2}},"Tələbə portalı ilə real-vaxt əlaqə")
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+          React.createElement("div",{style:{width:8,height:8,borderRadius:"50%",background:"#10b981"}}),
+          React.createElement("span",{style:{fontSize:"0.78rem",color:t.success,fontWeight:600}},"Aktiv")
+        ),
+        React.createElement("span",{style:{fontSize:"0.72rem",color:t.textMuted}},"Son sync: "+new Date().toLocaleTimeString("az-AZ",{hour:"2-digit",minute:"2-digit"})),
+        React.createElement("button",{onClick:()=>show("Portal ilə sinxronizasiya edildi!"),style:{...btnP,padding:"8px 16px",fontSize:"0.8rem",background:"linear-gradient(135deg,#2563eb,#7c3aed)"}},"🔄 Sync")
+      )
+    ),
+    React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:24}},
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,padding:22,border:`1px solid ${t.border}`,boxShadow:t.shadow}},
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:16}},React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text}},"Həftəlik Aktivlik"),React.createElement("span",{style:{fontSize:"0.75rem",color:t.textMuted}},"Son 7 gün")),
+        React.createElement(MiniChart,{data:WEEKLY,dk:"v",color:t.accent,t,h:80})
+      ),
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,padding:22,border:`1px solid ${t.border}`,boxShadow:t.shadow}},
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:16}},React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text}},"Tələbə Artımı"),React.createElement("span",{style:{fontSize:"0.75rem",color:t.textMuted}},"Son 6 ay")),
+        React.createElement(MiniChart,{data:MONTHLY,dk:"v",color:t.success,t,h:80})
+      )
+    ),
+    React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"1.4fr 1fr",gap:16}},
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:"hidden"}},
+        React.createElement("div",{style:{padding:"14px 20px",borderBottom:`1px solid ${t.border}`}},React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text}},"Son Hərəkətlər")),
+        INIT_AUDIT.slice(0,5).map(log=>React.createElement("div",{key:log.id,style:{padding:"12px 20px",borderBottom:`1px solid ${t.borderLight}`,display:"flex",alignItems:"center",gap:12}},
+          React.createElement("div",{style:{width:8,height:8,borderRadius:"50%",background:log.type==="create"?t.success:log.type==="delete"?t.danger:log.type==="system"?t.textMuted:t.accent,flexShrink:0}}),
+          React.createElement("div",{style:{flex:1,minWidth:0}},
+            React.createElement("p",{style:{fontSize:"0.84rem",color:t.text,fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},React.createElement("strong",null,log.user)," — ",log.action),
+            React.createElement("p",{style:{fontSize:"0.74rem",color:t.textMuted,marginTop:1}},log.target)
+          ),
+          React.createElement("span",{style:{fontSize:"0.72rem",color:t.textMuted,whiteSpace:"nowrap"}},log.time)
+        ))
+      ),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:16}},
+        React.createElement("div",{style:{background:t.bgCard,borderRadius:12,padding:20,border:`1px solid ${t.border}`,boxShadow:t.shadow}},
+          React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text,marginBottom:14}},"Rol Paylanması"),
+          roles.filter(r=>r.slug!=="super_admin").map(r=>React.createElement("div",{key:r.id,style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 0"}},
+            React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
+              React.createElement("div",{style:{width:10,height:10,borderRadius:3,background:r.color}}),
+              React.createElement("span",{style:{fontSize:"0.84rem",color:t.text,fontWeight:500}},r.name)
+            ),
+            React.createElement("span",{style:{fontSize:"0.84rem",fontWeight:700,color:t.text}},r.users)
+          ))
+        ),
+        React.createElement("div",{style:{background:"linear-gradient(135deg,#0d1b2a,#1e3a5f)",borderRadius:12,padding:20,border:`1px solid ${t.border}`}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+            React.createElement("span",{style:{fontSize:"1rem"}},"📢"),
+            React.createElement("span",{style:{color:"#60a5fa",fontSize:"0.75rem",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em"}},"Növbəti Tədbir")
+          ),
+          React.createElement("h4",{style:{color:"#fff",fontSize:"1rem",fontWeight:700,lineHeight:1.5}},"ICSEGT 2026"),
+          React.createElement("p",{style:{color:"#94a3b8",fontSize:"0.82rem",marginTop:6}},"15-17 May, 2026"),
+          React.createElement("span",{className:"badge badge-info",style:{display:"inline-block",fontSize:"0.68rem",fontWeight:600,padding:"2px 8px",borderRadius:999,background:"#1e3a5f",color:"#93c5fd",marginTop:8}},"Yeni")
+        )
+      )
+    )
+  );
+
+  // ═══ USERS PAGE ═══
+  const UsersPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:12}},
+      React.createElement("div",null,
+        React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text}},"İstifadəçilər"),
+        // FIX BUG-021: show filtered count
+        React.createElement("p",{style:{color:t.textSec,fontSize:"0.85rem",marginTop:2}},fu.length+" istifadəçi"+(fu.length!==users.length?" (filtrlənmiş)":""))
+      ),
+      React.createElement("div",{style:{display:"flex",gap:8,flexWrap:"wrap"}},
+        selUsers.length>0&&React.createElement("button",{style:{...btnG,color:t.danger,borderColor:t.danger},
+          onClick:()=>setConfirm({message:`${selUsers.length} istifadəçi silinəcək. Bu əməliyyat geri qaytarıla bilməz.`,onConfirm:doBulkDelete})
+        },"🗑️ Sil (",selUsers.length,")"),
+        React.createElement("button",{style:btnP,onClick:()=>{setNewUser(emptyUser);setFormErrors({});setModal("addUser")}},"+ Yeni İstifadəçi")
+      )
+    ),
+    React.createElement("div",{style:{display:"flex",gap:10,marginBottom:16,flexWrap:"wrap"}},
+      React.createElement("input",{placeholder:"Ad, email ilə axtar...","aria-label":"İstifadəçi axtar",value:uf.search,onChange:e=>setUf(p=>({...p,search:e.target.value})),style:{...inp,flex:1,minWidth:200}}),
+      React.createElement("select",{"aria-label":"Rol filtri",value:uf.role,onChange:e=>setUf(p=>({...p,role:e.target.value})),style:{...inp,width:"auto",minWidth:140,cursor:"pointer"}},
+        React.createElement("option",{value:"all"},"Bütün Rollar"),
+        React.createElement("option",{value:"student"},"Tələbə"),
+        React.createElement("option",{value:"teacher"},"Müəllim"),
+        React.createElement("option",{value:"admin"},"Admin")
+      ),
+      React.createElement("select",{"aria-label":"Status filtri",value:uf.status,onChange:e=>setUf(p=>({...p,status:e.target.value})),style:{...inp,width:"auto",minWidth:140,cursor:"pointer"}},
+        React.createElement("option",{value:"all"},"Bütün Status"),
+        React.createElement("option",{value:"active"},"Aktiv"),
+        React.createElement("option",{value:"inactive"},"Deaktiv"),
+        React.createElement("option",{value:"suspended"},"Dayandırılıb")
+      )
+    ),
+    React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:"hidden"}},
+      React.createElement("div",{style:{overflowX:"auto"}},
+        React.createElement("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:"0.86rem"}},
+          React.createElement("thead",null,React.createElement("tr",{style:{background:t.bgInput}},
+            // FIX BUG-008: Select All uses fu (all filtered), not pu (current page)
+            React.createElement("th",{style:{padding:"12px 16px",textAlign:"left",width:40}},
+              React.createElement("input",{type:"checkbox","aria-label":"Hamısını seç",
+                checked:fu.length>0&&selUsers.length===fu.length,
+                onChange:e=>setSelUsers(e.target.checked?fu.map(u=>u.id):[]),
+                style:{cursor:"pointer",accentColor:t.accent}})
+            ),
+            ["İstifadəçi","Email","Rol","Fakültə","Status","Son Giriş",""].map(h=>
+              React.createElement("th",{key:h,style:{padding:"12px 16px",textAlign:"left",fontWeight:600,color:t.textSec,fontSize:"0.76rem",textTransform:"uppercase",letterSpacing:"0.05em",whiteSpace:"nowrap"}},h)
+            )
+          )),
+          React.createElement("tbody",null,
+            pu.length===0
+              ? React.createElement("tr",null,React.createElement("td",{colSpan:8},
+                  // FIX BUG-015: empty state
+                  React.createElement(EmptyState,{t,icon:"👤",title:"İstifadəçi tapılmadı",subtitle:"Filtr şərtlərini dəyişin və ya yeni istifadəçi əlavə edin"})
+                ))
+              : pu.map(u=>React.createElement("tr",{key:u.id,style:{borderBottom:`1px solid ${t.borderLight}`}},
+                  React.createElement("td",{style:{padding:"12px 16px"}},
+                    React.createElement("input",{type:"checkbox",checked:selUsers.includes(u.id),
+                      onChange:e=>setSelUsers(p=>e.target.checked?[...p,u.id]:p.filter(id=>id!==u.id)),
+                      style:{cursor:"pointer",accentColor:t.accent}})
+                  ),
+                  React.createElement("td",{style:{padding:"12px 16px"}},
+                    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10}},
+                      React.createElement(Avatar,{name:u.name,size:32}),
+                      React.createElement("span",{style:{fontWeight:600,color:t.text}},u.name)
+                    )
+                  ),
+                  React.createElement("td",{style:{padding:"12px 16px",color:t.textSec}},u.email),
+                  React.createElement("td",{style:{padding:"12px 16px"}},rlBadge(u.role)),
+                  React.createElement("td",{style:{padding:"12px 16px",color:t.textSec}},u.faculty),
+                  React.createElement("td",{style:{padding:"12px 16px"}},stBadge(u.status)),
+                  React.createElement("td",{style:{padding:"12px 16px",color:t.textMuted,fontSize:"0.82rem"}},u.lastLogin),
+                  React.createElement("td",{style:{padding:"12px 16px"}},
+                    // FIX BUG-013: edit button with handler
+                    React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:4,color:t.textMuted,marginRight:4},"aria-label":"Redaktə",title:"Redaktə",
+                      onClick:()=>{setEditUserData({...u});setFormErrors({});setModal("editUser");}
+                    },"✏️"),
+                    // FIX BUG-020: confirmation before delete
+                    React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:4,color:t.danger},"aria-label":"Sil",title:"Sil",
+                      onClick:()=>setConfirm({message:`"${u.name}" istifadəçisi silinəcək. Bu əməliyyat geri qaytarıla bilməz.`,onConfirm:()=>doDeleteUser(u.id)})
+                    },"🗑️")
+                  )
+                ))
+          )
+        )
+      ),
+      // FIX BUG-024: correct pagination info
+      React.createElement("div",{style:{padding:"12px 16px",borderTop:`1px solid ${t.border}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}},
+        React.createElement("span",{style:{fontSize:"0.82rem",color:t.textMuted}},
+          fu.length===0?"0 nəticə":`${fu.length} nəticədən ${(up-1)*PP+1}–${Math.min(up*PP,fu.length)}`
+        ),
+        React.createElement("div",{style:{display:"flex",gap:4}},
+          Array.from({length:tp},(_,i)=>React.createElement("button",{key:i,onClick:()=>setUp(i+1),
+            "aria-label":`Səhifə ${i+1}`,"aria-current":up===i+1?"page":undefined,
+            style:{width:32,height:32,borderRadius:8,border:`1px solid ${up===i+1?t.accent:t.border}`,background:up===i+1?t.accent:"transparent",color:up===i+1?"#fff":t.textSec,fontWeight:600,fontSize:"0.82rem",cursor:"pointer"}
+          },i+1))
+        )
+      )
+    )
+  );
+
+  // ═══ COURSES PAGE ═══
+  const CoursesPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:12}},
+      React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text}},"Kurslar"),
+      React.createElement("button",{style:btnP,onClick:()=>{setNewCourse(emptyCourse);setFormErrors({});setModal("addCourse")}},"+ Yeni Kurs")
+    ),
+    React.createElement("div",{style:{display:"flex",gap:10,marginBottom:16,flexWrap:"wrap"}},
+      React.createElement("input",{placeholder:"Kurs axtar...","aria-label":"Kurs axtar",value:cf.search,onChange:e=>setCf(p=>({...p,search:e.target.value})),style:{...inp,flex:1,minWidth:200}}),
+      React.createElement("select",{"aria-label":"Status filtri",value:cf.status,onChange:e=>setCf(p=>({...p,status:e.target.value})),style:{...inp,width:"auto",minWidth:140,cursor:"pointer"}},
+        React.createElement("option",{value:"all"},"Bütün Status"),
+        React.createElement("option",{value:"active"},"Aktiv"),
+        React.createElement("option",{value:"inactive"},"Deaktiv")
+      )
+    ),
+    fc.length===0
+      ? React.createElement(EmptyState,{t,icon:"📚",title:"Kurs tapılmadı",subtitle:"Filtr şərtlərini dəyişin və ya yeni kurs əlavə edin"})
+      : React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}},
+          fc.map(c=>React.createElement("div",{key:c.id,style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:22}},
+            React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}},
+              React.createElement("div",null,
+                React.createElement("h3",{style:{fontSize:"1.05rem",fontWeight:700,color:t.text}},c.name),
+                React.createElement("p",{style:{fontSize:"0.82rem",color:t.textMuted,marginTop:2}},c.code," · ",c.credits," kredit")
+              ),
+              stBadge(c.status)
+            ),
+            React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:14}},
+              React.createElement(Avatar,{name:c.teacher,size:28}),
+              React.createElement("span",{style:{fontSize:"0.84rem",color:t.textSec}},c.teacher)
+            ),
+            React.createElement("div",{style:{display:"flex",gap:12,marginBottom:14}},
+              React.createElement("div",{style:{flex:1,background:t.bgInput,borderRadius:8,padding:"10px 14px",textAlign:"center"}},
+                React.createElement("div",{style:{fontSize:"1.2rem",fontWeight:800,color:t.text}},c.students),
+                React.createElement("div",{style:{fontSize:"0.7rem",color:t.textMuted}},"Tələbə")
+              ),
+              React.createElement("div",{style:{flex:1,background:t.bgInput,borderRadius:8,padding:"10px 14px",textAlign:"center"}},
+                React.createElement("div",{style:{fontSize:"0.82rem",fontWeight:600,color:t.text}},c.semester),
+                React.createElement("div",{style:{fontSize:"0.7rem",color:t.textMuted}},"Semestr")
+              )
+            ),
+            React.createElement("div",{style:{display:"flex",gap:6}},
+              // FIX BUG-005+BUG-013: edit with handler
+              React.createElement("button",{style:{...btnG,flex:1,justifyContent:"center",fontSize:"0.8rem"},
+                onClick:()=>{setEditCourseData({...c});setFormErrors({});setModal("editCourse");}
+              },"✏️ Redaktə"),
+              // FIX BUG-005+BUG-020: delete with confirmation
+              React.createElement("button",{style:{...btnG,color:t.danger,borderColor:t.danger,fontSize:"0.8rem"},
+                onClick:()=>setConfirm({message:`"${c.name}" kursu silinəcək.`,onConfirm:()=>doDeleteCourse(c.id)})
+              },"🗑️")
+            )
+          ))
+        )
+  );
+
+  // ═══ ASSIGNMENTS PAGE ═══
+  const AssignPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}},
+      React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text}},"Tapşırıqlar"),
+      // FIX BUG-003: onClick added
+      React.createElement("button",{style:btnP,onClick:()=>{setNewAssign(emptyAssign);setFormErrors({});setModal("addAssign")}},"+ Yeni Tapşırıq")
+    ),
+    React.createElement("div",{style:{display:"flex",gap:10,marginBottom:16,flexWrap:"wrap"}},
+      React.createElement("input",{placeholder:"Tapşırıq axtar...",value:af.search,onChange:e=>setAf(p=>({...p,search:e.target.value})),style:{...inp,flex:1,minWidth:200}}),
+      React.createElement("select",{value:af.course,onChange:e=>setAf(p=>({...p,course:e.target.value})),style:{...inp,width:"auto",minWidth:180,cursor:"pointer"}},
+        React.createElement("option",{value:"all"},"Bütün Kurslar"),
+        courses.map(c=>React.createElement("option",{key:c.id,value:c.name},c.name))
+      )
+    ),
+    React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:"hidden"}},
+      fa.length===0
+        ? React.createElement(EmptyState,{t,icon:"📋",title:"Tapşırıq tapılmadı"})
+        : React.createElement("div",{style:{overflowX:"auto"}},
+            React.createElement("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:"0.86rem"}},
+              React.createElement("thead",null,React.createElement("tr",{style:{background:t.bgInput}},
+                ["Tapşırıq","Kurs","Müəllim","Son Tarix","Təhvil","Status",""].map(h=>
+                  React.createElement("th",{key:h,style:{padding:"12px 16px",textAlign:"left",fontWeight:600,color:t.textSec,fontSize:"0.76rem",textTransform:"uppercase",whiteSpace:"nowrap"}},h)
+                )
+              )),
+              React.createElement("tbody",null,fa.map(a=>{
+                const pct=a.total>0?Math.round((a.subs/a.total)*100):0;
+                return React.createElement("tr",{key:a.id,style:{borderBottom:`1px solid ${t.borderLight}`}},
+                  React.createElement("td",{style:{padding:"14px 16px",fontWeight:600,color:t.text}},a.title),
+                  React.createElement("td",{style:{padding:"14px 16px",color:t.textSec}},a.course),
+                  React.createElement("td",{style:{padding:"14px 16px"}},
+                    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
+                      React.createElement(Avatar,{name:a.teacher,size:24}),
+                      React.createElement("span",{style:{color:t.textSec,fontSize:"0.82rem"}},a.teacher)
+                    )
+                  ),
+                  React.createElement("td",{style:{padding:"14px 16px",color:t.textSec,fontSize:"0.84rem"}},a.due),
+                  React.createElement("td",{style:{padding:"14px 16px"}},
+                    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
+                      React.createElement("div",{style:{flex:1,height:6,background:t.bgInput,borderRadius:3,overflow:"hidden",maxWidth:80}},
+                        React.createElement("div",{style:{height:"100%",width:`${pct}%`,background:pct===100?t.success:t.accent,borderRadius:3}})
+                      ),
+                      React.createElement("span",{style:{fontSize:"0.78rem",color:t.textSec,fontWeight:600}},a.subs,"/",a.total)
+                    )
+                  ),
+                  React.createElement("td",{style:{padding:"14px 16px"}},stBadge(a.status)),
+                  React.createElement("td",{style:{padding:"14px 16px"}},
+                    React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:4,color:t.textMuted,marginRight:4},title:"Redaktə"},"✏️"),
+                    // FIX BUG-005: delete with state
+                    React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:4,color:t.danger},title:"Sil",
+                      onClick:()=>setConfirm({message:`"${a.title}" tapşırığı silinəcək.`,onConfirm:()=>doDeleteAssign(a.id)})
+                    },"🗑️")
+                  )
+                );
+              }))
+            )
+          )
+    )
+  );
+
+  // ═══ ROLES PAGE ═══
+  const RolesPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}},
+      React.createElement("div",null,
+        React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text}},"Rollar & İcazələr"),
+        React.createElement("p",{style:{color:t.textSec,fontSize:"0.85rem",marginTop:2}},"RBAC — Rol əsaslı giriş nəzarəti")
+      ),
+      React.createElement("button",{style:btnP,onClick:()=>{setNewRole(emptyRole);setFormErrors({});setModal("addRole")}},"+ Yeni Rol")
+    ),
+    React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}},
+      roles.map(r=>React.createElement("div",{key:r.id,style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:22}},
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}},
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10}},
+            React.createElement("div",{style:{width:12,height:12,borderRadius:4,background:r.color}}),
+            React.createElement("h3",{style:{fontSize:"1.05rem",fontWeight:700,color:t.text}},r.name)
+          ),
+          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+            React.createElement("span",{style:{fontSize:"0.82rem",fontWeight:600,color:t.textSec}},r.users," istifadəçi"),
+            // FIX BUG-005: delete with confirmation
+            r.slug!=="super_admin"&&React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",color:t.danger,padding:"2px 4px",fontSize:"0.9rem"},title:"Sil",
+              onClick:()=>setConfirm({message:`"${r.name}" rolu silinəcək.`,onConfirm:()=>doDeleteRole(r.id)})
+            },"🗑️")
+          )
+        ),
+        React.createElement("p",{style:{fontSize:"0.78rem",color:t.textMuted,marginBottom:12}},"Slug: ",r.slug),
+        React.createElement("div",{style:{display:"flex",flexWrap:"wrap",gap:4}},
+          r.perms.slice(0,4).map(p=>React.createElement("span",{key:p,style:{fontSize:"0.7rem",padding:"3px 8px",borderRadius:6,background:t.bgInput,color:t.textSec,fontWeight:500}},p)),
+          r.perms.length>4&&React.createElement("span",{style:{fontSize:"0.7rem",padding:"3px 8px",borderRadius:6,background:t.accentBg,color:t.accent,fontWeight:600}},"+",r.perms.length-4)
+        )
+      ))
+    )
+  );
+
+  // ═══ NOTIFICATIONS PAGE ═══ FIX BUG-004
+  const NotifsPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}},
+      React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text}},"Bildirişlər"),
+      React.createElement("button",{style:btnP,onClick:()=>{setNewNotif(emptyNotif);setFormErrors({});setModal("addNotif")}},"+ Yeni Bildiriş")
+    ),
+    notifs.length===0
+      ? React.createElement(EmptyState,{t,icon:"🔔",title:"Bildiriş yoxdur"})
+      : notifs.map(n=>React.createElement("div",{key:n.id,style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:20,display:"flex",alignItems:"flex-start",gap:16,marginBottom:12}},
+          React.createElement("div",{style:{width:44,height:44,borderRadius:12,background:n.aud==="all"?t.accentBg:n.aud==="students"?t.warningBg:t.successBg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.1rem",flexShrink:0}},
+            n.aud==="all"?"📢":n.aud==="students"?"🎓":"👨‍🏫"
+          ),
+          React.createElement("div",{style:{flex:1}},
+            React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
+              React.createElement("h4",{style:{fontSize:"0.95rem",fontWeight:700,color:t.text}},n.title),
+              stBadge(n.status)
+            ),
+            React.createElement("p",{style:{fontSize:"0.84rem",color:t.textSec}},n.msg),
+            React.createElement("div",{style:{display:"flex",gap:12,marginTop:8,fontSize:"0.78rem",color:t.textMuted}},
+              React.createElement("span",null,"📅 ",n.date),
+              React.createElement("span",null,"👥 ",n.aud==="all"?"Hamı":n.aud==="students"?"Tələbələr":"Müəllimlər")
+            )
+          ),
+          React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",color:t.danger,padding:4,alignSelf:"flex-start"},title:"Sil",
+            onClick:()=>setConfirm({message:`"${n.title}" bildirişi silinəcək.`,onConfirm:()=>doDeleteNotif(n.id)})
+          },"🗑️")
+        ))
+  );
+
+  // ═══ MEDIA PAGE ═══ FIX BUG-014
+  const MediaPage=()=>React.createElement("div",null,
+    React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text,marginBottom:20}},"Media / Şəkillər"),
+    React.createElement("div",{
+      onDragOver:e=>{e.preventDefault();setDragOver(true)},
+      onDragLeave:()=>setDragOver(false),
+      onDrop:e=>{
+        e.preventDefault();setDragOver(false);
+        const files=Array.from(e.dataTransfer.files);
+        if(files.length){
+          const maxId=Math.max(0,...mediaList.map(m=>m.id));
+          const newItems=files.map((f,i)=>({id:maxId+i+1,name:f.name.replace(/\.[^.]+$/,""),size:Math.round(f.size/1024)}));
+          setMediaList(p=>[...p,...newItems]);
+          show(`${files.length} şəkil yükləndi!`);
+        }
+      },
+      style:{background:dragOver?t.accentBg:t.bgCard,border:`2px dashed ${dragOver?t.accent:t.border}`,borderRadius:12,padding:"48px 24px",textAlign:"center",cursor:"pointer",marginBottom:24,transition:"all 0.2s"}
+    },
+      React.createElement("div",{style:{fontSize:"2rem",marginBottom:8}},"📤"),
+      React.createElement("h4",{style:{fontSize:"1rem",fontWeight:700,color:t.text,marginBottom:6}},"Şəkil Yüklə"),
+      React.createElement("p",{style:{fontSize:"0.84rem",color:t.textSec}},"Sürükləyib buraxın və ya ",React.createElement("span",{style:{color:t.accent,fontWeight:600}},"faylı seçin")),
+      React.createElement("p",{style:{fontSize:"0.75rem",color:t.textMuted,marginTop:8}},"PNG, JPG, WEBP · Max 5MB")
+    ),
+    mediaList.length===0
+      ? React.createElement(EmptyState,{t,icon:"🖼️",title:"Şəkil yoxdur",subtitle:"Şəkil əlavə etmək üçün yuxarıya sürükləyin"})
+      : React.createElement("div",{className:"ag4",style:{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14}},
+          mediaList.map((img,i)=>React.createElement("div",{key:img.id,style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,overflow:"hidden",boxShadow:t.shadow}},
+            React.createElement("div",{style:{height:120,background:`linear-gradient(${135+i*20}deg,${t.accent}22,#8B5CF622)`,display:"flex",alignItems:"center",justifyContent:"center"}},
+              React.createElement("span",{style:{fontSize:"2rem",opacity:0.6}},"🖼️")
+            ),
+            React.createElement("div",{style:{padding:"12px 14px"}},
+              React.createElement("p",{style:{fontSize:"0.82rem",fontWeight:600,color:t.text}},img.name,".jpg"),
+              React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginTop:6}},
+                React.createElement("span",{style:{fontSize:"0.72rem",color:t.textMuted}},img.size,"KB"),
+                React.createElement("div",null,
+                  React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:2,color:t.textMuted},title:"Redaktə",
+                    onClick:()=>show(`${img.name} redaktə edilir...`)
+                  },"✏️"),
+                  // FIX BUG-014: delete with state + confirmation
+                  React.createElement("button",{style:{background:"none",border:"none",cursor:"pointer",padding:2,color:t.danger},title:"Sil",
+                    onClick:()=>setConfirm({message:`"${img.name}.jpg" silinəcək.`,onConfirm:()=>doDeleteMedia(img.id)})
+                  },"🗑️")
+                )
+              )
+            )
+          ))
+        )
+  );
+
+  // ═══ AUDIT PAGE ═══
+  const AuditPage=()=>React.createElement("div",null,
+    React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text,marginBottom:20}},"Audit Logları"),
+    React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:"hidden"}},
+      React.createElement("div",{style:{overflowX:"auto"}},
+        React.createElement("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:"0.86rem"}},
+          React.createElement("thead",null,React.createElement("tr",{style:{background:t.bgInput}},
+            ["Tip","İstifadəçi","Əməliyyat","Hədəf","IP","Vaxt"].map(h=>
+              React.createElement("th",{key:h,style:{padding:"12px 16px",textAlign:"left",fontWeight:600,color:t.textSec,fontSize:"0.76rem",textTransform:"uppercase",whiteSpace:"nowrap"}},h)
+            )
+          )),
+          React.createElement("tbody",null,INIT_AUDIT.map(l=>React.createElement("tr",{key:l.id,style:{borderBottom:`1px solid ${t.borderLight}`}},
+            React.createElement("td",{style:{padding:"12px 16px"}},
+              React.createElement("div",{style:{width:10,height:10,borderRadius:"50%",background:l.type==="create"?t.success:l.type==="delete"?t.danger:l.type==="system"?t.textMuted:t.accent}})
+            ),
+            React.createElement("td",{style:{padding:"12px 16px"}},
+              React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
+                React.createElement(Avatar,{name:l.user,size:26}),
+                React.createElement("span",{style:{fontWeight:600,color:t.text,fontSize:"0.84rem"}},l.user)
+              )
+            ),
+            React.createElement("td",{style:{padding:"12px 16px",color:t.textSec}},l.action),
+            React.createElement("td",{style:{padding:"12px 16px",color:t.text,fontWeight:500}},l.target),
+            React.createElement("td",{style:{padding:"12px 16px",color:t.textMuted,fontFamily:"monospace",fontSize:"0.78rem"}},l.ip),
+            React.createElement("td",{style:{padding:"12px 16px",color:t.textMuted,fontSize:"0.82rem"}},l.time)
+          )))
+        )
+      )
+    )
+  );
+
+  // ═══ SETTINGS PAGE ═══ FIX BUG-006 + BUG-007
+  const SettingsPage=()=>React.createElement("div",null,
+    React.createElement("h1",{style:{fontSize:"1.5rem",fontWeight:800,color:t.text,marginBottom:20}},"Sistem Ayarları"),
+    React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}},
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:24}},
+        React.createElement("h3",{style:{fontSize:"1.05rem",fontWeight:700,color:t.text,marginBottom:16}},"Ümumi Ayarlar"),
+        [["name","Universitet adı"],["short","Qısa ad"],["email","Email"],["phone","Telefon"]].map(([key,label])=>
+          React.createElement("div",{key,style:{marginBottom:14}},
+            React.createElement("label",{htmlFor:`s-${key}`,style:{fontSize:"0.78rem",fontWeight:600,color:t.textSec,display:"block",marginBottom:5}},label),
+            React.createElement("input",{id:`s-${key}`,value:settings[key],onChange:e=>setSettings(p=>({...p,[key]:e.target.value})),style:inp})
+          )
+        ),
+        React.createElement("button",{style:{...btnP,marginTop:8},onClick:()=>show("Ayarlar saxlanıldı!")},"💾 Yadda Saxla")
+      ),
+      React.createElement("div",null,
+        React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:24,marginBottom:16}},
+          React.createElement("h3",{style:{fontSize:"1.05rem",fontWeight:700,color:t.text,marginBottom:16}},"Feature Toggles"),
+          Object.entries(features).map(([key,on])=>
+            React.createElement("div",{key,style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${t.borderLight}`}},
+              React.createElement("span",{style:{fontSize:"0.88rem",fontWeight:500,color:t.text}},key),
+              // FIX BUG-006: real state toggle
+              React.createElement("div",{
+                role:"switch","aria-checked":on,"aria-label":key,
+                onClick:()=>{setFeatures(p=>({...p,[key]:!p[key]}));show(key+" — dəyişdirildi");},
+                style:{width:44,height:24,borderRadius:12,background:on?t.accent:t.bgInput,cursor:"pointer",position:"relative",border:`1px solid ${on?t.accent:t.border}`,transition:"background 0.2s"}
+              },
+                React.createElement("div",{style:{width:18,height:18,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:on?23:2,transition:"left 0.2s",boxShadow:"0 1px 3px rgba(0,0,0,0.15)"}})
+              )
+            )
+          )
+        ),
+        React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:24}},
+          React.createElement("h3",{style:{fontSize:"1.05rem",fontWeight:700,color:t.text,marginBottom:12}},"Təhlükəsizlik"),
+          React.createElement("p",{style:{fontSize:"0.84rem",color:t.textSec,marginBottom:14}},"Son yedəkləmə: 03 Aprel, 2026 — 06:00"),
+          React.createElement("button",{style:btnP,onClick:()=>show("Yedəkləmə başladı!")},"🔄 İndi Yedəklə")
+        )
+      )
+    )
+  );
+
+  // ═══ PORTAL MANAGEMENT PAGE ═══ (NEW)
+  const portalUsers=[
+    {id:"u1",name:"Elchin Abdullaev",group:"761 KM",gpa:"3.14",status:"active",lastLogin:"2026-04-08"},
+    {id:"u2",name:"Məmmədova Günel",group:"761 ITS",gpa:"2.87",status:"active",lastLogin:"2026-04-07"},
+    {id:"u3",name:"Rəhimov Kamran",group:"761 KM",gpa:"3.52",status:"active",lastLogin:"2026-04-06"},
+    {id:"u4",name:"Əliyeva Leyla",group:"761 ITS",gpa:"2.15",status:"active",lastLogin:"2026-04-05"},
+  ];
+  const portalStats={totalLogins:342,avgGpa:2.92,activeNow:3,aiQueries:156,pendingPayments:2,attRisk:1};
+
+  const PortalPage=()=>React.createElement("div",null,
+    React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20,flexWrap:"wrap",gap:12}},
+      React.createElement("div",null,
+        React.createElement("h1",{style:{fontSize:"1.4rem",fontWeight:700,color:t.text}},"Portal İdarəsi"),
+        React.createElement("p",{style:{color:t.textSec,fontSize:"0.85rem",marginTop:2}},"Tələbə portalının idarə edilməsi və monitorinqi")
+      ),
+      React.createElement("div",{style:{display:"flex",gap:8}},
+        React.createElement("button",{style:btnP,onClick:()=>window.open("/","_blank")},"🎓 Portalı Aç"),
+        React.createElement("button",{style:btnG,onClick:()=>show("Portal ilə sinxronizasiya edildi!")},"🔄 Sync")
+      )
+    ),
+    // Portal stats
+    React.createElement("div",{className:"ag4",style:{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:22}},
+      [{l:"Portal Girişləri",v:portalStats.totalLogins,i:"🔑",bc:"#2563eb"},
+       {l:"Orta GPA",v:portalStats.avgGpa.toFixed(2),i:"📊",bc:"#10b981"},
+       {l:"AI Sorğuları",v:portalStats.aiQueries,i:"🤖",bc:"#7c3aed"},
+       {l:"Gözləyən Ödəniş",v:portalStats.pendingPayments,i:"💰",bc:"#f59e0b"}
+      ].map(k=>React.createElement("div",{key:k.l,style:{background:t.bgCard,borderRadius:12,padding:18,border:`1px solid ${t.border}`,borderLeft:`4px solid ${k.bc}`,boxShadow:t.shadow}},
+        React.createElement("div",{style:{fontSize:"0.75rem",color:t.textSec,fontWeight:500}},k.l),
+        React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:8}},
+          React.createElement("span",{style:{fontSize:"1.5rem",fontWeight:700,color:t.text}},k.v),
+          React.createElement("span",{style:{fontSize:"1.1rem"}},k.i)
+        )
+      ))
+    ),
+    // Live status + risks
+    React.createElement("div",{className:"ag2",style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:22}},
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:20}},
+        React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text,marginBottom:14}},"🟢 Canlı Status"),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+          [{l:"Portal",s:"Aktiv",c:"#10b981"},{l:"AI Assistent",s:"Aktiv",c:"#10b981"},{l:"Ödəniş Sistemi",s:"Demo",c:"#f59e0b"},{l:"Email",s:"Konfiqurasiya lazım",c:"#ef4444"}].map(x=>
+            React.createElement("div",{key:x.l,style:{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",background:t.bgInput,borderRadius:8}},
+              React.createElement("div",{style:{width:8,height:8,borderRadius:"50%",background:x.c,flexShrink:0}}),
+              React.createElement("div",null,
+                React.createElement("div",{style:{fontSize:"0.8rem",fontWeight:600,color:t.text}},x.l),
+                React.createElement("div",{style:{fontSize:"0.7rem",color:t.textMuted}},x.s)
+              )
+            )
+          )
+        )
+      ),
+      React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,padding:20}},
+        React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text,marginBottom:14}},"⚠️ Risk Xəbərdarlıqları"),
+        [{m:"Əliyeva Leyla — GPA 2.15 (risk)",c:t.danger},{m:"Rəhimov Kamran — Verilənlər Bazası: 5/7 üzrsüz qaib",c:t.warning},{m:"2 gözləyən ödəniş — 2250 AZN",c:t.warning}].map((w,i)=>
+          React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<2?`1px solid ${t.borderLight}`:"none"}},
+            React.createElement("div",{style:{width:6,height:6,borderRadius:"50%",background:w.c,flexShrink:0}}),
+            React.createElement("span",{style:{fontSize:"0.82rem",color:t.text}},w.m)
+          )
+        )
+      )
+    ),
+    // Portal users table
+    React.createElement("div",{style:{background:t.bgCard,borderRadius:12,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:"hidden"}},
+      React.createElement("div",{style:{padding:"14px 20px",borderBottom:`1px solid ${t.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}},
+        React.createElement("h4",{style:{fontSize:"0.92rem",fontWeight:700,color:t.text}},"Portal Tələbələri (Sinxronizasiya edilmiş)"),
+        React.createElement("span",{style:{fontSize:"0.75rem",color:t.textMuted}},portalUsers.length+" tələbə")
+      ),
+      React.createElement("table",{style:{width:"100%",borderCollapse:"collapse"}},
+        React.createElement("thead",null,
+          React.createElement("tr",null,
+            ["Tələbə","Qrup","GPA","Status","Son giriş"].map(h=>
+              React.createElement("th",{key:h,style:{padding:"11px 16px",textAlign:"left",fontSize:"0.72rem",fontWeight:600,color:t.textMuted,letterSpacing:"0.05em",textTransform:"uppercase",background:t.bgInput,borderBottom:`1px solid ${t.border}`}},h)
+            )
+          )
+        ),
+        React.createElement("tbody",null,
+          portalUsers.map(pu=>{
+            const gpaNum=parseFloat(pu.gpa);
+            const gpaColor=gpaNum>=3.5?"#10b981":gpaNum>=2.5?"#2563eb":gpaNum>=1.5?"#f59e0b":"#ef4444";
+            const gpaBg=gpaNum>=3.5?"#d1fae5":gpaNum>=2.5?"#dbeafe":gpaNum>=1.5?"#fef3c7":"#fee2e2";
+            return React.createElement("tr",{key:pu.id,style:{borderBottom:`1px solid ${t.borderLight}`}},
+              React.createElement("td",{style:{padding:"12px 16px",fontSize:"0.86rem"}},
+                React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10}},
+                  React.createElement(Avatar,{name:pu.name,size:32}),
+                  React.createElement("span",{style:{fontWeight:600,color:t.text}},pu.name)
+                )
+              ),
+              React.createElement("td",{style:{padding:"12px 16px"}},
+                React.createElement("span",{style:{fontSize:"0.72rem",fontWeight:700,padding:"2px 6px",borderRadius:4,background:dark?"#2d1b69":"#ede9fe",color:dark?"#c4b5fd":"#5b21b6",fontFamily:"monospace"}},pu.group)
+              ),
+              React.createElement("td",{style:{padding:"12px 16px"}},
+                React.createElement("span",{style:{fontSize:"0.75rem",fontWeight:600,padding:"2px 8px",borderRadius:999,background:dark?gpaColor+"22":gpaBg,color:gpaColor}},pu.gpa)
+              ),
+              React.createElement("td",{style:{padding:"12px 16px"}},stBadge(pu.status)),
+              React.createElement("td",{style:{padding:"12px 16px",fontSize:"0.8rem",color:t.textMuted}},pu.lastLogin)
+            );
+          })
+        )
+      )
+    )
+  );
+
+  const renderPage=()=>{
+    switch(page){
+      case"dashboard":return React.createElement(Dashboard);
+      case"users":return React.createElement(UsersPage);
+      case"courses":return React.createElement(CoursesPage);
+      case"assignments":return React.createElement(AssignPage);
+      case"portal":return React.createElement(PortalPage);
+      case"roles":return React.createElement(RolesPage);
+      case"notifications":return React.createElement(NotifsPage);
+      case"media":return React.createElement(MediaPage);
+      case"audit":return React.createElement(AuditPage);
+      case"settings":return React.createElement(SettingsPage);
+      default:return React.createElement(Dashboard);
+    }
+  };
+
+  const sidebarContent=React.createElement(React.Fragment,null,
+    React.createElement("div",{style:{padding:"18px 16px 14px",borderBottom:"1px solid rgba(255,255,255,0.08)",display:"flex",alignItems:"center",gap:10,cursor:"pointer"}},
+      React.createElement("div",{style:{width:36,height:36,borderRadius:8,background:"linear-gradient(135deg,#2563eb,#1d4ed8)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:"0.7rem",color:"#fff",flexShrink:0}},"OYU"),
+      React.createElement("div",null,
+        React.createElement("div",{style:{color:"#e2e8f0",fontWeight:700,fontSize:"0.95rem"}},"OYU Admin"),
+        React.createElement("div",{style:{color:"#64748b",fontSize:"0.65rem",fontFamily:"monospace"}},"v2.1 · İdarəetmə")
+      )
+    ),
+    React.createElement("nav",{style:{flex:1,padding:"8px 0",overflowY:"auto"}},
+      menu.map(item=>React.createElement("div",{key:item.id,
+        role:"button","aria-current":page===item.id?"page":undefined,
+        tabIndex:0,
+        onClick:()=>setPage(item.id),
+        onKeyDown:e=>{if(e.key==="Enter"||e.key===" ")setPage(item.id);},
+        style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",margin:"1px 8px",borderRadius:8,cursor:"pointer",background:page===item.id?"#1e3a5f":"transparent",color:page===item.id?"#fff":"#94a3b8",fontWeight:page===item.id?600:500,fontSize:"0.84rem",transition:"all 0.15s",outline:"none"}
+      },React.createElement("span",{style:{fontSize:"1rem",width:20,textAlign:"center"}},item.ico),item.label))
+    ),
+    React.createElement("div",{style:{padding:"8px 0 16px",borderTop:"1px solid rgba(255,255,255,0.08)"}},
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"8px 16px",margin:"0 8px"}},
+        React.createElement(Avatar,{name:"Prof. Əhməd Vəliyev",size:34}),
+        React.createElement("div",{style:{minWidth:0}},
+          React.createElement("div",{style:{color:"#e2e8f0",fontSize:"0.8rem",fontWeight:600,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}},"Əhməd Vəliyev"),
+          React.createElement("div",{style:{color:"#64748b",fontSize:"0.68rem"}},"Super Admin")
+        )
+      )
+    )
+  );
+
+  return React.createElement("div",{style:{background:t.bg,minHeight:"100vh",color:t.text,display:"flex"}},
+    // FIX BUG-019: Mobile overlay
+    React.createElement("div",{className:`mob-overlay${mobileOpen?" mob-open":""}`,onClick:()=>setMobileOpen(false)}),
+    // Sidebar
+    React.createElement("aside",{className:`sidebar${mobileOpen?" mob-open":""}`,
+      style:{width:248,background:"#0d1b2a",borderRight:"none",position:"fixed",top:0,left:0,height:"100vh",display:"flex",flexDirection:"column",zIndex:99}
+    },sidebarContent),
+    // Main
+    React.createElement("main",{className:"main-content",style:{flex:1,marginLeft:248,minHeight:"100vh"}},
+      React.createElement("header",{style:{background:t.bgCard,borderBottom:`1px solid ${t.border}`,padding:"12px 28px",position:"sticky",top:0,zIndex:50,display:"flex",justifyContent:"space-between",alignItems:"center",gap:12}},
+        // FIX BUG-019: Hamburger menu
+        React.createElement("button",{className:"hamburger",style:{borderColor:t.border,color:t.text},"aria-label":"Menyu",onClick:()=>setMobileOpen(p=>!p)},"☰"),
+        // FIX BUG-002: Global search with state
+        React.createElement("input",{"aria-label":"Global axtarış",placeholder:"🔍 Axtarış...",value:globalSearch,
+          onChange:e=>{setGlobalSearch(e.target.value);if(page==="users")setUf(p=>({...p,search:e.target.value}));},
+          style:{...inp,maxWidth:360,background:t.bgInput,border:`1px solid ${t.borderLight}`,borderRadius:8}}),
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
+          React.createElement("button",{onClick:()=>window.open("/","_blank"),style:{padding:"6px 14px",borderRadius:8,background:"linear-gradient(135deg,#2563eb,#1d4ed8)",color:"#fff",border:"none",cursor:"pointer",fontSize:"0.78rem",fontWeight:600,display:"flex",alignItems:"center",gap:5,fontFamily:"inherit"}},"🎓 Portal"),
+          React.createElement("button",{onClick:()=>setDark(p=>!p),style:{width:36,height:36,borderRadius:8,border:`1px solid ${t.border}`,background:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1rem"},"aria-label":dark?"Açıq tema":"Tünd tema"},dark?"☀️":"🌙"),
+          React.createElement("div",{style:{position:"relative"}},
+            React.createElement("button",{style:{width:36,height:36,borderRadius:8,border:`1px solid ${t.border}`,background:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1rem"},"aria-label":"Bildirişlər"},"🔔"),
+            React.createElement("div",{style:{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:t.danger}})
+          )
+        )
+      ),
+      React.createElement("div",{style:{padding:28}},renderPage())
+    ),
+
+    // ═══ MODALS ═══
+
+    // Add User — FIX BUG-010 (password) + BUG-012 (validation) + BUG-023 (email)
+    React.createElement(Modal,{open:modal==="addUser",onClose:closeModal,title:"Yeni İstifadəçi",t},
+      React.createElement(Field,{label:"Ad, Soyad",error:formErrors.name},
+        React.createElement("input",{value:newUser.name,onChange:e=>setNewUser(p=>({...p,name:e.target.value})),placeholder:"Ad, Soyad",style:formErrors.name?inpErr:inp})
+      ),
+      React.createElement(Field,{label:"Email",error:formErrors.email},
+        React.createElement("input",{type:"email",value:newUser.email,onChange:e=>setNewUser(p=>({...p,email:e.target.value})),placeholder:"email@oyu.edu.az",style:formErrors.email?inpErr:inp})
+      ),
+      React.createElement(Field,{label:"Telefon"},
+        React.createElement("input",{value:newUser.phone,onChange:e=>setNewUser(p=>({...p,phone:e.target.value})),placeholder:"+994 XX XXX XX XX",style:inp})
+      ),
+      React.createElement(Field,{label:"Şifrə",error:formErrors.password},
+        React.createElement("input",{type:"password",value:newUser.password,onChange:e=>setNewUser(p=>({...p,password:e.target.value})),placeholder:"Minimum 6 simvol",style:formErrors.password?inpErr:inp})
+      ),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+        React.createElement(Field,{label:"Rol"},
+          React.createElement("select",{value:newUser.role,onChange:e=>setNewUser(p=>({...p,role:e.target.value})),style:inp},
+            React.createElement("option",{value:"student"},"Tələbə"),
+            React.createElement("option",{value:"teacher"},"Müəllim"),
+            React.createElement("option",{value:"admin"},"Admin")
+          )
+        ),
+        React.createElement(Field,{label:"Fakültə"},
+          React.createElement("select",{value:newUser.faculty,onChange:e=>setNewUser(p=>({...p,faculty:e.target.value})),style:inp},
+            FACULTIES.map(f=>React.createElement("option",{key:f,value:f},f))
+          )
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+        React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+        React.createElement("button",{style:btnP,onClick:doCreateUser},"Yarat")
+      )
+    ),
+
+    // Edit User — FIX BUG-013
+    React.createElement(Modal,{open:modal==="editUser",onClose:closeModal,title:"İstifadəçini Redaktə Et",t},
+      editUserData&&React.createElement(React.Fragment,null,
+        React.createElement(Field,{label:"Ad, Soyad",error:formErrors.editName},
+          React.createElement("input",{value:editUserData.name,onChange:e=>setEditUserData(p=>({...p,name:e.target.value})),style:formErrors.editName?inpErr:inp})
+        ),
+        React.createElement(Field,{label:"Email",error:formErrors.editEmail},
+          React.createElement("input",{type:"email",value:editUserData.email,onChange:e=>setEditUserData(p=>({...p,email:e.target.value})),style:formErrors.editEmail?inpErr:inp})
+        ),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+          React.createElement(Field,{label:"Rol"},
+            React.createElement("select",{value:editUserData.role,onChange:e=>setEditUserData(p=>({...p,role:e.target.value})),style:inp},
+              React.createElement("option",{value:"student"},"Tələbə"),
+              React.createElement("option",{value:"teacher"},"Müəllim"),
+              React.createElement("option",{value:"admin"},"Admin")
+            )
+          ),
+          React.createElement(Field,{label:"Fakültə"},
+            React.createElement("select",{value:editUserData.faculty,onChange:e=>setEditUserData(p=>({...p,faculty:e.target.value})),style:inp},
+              FACULTIES.map(f=>React.createElement("option",{key:f,value:f},f))
+            )
+          )
+        ),
+        React.createElement(Field,{label:"Status"},
+          React.createElement("select",{value:editUserData.status,onChange:e=>setEditUserData(p=>({...p,status:e.target.value})),style:inp},
+            React.createElement("option",{value:"active"},"Aktiv"),
+            React.createElement("option",{value:"inactive"},"Deaktiv"),
+            React.createElement("option",{value:"suspended"},"Dayandırılıb")
+          )
+        ),
+        React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+          React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+          React.createElement("button",{style:btnP,onClick:doEditUser},"Yadda Saxla")
+        )
+      )
+    ),
+
+    // Add Course — FIX BUG-011
+    React.createElement(Modal,{open:modal==="addCourse",onClose:closeModal,title:"Yeni Kurs",t},
+      React.createElement(Field,{label:"Kurs adı",error:formErrors.courseName},
+        React.createElement("input",{value:newCourse.name,onChange:e=>setNewCourse(p=>({...p,name:e.target.value})),placeholder:"Kurs adı",style:formErrors.courseName?inpErr:inp})
+      ),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+        React.createElement(Field,{label:"Kurs kodu",error:formErrors.courseCode},
+          React.createElement("input",{value:newCourse.code,onChange:e=>setNewCourse(p=>({...p,code:e.target.value})),placeholder:"IT-301",style:formErrors.courseCode?inpErr:inp})
+        ),
+        React.createElement(Field,{label:"Kredit sayı"},
+          React.createElement("input",{type:"number",min:1,max:12,value:newCourse.credits,onChange:e=>setNewCourse(p=>({...p,credits:e.target.value})),placeholder:"6",style:inp})
+        )
+      ),
+      React.createElement(Field,{label:"Müəllim"},
+        React.createElement("input",{value:newCourse.teacher,onChange:e=>setNewCourse(p=>({...p,teacher:e.target.value})),placeholder:"Dos. Ad Soyad",style:inp})
+      ),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+        React.createElement(Field,{label:"Fakültə"},
+          React.createElement("select",{value:newCourse.faculty,onChange:e=>setNewCourse(p=>({...p,faculty:e.target.value})),style:inp},
+            FACULTIES.map(f=>React.createElement("option",{key:f,value:f},f))
+          )
+        ),
+        React.createElement(Field,{label:"Semestr"},
+          React.createElement("select",{value:newCourse.semester,onChange:e=>setNewCourse(p=>({...p,semester:e.target.value})),style:inp},
+            SEMESTERS.map(s=>React.createElement("option",{key:s,value:s},s))
+          )
+        )
+      ),
+      React.createElement(Field,{label:"Status"},
+        React.createElement("select",{value:newCourse.status,onChange:e=>setNewCourse(p=>({...p,status:e.target.value})),style:inp},
+          React.createElement("option",{value:"active"},"Aktiv"),
+          React.createElement("option",{value:"inactive"},"Deaktiv")
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+        React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+        React.createElement("button",{style:btnP,onClick:doCreateCourse},"Yarat")
+      )
+    ),
+
+    // Edit Course
+    React.createElement(Modal,{open:modal==="editCourse",onClose:closeModal,title:"Kursu Redaktə Et",t},
+      editCourseData&&React.createElement(React.Fragment,null,
+        React.createElement(Field,{label:"Kurs adı",error:formErrors.editCourseName},
+          React.createElement("input",{value:editCourseData.name,onChange:e=>setEditCourseData(p=>({...p,name:e.target.value})),style:formErrors.editCourseName?inpErr:inp})
+        ),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+          React.createElement(Field,{label:"Kurs kodu"},
+            React.createElement("input",{value:editCourseData.code,onChange:e=>setEditCourseData(p=>({...p,code:e.target.value})),style:inp})
+          ),
+          React.createElement(Field,{label:"Kredit sayı"},
+            React.createElement("input",{type:"number",value:editCourseData.credits,onChange:e=>setEditCourseData(p=>({...p,credits:Number(e.target.value)})),style:inp})
+          )
+        ),
+        React.createElement(Field,{label:"Müəllim"},
+          React.createElement("input",{value:editCourseData.teacher,onChange:e=>setEditCourseData(p=>({...p,teacher:e.target.value})),style:inp})
+        ),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+          React.createElement(Field,{label:"Fakültə"},
+            React.createElement("select",{value:editCourseData.faculty,onChange:e=>setEditCourseData(p=>({...p,faculty:e.target.value})),style:inp},
+              FACULTIES.map(f=>React.createElement("option",{key:f,value:f},f))
+            )
+          ),
+          React.createElement(Field,{label:"Status"},
+            React.createElement("select",{value:editCourseData.status,onChange:e=>setEditCourseData(p=>({...p,status:e.target.value})),style:inp},
+              React.createElement("option",{value:"active"},"Aktiv"),
+              React.createElement("option",{value:"inactive"},"Deaktiv")
+            )
+          )
+        ),
+        React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+          React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+          React.createElement("button",{style:btnP,onClick:doEditCourse},"Yadda Saxla")
+        )
+      )
+    ),
+
+    // Add Assignment — FIX BUG-003
+    React.createElement(Modal,{open:modal==="addAssign",onClose:closeModal,title:"Yeni Tapşırıq",t},
+      React.createElement(Field,{label:"Tapşırıq adı",error:formErrors.assignTitle},
+        React.createElement("input",{value:newAssign.title,onChange:e=>setNewAssign(p=>({...p,title:e.target.value})),placeholder:"Tapşırıq adı",style:formErrors.assignTitle?inpErr:inp})
+      ),
+      React.createElement(Field,{label:"Kurs",error:formErrors.assignCourse},
+        React.createElement("select",{value:newAssign.course,onChange:e=>setNewAssign(p=>({...p,course:e.target.value})),style:formErrors.assignCourse?inpErr:inp},
+          React.createElement("option",{value:""},"Kurs seçin..."),
+          courses.map(c=>React.createElement("option",{key:c.id,value:c.name},c.name))
+        )
+      ),
+      React.createElement(Field,{label:"Müəllim"},
+        React.createElement("input",{value:newAssign.teacher,onChange:e=>setNewAssign(p=>({...p,teacher:e.target.value})),placeholder:"Müəllim adı",style:inp})
+      ),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}},
+        React.createElement(Field,{label:"Son tarix",error:formErrors.assignDue},
+          React.createElement("input",{type:"date",value:newAssign.due,onChange:e=>setNewAssign(p=>({...p,due:e.target.value})),style:formErrors.assignDue?inpErr:inp})
+        ),
+        React.createElement(Field,{label:"Tələbə sayı"},
+          React.createElement("input",{type:"number",min:0,value:newAssign.total,onChange:e=>setNewAssign(p=>({...p,total:e.target.value})),placeholder:"0",style:inp})
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+        React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+        React.createElement("button",{style:btnP,onClick:doCreateAssign},"Yarat")
+      )
+    ),
+
+    // Add Role
+    React.createElement(Modal,{open:modal==="addRole",onClose:closeModal,title:"Yeni Rol",t,wide:true},
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:4}},
+        React.createElement(Field,{label:"Rol adı",error:formErrors.roleName},
+          React.createElement("input",{value:newRole.name,onChange:e=>{
+            const v=e.target.value;
+            setNewRole(p=>({...p,name:v,slug:slugify(v)}));
+          },placeholder:"Məs: Dekan",style:formErrors.roleName?inpErr:inp})
+        ),
+        React.createElement(Field,{label:"Slug",error:formErrors.roleSlug},
+          React.createElement("input",{value:newRole.slug,onChange:e=>setNewRole(p=>({...p,slug:e.target.value})),placeholder:"dean",style:formErrors.roleSlug?inpErr:inp})
+        )
+      ),
+      React.createElement("label",{style:{fontSize:"0.78rem",fontWeight:600,color:t.textSec,display:"block",marginBottom:8}},"İcazələr"),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:18}},
+        ALL_PERMS.map(p=>React.createElement("label",{key:p,style:{display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderRadius:8,background:t.bgInput,cursor:"pointer",fontSize:"0.82rem",color:t.text}},
+          React.createElement("input",{type:"checkbox",checked:newRole.perms.includes(p),
+            onChange:e=>setNewRole(r=>({...r,perms:e.target.checked?[...r.perms,p]:r.perms.filter(x=>x!==p)})),
+            style:{accentColor:t.accent}
+          }),p
+        ))
+      ),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end"}},
+        React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+        React.createElement("button",{style:btnP,onClick:doCreateRole},"Yarat")
+      )
+    ),
+
+    // Add Notification — FIX BUG-004
+    React.createElement(Modal,{open:modal==="addNotif",onClose:closeModal,title:"Yeni Bildiriş",t},
+      React.createElement(Field,{label:"Başlıq",error:formErrors.notifTitle},
+        React.createElement("input",{value:newNotif.title,onChange:e=>setNewNotif(p=>({...p,title:e.target.value})),placeholder:"Bildiriş başlığı",style:formErrors.notifTitle?inpErr:inp})
+      ),
+      React.createElement(Field,{label:"Mətn",error:formErrors.notifMsg},
+        React.createElement("textarea",{value:newNotif.msg,onChange:e=>setNewNotif(p=>({...p,msg:e.target.value})),placeholder:"Bildiriş mətni...",rows:4,style:{...formErrors.notifMsg?inpErr:inp,resize:"vertical"}})
+      ),
+      React.createElement(Field,{label:"Hədəf auditoriya"},
+        React.createElement("select",{value:newNotif.aud,onChange:e=>setNewNotif(p=>({...p,aud:e.target.value})),style:inp},
+          React.createElement("option",{value:"all"},"Hamı"),
+          React.createElement("option",{value:"students"},"Tələbələr"),
+          React.createElement("option",{value:"teachers"},"Müəllimlər")
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",gap:10,justifyContent:"flex-end",marginTop:8}},
+        React.createElement("button",{style:btnG,onClick:closeModal},"Ləğv et"),
+        React.createElement("button",{style:btnP,onClick:doCreateNotif},"Göndər")
+      )
+    ),
+
+    // FIX BUG-020: Confirmation Dialog
+    React.createElement(ConfirmDialog,{
+      open:!!confirm,
+      message:confirm?.message,
+      onConfirm:confirm?.onConfirm||(() =>{}),
+      onCancel:()=>setConfirm(null),
+      t
+    }),
+
+    // Toast — FIX BUG-018: managed via ref
+    toast&&React.createElement("div",{role:"alert","aria-live":"polite",style:{position:"fixed",bottom:24,right:24,zIndex:99999,background:toast.type==="success"?t.success:toast.type==="error"?t.danger:t.accent,color:"#fff",padding:"14px 24px",borderRadius:12,fontSize:"0.88rem",fontWeight:600,boxShadow:"0 8px 30px rgba(0,0,0,0.15)",animation:"slideUp 0.3s ease",maxWidth:340}},
+      toast.type==="success"?"✓ ":"✕ ",toast.msg
+    )
+  );
+}
+
+// FIX BUG-017: use createRoot instead of deprecated ReactDOM.render
+const root=ReactDOM.createRoot(document.getElementById("root"));
+root.render(React.createElement(AdminPanel));
+</script>
+</body>
+</html>

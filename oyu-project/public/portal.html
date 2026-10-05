@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Odlar Yurdu University — Academic Portal</title>
+<meta name="description" content="Odlar Yurdu University — Academic Management Portal">
+<meta property="og:title" content="Odlar Yurdu University — Academic Portal">
+<meta property="og:description" content="Odlar Yurdu University — Academic Management Portal">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/img/logo.png">
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/ai-chat.css">
+<link rel="stylesheet" href="/css/teacher.css">
+<link rel="stylesheet" href="/css/exams.css">
+<link rel="stylesheet" href="/css/journal.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;-webkit-font-smoothing:antialiased}
+:root{--sidebar:#0d1b2a;--primary:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--border:#e2e8f0;--muted:#64748b;--teacher:#7c3aed}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+#app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:248px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+html,body{overflow-x:hidden}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:28px;position:relative;background:radial-gradient(ellipse at 20% 10%,rgba(37,99,235,.06),transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(139,92,246,.05),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.03),transparent 70%)}
+.main::before{content:'';position:fixed;top:50%;left:calc(50% + 124px);transform:translate(-50%,-50%);width:min(68vmin,680px);height:min(68vmin,680px);background:url('/img/logo.png') center/contain no-repeat;opacity:.045;pointer-events:none;z-index:0;filter:saturate(.6)}
+.main::after{content:'';position:fixed;top:-120px;right:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(4px)}
+@keyframes ap-pulse{0%,100%{opacity:.045;transform:translate(-50%,-50%) scale(1)}50%{opacity:.08;transform:translate(-50%,-50%) scale(1.04)}}
+[data-theme="dark"] .main{background:radial-gradient(ellipse at 20% 10%,rgba(59,130,246,.1),transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(139,92,246,.08),transparent 55%),radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.05),transparent 70%)}
+[data-theme="dark"] .main::before{opacity:.06;filter:invert(1) hue-rotate(180deg) brightness(1.2) saturate(.7)}
+[data-theme="dark"] .main::after{background:radial-gradient(circle,rgba(59,130,246,.18) 0%,transparent 70%)}
+.main > *{position:relative;z-index:1}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-logo-box{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#0d1b2a;font-size:11px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sb-logo-box img{width:92%;height:92%;object-fit:contain}
+.teacher-mode .sb-logo-box{background:#fff}
+.sb-logo-text{color:#e2e8f0;font-weight:700;font-size:16px}
+.sb-user{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;transition:background .15s}
+.sb-user:hover{background:rgba(255,255,255,.04)}
+.sb-avatar{width:36px;height:36px;border-radius:8px;background:#1e3a5f;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.teacher-mode .sb-avatar{background:#2d1b69}
+.sb-name{color:#e2e8f0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-id{color:#64748b;font-size:11px;font-family:Consolas,monospace}
+.sb-role-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:2px;display:inline-block;background:#1e3a5f;color:#93c5fd}
+.teacher-mode .sb-role-badge{background:#2d1b69;color:#c4b5fd}
+.sb-nav{flex:1;padding:8px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;margin:1px 8px;border-radius:8px;cursor:pointer;color:#94a3b8;font-size:13.5px;font-weight:500;transition:all .15s;border:none;background:none;width:calc(100% - 16px);text-align:left;font-family:inherit}
+.nav-item:hover{background:#1a2d42;color:#e2e8f0}
+.nav-item.active{background:#1e3a5f;color:#fff}
+.teacher-mode .nav-item.active{background:#2d1b69}
+.nav-item svg{width:17px;height:17px;flex-shrink:0}
+.sb-bottom{padding:8px 0 16px;border-top:1px solid rgba(255,255,255,.08)}
+.main > .page-header{z-index:30}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.page-title{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.header-right{display:flex;align-items:center;gap:8px}
+.lang-switcher{display:flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px}
+.lang-btn{padding:4px 10px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:transparent;color:#64748b;font-family:inherit}
+.lang-btn.active{background:#f1f5f9;color:#0f172a}
+.card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card-pad{padding:20px}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:20px}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.stat-val{font-size:26px;font-weight:700;letter-spacing:-.5px}
+.stat-label{font-size:13px;color:var(--muted);margin-top:4px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-success{background:#d1fae5;color:#065f46}
+.badge-warning{background:#fef3c7;color:#92400e}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-info{background:#dbeafe;color:#1e40af}
+.badge-gray{background:#f1f5f9;color:#475569}
+.badge-purple{background:#ede9fe;color:#5b21b6}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#1d4ed8}
+.btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9}
+.btn-success{background:#10b981;color:#fff}.btn-success:hover{background:#059669}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-outline{background:#fff;color:var(--muted);border:1px solid var(--border)}.btn-outline:hover{background:#f8fafc}
+.btn-sm{padding:6px 12px;font-size:13px}
+.input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:14px;outline:none;font-family:inherit}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+select.input{cursor:pointer}
+textarea.input{min-height:80px;resize:vertical;font-family:inherit}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:14px;border-top:1px solid #f1f5f9;vertical-align:top}
+tr:hover td{background:#f8fafc}
+.page{display:none}.page.active{display:block}
+.prog{height:6px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.prog-bar{height:100%;border-radius:99px;background:var(--primary)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:10px;background:#10b981;color:#fff;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.15);opacity:0;transform:translateY(12px);transition:all .2s;z-index:300}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{background:#ef4444}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+.schedule-grid{display:grid;grid-template-columns:80px repeat(5,1fr);gap:1px;background:var(--border)}
+.schedule-grid>div{background:#fff;padding:12px 10px;min-height:48px;font-size:13px}
+.schedule-grid .slot{cursor:pointer;font-weight:500}
+.schedule-grid .slot-code{font-weight:700;font-size:12px;margin-bottom:2px}
+.schedule-grid .slot-room{font-size:11px;color:var(--muted)}
+.schedule-grid .dow-head,.schedule-grid .time-head{font-weight:700;font-size:11px;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:.05em}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:270;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:18px}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;background:#f1f5f9;color:#475569;margin-right:4px}
+.att-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9}
+.att-name{font-weight:600}
+.att-choices{display:flex;gap:4px}
+.att-choice{padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);font-family:inherit}
+.att-choice.active{border-color:currentColor}
+.att-choice.present.active{color:#10b981;background:#d1fae5}
+.att-choice.absent.active{color:#ef4444;background:#fee2e2}
+.att-choice.late.active{color:#f59e0b;background:#fef3c7}
+.att-choice.excused.active{color:#3b82f6;background:#dbeafe}
+/* ── Responsive: tablet ── */
+@media(max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}.sidebar{width:68px}.sb-logo-text,.sb-name,.sb-id,.sb-role-badge{display:none}.nav-item span{display:none}.main{padding:20px}}
+
+/* AI assistant styles moved to /css/ai-chat.css (см. конец head) */
+.ai-fab-old{display:none}
+.ai-fab-legacy{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;cursor:pointer;z-index:250;display:none;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(37,99,235,.4);transition:all .3s cubic-bezier(.4,0,.2,1)}
+.ai-fab:hover{transform:scale(1.08);box-shadow:0 8px 32px rgba(37,99,235,.5)}
+.ai-fab:active{transform:scale(.95)}
+.ai-fab svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;transition:all .3s}
+.ai-fab.open svg.icon-chat{display:none}
+.ai-fab:not(.open) svg.icon-close{display:none}
+.ai-fab .ai-fab-pulse{position:absolute;inset:0;border-radius:50%;background:rgba(37,99,235,.3);animation:ai-pulse 2s ease-out infinite;pointer-events:none}
+.ai-fab.open .ai-fab-pulse{display:none}
+@keyframes ai-pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.6);opacity:0}}
+.ai-panel{position:fixed;bottom:92px;right:24px;width:400px;max-height:min(600px,calc(100vh - 120px));border-radius:16px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.05);z-index:250;display:flex;flex-direction:column;overflow:hidden;transform:translateY(16px) scale(.95);opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.ai-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+.ai-panel-head{padding:16px 18px;background:linear-gradient(135deg,#0d1b2a,#1e3a5f);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ai-panel-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.ai-panel-title{color:#fff;font-size:15px;font-weight:700}
+.ai-panel-sub{color:#94a3b8;font-size:11px;margin-top:1px}
+.ai-panel-clear{margin-left:auto;background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:6px 10px;color:#94a3b8;font-size:11px;cursor:pointer;transition:all .15s;font-family:inherit}
+.ai-panel-clear:hover{background:rgba(255,255,255,.2);color:#fff}
+.ai-panel-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:200px;scroll-behavior:smooth;background:#fff}
+.ai-msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;animation:ai-msg-in .25s ease;word-wrap:break-word}
+@keyframes ai-msg-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ai-msg-user{align-self:flex-end;background:#2563eb;color:#fff;border-bottom-right-radius:4px}
+.ai-msg-bot{align-self:flex-start;background:#f1f5f9;color:#0f172a;border-bottom-left-radius:4px}
+.ai-msg-bot strong{color:#1e40af}
+.ai-msg-bot code{background:#e2e8f0;padding:1px 5px;border-radius:4px;font-size:12px;font-family:Consolas,monospace}
+.ai-msg-typing{align-self:flex-start;background:#f1f5f9;border-radius:12px;padding:12px 18px;display:flex;gap:5px}
+.ai-msg-typing span{width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:ai-dot 1.4s ease infinite}
+.ai-msg-typing span:nth-child(2){animation-delay:.15s}
+.ai-msg-typing span:nth-child(3){animation-delay:.3s}
+@keyframes ai-dot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.ai-welcome{text-align:center;padding:20px 12px}
+.ai-welcome-icon{font-size:40px;margin-bottom:10px}
+.ai-welcome-title{font-size:16px;font-weight:700;margin-bottom:6px;color:#0f172a}
+.ai-welcome-desc{font-size:13px;color:#64748b;line-height:1.6;margin-bottom:14px;text-align:left}
+.ai-quick-btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.ai-quick-btn{padding:7px 12px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;font-size:12px;color:#475569;cursor:pointer;transition:all .15s;font-family:inherit}
+.ai-quick-btn:hover{background:#eff6ff;border-color:#93c5fd;color:#1e40af}
+.ai-panel-input{padding:12px 16px;border-top:1px solid #e2e8f0;display:flex;gap:8px;flex-shrink:0;background:#fff}
+.ai-panel-input textarea{flex:1;resize:none;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.4;max-height:100px;outline:none;transition:border-color .15s;font-family:inherit;background:#f8fafc;color:#0f172a}
+.ai-panel-input textarea:focus{border-color:#3b82f6;background:#fff}
+.ai-panel-input textarea::placeholder{color:#94a3b8}
+.ai-send-btn{width:40px;height:40px;border-radius:10px;border:none;background:linear-gradient(135deg,#2563eb,#7c3aed);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;align-self:flex-end}
+.ai-send-btn:hover{transform:scale(1.05)}
+.ai-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.ai-send-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+[data-theme="dark"] .ai-panel,[data-theme="dark"] .ai-panel-body,[data-theme="dark"] .ai-panel-input{background:#1e293b}
+[data-theme="dark"] .ai-msg-bot{background:#263350;color:#e2e8f0}
+[data-theme="dark"] .ai-msg-bot strong{color:#60a5fa}
+[data-theme="dark"] .ai-msg-bot code{background:#334155;color:#93c5fd}
+[data-theme="dark"] .ai-msg-typing{background:#263350}
+[data-theme="dark"] .ai-msg-typing span{background:#475569}
+[data-theme="dark"] .ai-welcome-title{color:#e2e8f0}
+[data-theme="dark"] .ai-welcome-desc{color:#94a3b8}
+[data-theme="dark"] .ai-quick-btn{background:#263350;border-color:#334155;color:#cbd5e1}
+[data-theme="dark"] .ai-quick-btn:hover{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}
+[data-theme="dark"] .ai-panel-input{border-top-color:#334155}
+[data-theme="dark"] .ai-panel-input textarea{background:#0f172a;border-color:#334155;color:#e2e8f0}
+@media(max-width:480px){.ai-panel{right:8px;left:8px;bottom:84px;width:auto;max-height:calc(100vh - 100px)}.ai-fab{bottom:16px;right:16px;width:50px;height:50px}}
+
+/* ── Notifications bell ── */
+.notif-wrap{position:relative}
+.icon-btn{position:relative;width:38px;height:38px;border-radius:10px;border:1px solid var(--c-border);background:var(--c-card);color:var(--c-text2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.icon-btn:hover{background:var(--c-surface)}
+.icon-btn svg{width:18px;height:18px}
+.notif-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;display:none;align-items:center;justify-content:center;border:2px solid var(--c-bg)}
+.notif-badge.show{display:inline-flex}
+.notif-panel{position:absolute;right:0;top:46px;width:380px;max-width:calc(100vw - 24px);max-height:min(560px,calc(100vh - 110px));display:none;flex-direction:column;background:var(--c-card);border:1px solid var(--c-border);border-radius:14px;box-shadow:0 20px 50px var(--c-shadow),0 4px 12px var(--c-shadow);z-index:220;overflow:hidden}
+.notif-panel.open{display:flex}
+.notif-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px 8px}
+.notif-head b{font-size:15px;color:var(--c-text1)}
+.notif-link{background:none;border:none;color:var(--primary);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px 6px;border-radius:6px}
+.notif-link:hover{background:var(--c-surface)}
+.notif-link:disabled{color:var(--c-text3);cursor:default;background:none}
+.notif-filters{display:flex;gap:6px;overflow-x:auto;padding:4px 16px 10px;scrollbar-width:none}
+.notif-filters::-webkit-scrollbar{display:none}
+.chip-btn{flex-shrink:0;padding:5px 11px;border-radius:99px;border:1px solid var(--c-border);background:var(--c-card);color:var(--c-text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.chip-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.notif-list{overflow-y:auto;border-top:1px solid var(--c-border);flex:1;min-height:120px}
+.notif-item{display:flex;gap:10px;width:100%;padding:12px 16px;border:none;border-bottom:1px solid var(--c-border);background:transparent;text-align:left;cursor:pointer;font-family:inherit;color:var(--c-text1)}
+.notif-item:hover{background:var(--c-surface)}
+.notif-item.unread{background:rgba(37,99,235,.06)}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:6px;flex-shrink:0;visibility:hidden}
+.notif-item.unread .notif-dot{visibility:visible}
+.notif-title{font-size:13.5px;font-weight:600}
+.notif-msg{font-size:12.5px;color:var(--c-text2);margin-top:2px;overflow-wrap:anywhere}
+.notif-meta{display:flex;gap:8px;align-items:center;margin-top:5px;font-size:11px;color:var(--c-text3)}
+.skel{background:linear-gradient(90deg,var(--c-surface) 25%,var(--c-surface2) 50%,var(--c-surface) 75%);background-size:200% 100%;animation:skel 1.2s linear infinite;border-radius:8px}
+@keyframes skel{to{background-position:-200% 0}}
+.skel-row{height:44px;margin:10px 16px}
+
+/* ── Home dashboard ── */
+.home-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.home-hello{font-size:20px;font-weight:700;color:var(--c-text1)}
+.home-date{font-size:13px;color:var(--c-text2);margin-top:2px}
+.qa-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.qa-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:12px;border:1px solid var(--c-border);background:var(--c-card);color:var(--c-text1);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s}
+.qa-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--c-shadow)}
+.qa-btn svg{width:20px;height:20px;color:var(--primary)}
+.home-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px}
+.home-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--c-border)}
+.home-row:last-child{border-bottom:none}
+.home-row .t{font-weight:600;font-size:14px}
+.home-row .s{font-size:12px;color:var(--c-text2);margin-top:2px}
+.pill-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pill{padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.pill-info{background:#dbeafe;color:#1e40af}.pill-danger{background:#fee2e2;color:#991b1b}.pill-ok{background:#d1fae5;color:#065f46}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[data-theme="dark"] .pill-info{background:#1e3a5f;color:#93c5fd}
+[data-theme="dark"] .pill-danger{background:#4c1d1d;color:#fca5a5}
+[data-theme="dark"] .pill-ok{background:#12372b;color:#6ee7b7}
+.icon-btn:focus-visible,.chip-btn:focus-visible,.notif-item:focus-visible,.qa-btn:focus-visible,.mnav-btn:focus-visible,.nav-item:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* ── Mobile bottom navigation (hidden on desktop/tablet) ── */
+.mnav{display:none}
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:260;display:none}
+.sheet-overlay.show{display:block}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:80vh;overflow-y:auto;background:var(--c-card);color:var(--c-text1);border-radius:18px 18px 0 0;padding:14px 12px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.sheet-grip{width:40px;height:4px;border-radius:99px;background:var(--c-border);margin:0 auto 10px}
+.sheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sheet-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:12px;border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-text1);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;text-align:center}
+.sheet-item svg{width:20px;height:20px;color:var(--primary)}
+.sheet-item.active{border-color:var(--primary)}
+
+@media(max-width:768px){
+  #app{height:100dvh}
+  .sidebar{display:none}
+  .main{padding:14px 14px calc(76px + env(safe-area-inset-bottom))}
+  .main::before,.main::after{display:none}
+  .page-header{margin-bottom:16px;gap:10px}
+  .page-title{font-size:19px}
+  .header-right{gap:6px;flex-wrap:wrap}
+  .header-right > img{display:none}
+  .stat-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-card{padding:14px}.stat-val{font-size:22px}
+  .home-grid{grid-template-columns:1fr}
+  .qa-row{display:flex;overflow-x:auto;gap:8px;margin:0 -14px 14px;padding:2px 14px;scrollbar-width:none}
+  .qa-row::-webkit-scrollbar{display:none}
+  .qa-btn{flex:0 0 auto;flex-direction:row;gap:8px;padding:10px 14px;white-space:nowrap}
+  .card-pad{padding:14px}
+  table{display:block;overflow-x:auto;white-space:nowrap}
+  .modal{padding:18px;max-height:92vh}
+  .schedule-grid{overflow-x:auto}
+  .notif-panel{position:fixed;left:8px;right:8px;top:64px;width:auto;max-width:none;max-height:calc(100dvh - 150px)}
+  .mnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:205;background:var(--c-card);border-top:1px solid var(--c-border);padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px var(--c-shadow)}
+  .mnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:none;background:none;color:var(--c-text2);font-size:10.5px;font-weight:600;cursor:pointer;font-family:inherit;border-radius:10px;min-width:0}
+  .mnav-btn span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mnav-btn svg{width:20px;height:20px}
+  .mnav-btn.active{color:var(--primary)}
+  .ai-fab{bottom:76px !important;right:14px !important}
+  .ai-panel{bottom:136px !important}
+  .toast{bottom:76px;left:14px;right:14px;text-align:center}
+}
+@media(max-width:380px){.stat-val{font-size:20px}}
+</style>
+</head>
+<body>
+<div id="app" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-box" id="sb-logo-box"><img src="/img/logo.png" alt="Odlar Yurdu University" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'AP'}))"></div>
+      <div class="sb-logo-text">Odlar Yurdu University<span class="sb-sub">Academic Management Portal</span></div>
+    </div>
+    <div class="sb-user" id="sb-user" style="cursor:pointer" title="Profil" role="button" tabindex="0">
+      <div class="sb-avatar" id="sb-avatar">U</div>
+      <div style="min-width:0">
+        <div class="sb-name" id="sb-name">—</div>
+        <div class="sb-id" id="sb-id">—</div>
+        <span class="sb-role-badge" id="sb-role">—</span>
+      </div>
+    </div>
+    <nav class="sb-nav" id="nav"></nav>
+    <div class="sb-bottom">
+      <button class="nav-item" id="btn-logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span data-i18n="nav.logout">Çıxış</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-title" id="page-title">—</div>
+      <div class="header-right">
+        <div class="notif-wrap" id="notif-wrap">
+          <button class="icon-btn" id="notif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="notif-panel" data-i18n-title="notif.title" title="Bildirişlər">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-badge" id="notif-badge" aria-live="polite"></span>
+          </button>
+          <div class="notif-panel" id="notif-panel" role="dialog" aria-labelledby="notif-title">
+            <div class="notif-head">
+              <b id="notif-title" data-i18n="notif.title">Bildirişlər</b>
+              <button class="notif-link" id="notif-readall" type="button" data-i18n="notif.mark_all">Hamısını oxunmuş et</button>
+            </div>
+            <div class="notif-filters" id="notif-filters" role="group"></div>
+            <div class="notif-list" id="notif-list"></div>
+          </div>
+        </div>
+        <div class="theme-toggle-wrap">
+          <span class="sun" data-theme-toggle title="Light">☀️</span>
+          <button class="theme-toggle light" data-theme-toggle title="Tema / Theme"><span class="theme-toggle-knob"></span></button>
+          <span class="moon" data-theme-toggle title="Dark">🌙</span>
+        </div>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="az">AZ</button>
+          <button class="lang-btn" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <img src="/img/logo.png" alt="Odlar Yurdu University" title="Odlar Yurdu University" style="width:36px;height:36px;object-fit:contain">
+      </div>
+    </div>
+
+    <!-- ─── STUDENT ─── -->
+    <section class="page" id="pg-s-dashboard">
+      <div class="home-hero">
+        <div>
+          <div class="home-hello" id="home-hello">—</div>
+          <div class="home-date" id="home-date"></div>
+        </div>
+      </div>
+      <div class="qa-row" id="home-qa" aria-label="Quick actions"></div>
+      <div id="s-exam-alerts"></div>
+      <div class="stat-grid" id="s-stats"></div>
+      <div class="home-grid">
+        <div class="card"><div class="card-pad">
+          <div class="card-title" data-i18n="home.today_classes">Bu günün dərsləri</div>
+          <div id="s-today"></div>
+        </div></div>
+        <div class="card"><div class="card-pad">
+          <div class="card-title" data-i18n="home.assignments">Tapşırıqlar</div>
+          <div id="s-assignments"></div>
+        </div></div>
+        <div class="card"><div class="card-pad">
+          <div class="card-title" data-i18n="home.announcements">Son elanlar</div>
+          <div id="s-announcements"></div>
+        </div></div>
+        <div class="card"><div class="card-pad">
+          <div class="card-title" data-i18n="dashboard.recent_grades">Son qiymətlər</div>
+          <div id="s-recent-grades"></div>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="page" id="pg-s-my-subjects">
+      <div class="card" style="margin-bottom:16px"><div class="card-pad" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div class="form-label" style="margin:0" data-i18n="my_subjects.select_semester">Semestri seçin</div>
+        <select id="ms-filter" class="input" style="max-width:340px"></select>
+      </div></div>
+      <div id="ms-box"></div>
+    </section>
+
+    <section class="page" id="pg-s-subject-detail">
+      <div style="margin-bottom:12px"><button class="btn btn-outline btn-sm" id="sd-back">← <span data-i18n="common.cancel">Back</span></button></div>
+      <div id="sd-box"></div>
+    </section>
+
+    <section class="page" id="pg-s-progress"><div id="s-progress"></div></section>
+    <section class="page" id="pg-s-exams"><div id="s-exams"></div></section>
+    <section class="page" id="pg-t-exams"><div id="t-exams"></div></section>
+    <section class="page" id="pg-s-schedule">
+      <div class="card"><div class="card-pad" id="s-schedule"></div></div>
+    </section>
+
+    <section class="page" id="pg-s-grades"><div id="jr-student"></div></section>
+
+    <section class="page" id="pg-s-transcript">
+      <div id="transcript-summary" class="stat-grid"></div>
+      <div id="transcript-periods"></div>
+    </section>
+
+    <section class="page" id="pg-s-attendance"><div id="jr-student-att"></div></section>
+
+    <section class="page" id="pg-s-assignments">
+      <div class="card" style="overflow:hidden">
+        <table>
+          <thead><tr>
+            <th data-i18n="grades.subject">Fən</th>
+            <th data-i18n="assignments.name">Ad</th>
+            <th data-i18n="assignments.due_date">Son tarix</th>
+            <th data-i18n="assignments.status">Status</th>
+            <th data-i18n="grades.value">Qiymət</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="s-assign-body"></tbody>
+        </table>
+        <div class="empty" id="s-assign-empty" style="display:none" data-i18n="assignments.no_assignments"></div>
+      </div>
+    </section>
+
+    <section class="page" id="pg-s-materials">
+      <div id="s-materials-box"></div>
+    </section>
+
+    <!-- calendar removed; schedule now supports week/month -->
+    <section class="page" id="pg-s-library">
+      <div class="card" style="margin-bottom:16px"><div class="card-pad" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <input class="input" id="lib-search" placeholder="🔍 Axtar / Search / Поиск" style="max-width:280px">
+        <div class="filter-bar" style="background:#f1f5f9;padding:4px;border-radius:10px;display:flex;gap:4px">
+          <button class="filter-btn active" data-lib-filter="all">Hamısı</button>
+          <button class="filter-btn" data-lib-filter="LINK">Link</button>
+          <button class="filter-btn" data-lib-filter="PDF">PDF</button>
+          <button class="filter-btn" data-lib-filter="DOC">DOC</button>
+          <button class="filter-btn" data-lib-filter="VIDEO">Video</button>
+        </div>
+      </div></div>
+      <div id="lib-box"></div>
+    </section>
+
+    <section class="page" id="pg-profile">
+      <div id="profile-box"></div>
+    </section>
+
+    <section class="page" id="pg-announcements">
+      <div id="announcements-box"></div>
+    </section>
+
+    <section class="page" id="pg-s-payments">
+      <div id="payments-box"></div>
+    </section>
+
+    <section class="page" id="pg-s-requests">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+        <div id="s-req-quota" style="font-size:13px;color:var(--muted)"></div>
+        <button class="btn btn-primary" id="btn-new-request">+ <span data-i18n="requests.new_request">Yeni müraciət</span></button>
+      </div>
+      <div class="ex-tabs" id="s-req-tabs" role="tablist"></div>
+      <div id="s-req-list"></div>
+    </section>
+
+    <!-- ─── TEACHER (рендерится в /js/teacher.js, данные — с бэкенда) ─── -->
+    <section class="page" id="pg-t-dashboard"><div id="tx-dashboard"></div></section>
+    <section class="page" id="pg-t-classes"><div id="tx-classes"></div></section>
+    <section class="page" id="pg-t-journal"><div id="tx-journal"></div></section>
+    <section class="page" id="pg-t-attendance"><div id="tx-attendance"></div></section>
+    <section class="page" id="pg-t-assignments"><div id="tx-assignments"></div></section>
+    <section class="page" id="pg-t-materials"><div id="tx-materials"></div></section>
+    <section class="page" id="pg-t-analytics"><div id="tx-analytics"></div></section>
+    <section class="page" id="pg-t-requests"><div id="tx-requests"></div></section>
+    <section class="page" id="pg-t-timetable"><div id="tx-timetable"></div></section>
+
+    <footer class="app-footer" data-i18n="app.footer">© 2026 Odlar Yurdu University</footer>
+  </main>
+</div>
+
+<!-- ── Universal detail panel (open on stat-card click) ── -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" style="max-width:640px">
+    <div id="detail-modal-body"></div>
+    <div class="form-row"><button class="btn btn-outline" data-close-modal="detail-modal" data-i18n="common.close">Bağla</button></div>
+  </div>
+</div>
+
+<!-- ── Модалки ── -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal">
+    <div class="modal-title" data-i18n="assignments.submit">Təhvil ver</div>
+    <form id="submit-form">
+      <input type="hidden" id="sf-id">
+      <div class="form-group"><div class="form-label" data-i18n="assignments.file_name">Fayl adı</div><input class="input" id="sf-file" maxlength="200" placeholder="report.pdf"></div>
+      <div class="form-group"><div class="form-label" data-i18n="assignments.notes">Qeyd</div><textarea class="input" id="sf-notes" maxlength="2000"></textarea></div>
+      <div class="form-row">
+        <button type="button" class="btn btn-outline" data-close-modal="submit-modal" data-i18n="common.cancel">Ləğv</button>
+        <button type="submit" class="btn btn-primary" data-i18n="assignments.submit">Təhvil ver</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="request-modal">
+  <div class="modal">
+    <div class="modal-title" data-i18n="requests.new_request">Yeni müraciət</div>
+    <form id="request-form">
+      <div class="form-group"><div class="form-label" data-i18n="requests.type">Növ</div>
+        <select class="input" id="r-type">
+          <option value="CERTIFICATE" data-i18n="requests.certificate">Arayış</option>
+          <option value="APPEAL" data-i18n="requests.appeal">İtiraz</option>
+          <option value="TRANSFER" data-i18n="requests.transfer">Köçürmə</option>
+          <option value="OTHER" data-i18n="requests.other">Digər</option>
+        </select>
+      </div>
+      <div class="form-group"><div class="form-label" data-i18n="requests.description">Təsvir</div><textarea class="input" id="r-desc" required minlength="5" maxlength="2000"></textarea></div>
+      <div class="form-row">
+        <button type="button" class="btn btn-outline" data-close-modal="request-modal" data-i18n="common.cancel">Ləğv</button>
+        <button type="submit" class="btn btn-primary" data-i18n="common.save">Yadda saxla</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- AI бот теперь в /js/ai-chat.js (универсальный модуль) -->
+<nav class="mnav" id="mnav" aria-label="Main"></nav>
+<div class="sheet-overlay" id="more-overlay">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="sheet-grip"></div>
+    <div class="sheet-grid" id="more-grid"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/config.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/teacher-core.js"></script>
+<script src="/js/view-as.js"></script>
+<script src="/js/student-progress.js"></script>
+<script src="/js/exams-common.js"></script>
+<script src="/js/exams-student.js"></script>
+<script src="/js/exam-appeals.js"></script>
+<script src="/js/exams-teacher.js"></script>
+<script src="/js/teacher.js"></script>
+<script src="/js/journal.js"></script>
+<script src="/js/ai-chat.js"></script>
+<script>
+(async function () {
+  const DOW = ['', 'schedule.monday', 'schedule.tuesday', 'schedule.wednesday', 'schedule.thursday', 'schedule.friday', 'schedule.saturday', 'schedule.sunday'];
+  let currentUser = null;
+  let currentPage = null;
+  let transcriptCache = null;  // cached transcript for filter options
+  
+  function toast(msg, isError) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.toggle('error', !!isError);
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2400);
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.closeModal)));
+
+  function gradeColor(v) {
+    if (v >= 90) return { bg: '#d1fae5', c: '#065f46' };
+    if (v >= 75) return { bg: '#dbeafe', c: '#1e40af' };
+    if (v >= 60) return { bg: '#fef3c7', c: '#92400e' };
+    return { bg: '#fee2e2', c: '#991b1b' };
+  }
+  function fmtDate(iso) { try { return new Date(iso).toLocaleDateString(localeFor(), { day: 'numeric', month: 'short', year: 'numeric' }); } catch { return iso; } }
+  function fmtDateTime(iso) { try { return new Date(iso).toLocaleString(localeFor()); } catch { return iso; } }
+  function localeFor() { const l = AP.i18n.getLang(); return l === 'en' ? 'en-GB' : l === 'ru' ? 'ru-RU' : 'az-AZ'; }
+
+  // ── Sidebar ──
+  const NAV_STUDENT = [
+    { key: 's-dashboard',   i18n: 'nav.dashboard',     icon: ic('dashboard') },
+    { key: 's-my-subjects', i18n: 'my_subjects.title', icon: ic('book') },
+    { key: 's-schedule',    i18n: 'nav.schedule',      icon: ic('schedule') },
+    { key: 's-progress',    i18n: 'sp.title',          icon: ic('check') },
+    { key: 's-exams',       i18n: 'ex.nav',            icon: ic('exam') },
+    { key: 's-transcript',  i18n: 'transcript.title',  icon: ic('doc') },
+    { key: 's-assignments', i18n: 'nav.assignments',   icon: ic('clipboard') },
+    { key: 's-grades',      i18n: 'journal.title',     icon: ic('grades') },
+    { key: 's-attendance',  i18n: 'dashboard.attendance', icon: ic('check') },
+    { key: 's-materials',   i18n: 'nav.materials',     icon: ic('book') },
+    { key: 's-requests',    i18n: 'nav.requests',      icon: ic('mail') },
+    { key: 's-library',     i18n: 'nav.library',       icon: ic('book') },
+    { key: 'announcements', i18n: 'nav.announcements', icon: ic('bell') },
+    { key: 's-payments',    i18n: 'nav.payments',      icon: ic('card') },
+  ];
+  const NAV_TEACHER = [
+    { key: 't-dashboard',   i18n: 'nav.dashboard',     icon: ic('dashboard') },
+    { key: 't-classes',     i18n: 'tch.classes',       icon: ic('users') },
+    { key: 't-timetable',   i18n: 'nav.schedule',      icon: ic('schedule') },
+    { key: 't-journal',     i18n: 'journal.title',     icon: ic('journal') },
+    { key: 't-exams',       i18n: 'ex.nav_teacher',    icon: ic('exam') },
+    { key: 't-assignments', i18n: 'assignments.title', icon: ic('clipboard') },
+    { key: 't-attendance',  i18n: 'attendance.title',  icon: ic('check') },
+    { key: 't-materials',   i18n: 'materials.title',   icon: ic('book') },
+    { key: 't-analytics',   i18n: 'nav.analytics',     icon: ic('chart') },
+    { key: 't-requests',    i18n: 'nav.requests',      icon: ic('mail') },
+    { key: 'announcements', i18n: 'nav.announcements', icon: ic('bell') },
+  ];
+
+  function ic(name) {
+    const m = {
+      dashboard: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+      schedule:  '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+      grades:    '<polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/>',
+      check:     '<polyline points="20 6 9 17 4 12"/>',
+      exam:      '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+      journal:   '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+      clipboard: '<path d="M9 2h6a2 2 0 0 1 2 2v2H7V4a2 2 0 0 1 2-2z"/><path d="M5 6h14v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"/>',
+      book:      '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/>',
+      mail:      '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+      user:      '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+      bell:      '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+      card:      '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+      doc:       '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+      users:     '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      chart:     '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+      more:      '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+      logout:    '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    };
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + (m[name] || '') + '</svg>';
+  }
+
+  function renderNav() {
+    const nav = document.getElementById('nav');
+    nav.innerHTML = '';
+    const items = currentUser.role === 'TEACHER' ? NAV_TEACHER : NAV_STUDENT;
+    for (const it of items) {
+      const btn = document.createElement('button');
+      btn.className = 'nav-item' + (currentPage === it.key ? ' active' : '');
+      btn.id = 'navbtn-' + it.key;
+      btn.innerHTML = it.icon + '<span>' + AP.i18n.t(it.i18n) + '</span>';
+      btn.addEventListener('click', () => showPage(it.key));
+      nav.appendChild(btn);
+    }
+    renderMobileNav();
+  }
+
+  // ── Mobile bottom navigation: 4 primary tabs + "More" sheet with everything else ──
+  const MOBILE_PRIMARY = {
+    STUDENT: ['s-dashboard', 's-my-subjects', 's-schedule', 's-assignments'],
+    TEACHER: ['t-dashboard', 't-journal', 't-assignments', 't-attendance'],
+  };
+  function navItemsForUser() { return currentUser.role === 'TEACHER' ? NAV_TEACHER : NAV_STUDENT; }
+  function renderMobileNav() {
+    if (!currentUser) return;
+    const items = navItemsForUser();
+    const primary = (MOBILE_PRIMARY[currentUser.role] || MOBILE_PRIMARY.STUDENT)
+      .map(k => items.find(i => i.key === k)).filter(Boolean);
+    const inPrimary = primary.some(i => i.key === currentPage);
+    const bar = document.getElementById('mnav');
+    bar.innerHTML = primary.map(it =>
+      '<button class="mnav-btn' + (currentPage === it.key ? ' active' : '') + '" data-mnav="' + it.key + '"' + (currentPage === it.key ? ' aria-current="page"' : '') + '>' +
+      it.icon + '<span>' + esc(AP.i18n.t(it.i18n)) + '</span></button>'
+    ).join('') +
+      '<button class="mnav-btn' + (!inPrimary && currentPage ? ' active' : '') + '" id="mnav-more" aria-haspopup="dialog">' + ic('more') + '<span>' + esc(AP.i18n.t('home.more')) + '</span></button>';
+    bar.querySelectorAll('[data-mnav]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.mnav)));
+    document.getElementById('mnav-more').addEventListener('click', openMore);
+
+    document.getElementById('more-grid').innerHTML = items.map(it =>
+      '<button class="sheet-item' + (currentPage === it.key ? ' active' : '') + '" data-more="' + it.key + '">' + it.icon + '<span>' + esc(AP.i18n.t(it.i18n)) + '</span></button>'
+    ).join('') +
+      '<button class="sheet-item" data-more="profile">' + ic('user') + '<span>' + esc(AP.i18n.t('nav.profile')) + '</span></button>' +
+      '<button class="sheet-item" data-more="__logout">' + ic('logout') + '<span>' + esc(AP.i18n.t('nav.logout')) + '</span></button>';
+    document.querySelectorAll('#more-grid [data-more]').forEach(b => b.addEventListener('click', () => {
+      closeMore();
+      if (b.dataset.more === '__logout') document.getElementById('btn-logout').click();
+      else showPage(b.dataset.more);
+    }));
+  }
+  function openMore() { document.getElementById('more-overlay').classList.add('show'); }
+  function closeMore() { document.getElementById('more-overlay').classList.remove('show'); }
+  document.getElementById('more-overlay').addEventListener('click', (e) => { if (e.target.id === 'more-overlay') closeMore(); });
+
+  function setPageTitle(key) {
+    const map = {
+      's-exams': 'ex.nav', 't-exams': 'ex.nav_teacher',
+      's-dashboard': 'nav.dashboard',  's-my-subjects': 'my_subjects.title',
+      's-schedule': 'nav.schedule',    's-progress': 'sp.title',    's-grades': 'journal.title',
+      's-transcript': 'transcript.title', 's-assignments': 'assignments.title',
+      's-attendance': 'dashboard.attendance','s-materials': 'materials.title',
+      's-requests': 'requests.title',
+      's-library': 'nav.library',
+      'profile': 'nav.profile',
+      'announcements': 'nav.announcements',
+      's-payments': 'nav.payments',
+      't-dashboard': 'nav.dashboard',  't-journal': 'journal.title',
+      't-classes': 'tch.classes',      't-analytics': 'nav.analytics',
+      't-assignments': 'assignments.title','t-attendance': 'attendance.title',
+      't-materials': 'materials.title',
+      't-requests': 'requests.title',
+    };
+    document.getElementById('page-title').textContent = AP.i18n.t(map[key] || key);
+  }
+
+  async function showPage(key) {
+    currentPage = key;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item[id^="navbtn-"]').forEach(b => b.classList.remove('active'));
+    const pg = document.getElementById('pg-' + key); if (pg) pg.classList.add('active');
+    const btn = document.getElementById('navbtn-' + key); if (btn) btn.classList.add('active');
+    setPageTitle(key);
+    renderMobileNav();
+    closeMore();
+    closeNotifPanel();
+    const main = document.querySelector('.main'); if (main) main.scrollTo({ top: 0 });
+    try {
+      switch (key) {
+        case 's-dashboard':   await loadStudentDashboard(); break;
+        case 's-my-subjects': await loadMySubjects(); break;
+        case 's-schedule':    await loadStudentSchedule(); break;
+        case 's-progress':    await AP.studentProgress.render('s-progress'); break;
+        case 's-exams':       await AP.examsStudent.render('s-exams'); break;
+        case 't-exams':       await AP.examsTeacher.render('t-exams'); break;
+        case 's-grades':      await AP.journal.mount('jr-student', { role: 'STUDENT' }); break;
+        case 's-transcript':  await loadStudentTranscript(); break;
+        case 's-attendance':  await AP.journal.mount('jr-student-att', { role: 'STUDENT', mode: 'attendance' }); break;
+        case 's-assignments': await loadStudentAssignments(); break;
+        case 's-materials':   await loadStudentMaterials(); break;
+        case 's-requests':    await loadStudentRequests(); break;
+        case 's-library':     await loadStudentLibrary(); break;
+        case 'profile':       await loadProfile(); break;
+        case 'announcements': await loadAnnouncements(); break;
+        case 's-payments':    await loadStudentPayments(); break;
+        case 't-dashboard':   await teacherUI.dashboard(); break;
+        case 't-classes':     await teacherUI.classes(); break;
+        case 't-journal':     await teacherUI.journal(); break;
+        case 't-attendance':  await teacherUI.attendance(); break;
+        case 't-assignments': await teacherUI.assignments(); break;
+        case 't-materials':   await teacherUI.materials(); break;
+        case 't-analytics':   await teacherUI.analytics(); break;
+        case 't-requests':    await teacherUI.requests(); break;
+        case 't-timetable':   await teacherUI.timetable(); break;
+      }
+    } catch (e) { console.error(e); toast(e.message || AP.i18n.t('common.error'), true); }
+  }
+
+  // Teacher workspace (см. /js/teacher.js). Создаётся один раз; все права проверяет бэкенд.
+  const teacherUI = AP.teacherUI.create({ toast, fmtDate, fmtDateTime, gradeColor, showPage });
+
+  function statCard(icon, val, label) {
+    return '<div class="stat-card"><div class="stat-icon" style="background:#dbeafe;color:#1e40af">' + icon + '</div><div class="stat-val">' + esc(val) + '</div><div class="stat-label">' + esc(label) + '</div></div>';
+  }
+
+  // ═══ Row detail modals on click ═══
+  document.addEventListener('click', (e) => {
+    // Row detail: grades
+    const gr = e.target.closest && e.target.closest('[data-grade-detail]');
+    if (gr) { openRowDetail('grade', JSON.parse(gr.dataset.gradeDetail)); return; }
+    // Row detail: assignments
+    const ar = e.target.closest && e.target.closest('[data-assignment-detail]');
+    if (ar) { openRowDetail('assignment', JSON.parse(ar.dataset.assignmentDetail)); return; }
+    // Row detail: material
+    const mr = e.target.closest && e.target.closest('[data-material-detail]');
+    if (mr) { openRowDetail('material', JSON.parse(mr.dataset.materialDetail)); return; }
+    // Row detail: request
+    const rr = e.target.closest && e.target.closest('[data-request-detail]');
+    if (rr) { openRowDetail('request', JSON.parse(rr.dataset.requestDetail)); return; }
+    // Schedule slot in week view
+    const sl = e.target.closest && e.target.closest('[data-slot-info]');
+    if (sl) { openRowDetail('slot', JSON.parse(sl.dataset.slotInfo)); return; }
+  });
+
+  function openRowDetail(kind, data) {
+    const body = document.getElementById('detail-modal-body');
+    body.innerHTML = ROW_DETAIL_RENDERERS[kind] ? ROW_DETAIL_RENDERERS[kind](data) : '<div class="empty">—</div>';
+    document.getElementById('detail-modal').classList.add('show');
+  }
+
+  const ROW_DETAIL_RENDERERS = {
+    grade: (g) => {
+      const c = gradeColor(g.maxValue ? (Number(g.value) / Number(g.maxValue)) * 100 : Number(g.value));
+      const typeLbl = AP.i18n.t('grades.' + String(g.type).toLowerCase(), g.type);
+      return '<h3 class="modal-title">🏆 ' + esc(g.subject.code) + ' · ' + esc(g.subject.name) + '</h3>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">' +
+          '<div style="background:' + c.bg + ';border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:700;color:' + c.c + '">' + Number(g.value).toFixed(1) + (g.maxValue ? '<span style="font-size:14px;font-weight:600"> / ' + Number(g.maxValue) + '</span>' : '') + '</div><div style="font-size:11px;color:#64748b">' + esc(typeLbl) + '</div></div>' +
+          '<div style="background:#f8fafc;border-radius:10px;padding:14px;text-align:center"><div style="font-size:18px;font-weight:700">' + g.semester + '</div><div style="font-size:11px;color:#64748b">' + esc(g.academicYear) + ' · ' + esc(termLabel(g.term)) + '</div></div>' +
+        '</div>' +
+        '<table><tbody>' +
+          '<tr><td style="color:var(--muted);width:120px">' + esc(AP.i18n.t('grades.teacher')) + '</td><td>' + esc(g.teacher ? g.teacher.fullName : '—') + (g.teacher ? ' <code style="font-size:11px">' + esc(g.teacher.loginId) + '</code>' : '') + '</td></tr>' +
+          '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('grades.date')) + '</td><td>' + fmtDate(g.createdAt) + '</td></tr>' +
+          '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('grades.comment')) + '</td><td>' + esc(g.comment || '—') + '</td></tr>' +
+        '</tbody></table>';
+    },
+    assignment: (a) => {
+      const sub = a.submission;
+      const badge = sub && sub.status === 'GRADED'
+        ? '<span class="badge badge-success">✓ ' + (sub.grade != null ? Number(sub.grade).toFixed(1) : '') + '</span>'
+        : sub ? '<span class="badge badge-info">' + esc(AP.i18n.t('assignments.pending')) + '</span>'
+        : new Date(a.dueDate) < new Date() ? '<span class="badge badge-danger">' + esc(AP.i18n.t('assignments.overdue')) + '</span>'
+        : '<span class="badge badge-gray">—</span>';
+      return '<h3 class="modal-title">📝 ' + esc(a.title) + '</h3>' +
+        '<div style="margin-bottom:10px">' + badge + ' <span class="chip">' + esc(a.subject.code) + ' · ' + esc(a.subject.name) + '</span></div>' +
+        '<p style="font-size:13.5px;line-height:1.6;color:var(--muted)">' + esc(a.description) + '</p>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;font-size:13px">' +
+          '<div><b>' + esc(AP.i18n.t('assignments.due_date')) + ':</b> ' + fmtDateTime(a.dueDate) + '</div>' +
+          '<div><b>' + esc(AP.i18n.t('assignments.max_grade')) + ':</b> ' + a.maxGrade + '</div>' +
+          (a.teacher ? '<div><b>' + esc(AP.i18n.t('grades.teacher')) + ':</b> ' + esc(a.teacher.fullName) + '</div>' : '') +
+          (sub && sub.submittedAt ? '<div><b>' + esc(AP.i18n.t('assignments.submitted_at')) + ':</b> ' + fmtDateTime(sub.submittedAt) + '</div>' : '') +
+        '</div>' +
+        (sub && sub.feedback ? '<div style="margin-top:12px;padding:10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px"><b>💬 ' + esc(AP.i18n.t('teacher.feedback')) + ':</b><br>' + esc(sub.feedback) + '</div>' : '') +
+        (!sub || sub.status !== 'GRADED' ? '<div class="form-row"><button class="btn btn-primary" onclick="document.getElementById(\'sf-id\').value=\'' + esc(a.id) + '\';document.getElementById(\'detail-modal\').classList.remove(\'show\');document.getElementById(\'submit-modal\').classList.add(\'show\')">' + esc(AP.i18n.t('assignments.submit')) + '</button></div>' : '');
+    },
+    material: (m) => {
+      return '<h3 class="modal-title">📚 ' + esc(m.title) + '</h3>' +
+        '<div><span class="chip">' + esc(m.subject.code) + ' · ' + esc(m.subject.name) + '</span> <span class="badge badge-gray">' + esc(m.type) + '</span></div>' +
+        '<table style="margin-top:14px"><tbody>' +
+          '<tr><td style="color:var(--muted);width:120px">' + esc(AP.i18n.t('materials.created')) + '</td><td>' + fmtDate(m.createdAt) + '</td></tr>' +
+          (m.teacher && m.teacher.user ? '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('grades.teacher')) + '</td><td>' + esc(m.teacher.user.fullName) + '</td></tr>' : '') +
+          (m.fileName ? '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('assignments.file_name')) + '</td><td>' + esc(m.fileName) + '</td></tr>' : '') +
+        '</tbody></table>' +
+        (m.url ? '<div class="form-row"><a class="btn btn-primary" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + esc(AP.i18n.t('materials.open')) + ' ↗</a></div>' : '');
+    },
+    request: (r) => {
+      const statusCls = r.status === 'PENDING' ? 'badge-warning' : r.status === 'APPROVED' ? 'badge-success' : 'badge-danger';
+      return '<h3 class="modal-title">📩 ' + esc(r.type) + '</h3>' +
+        '<div style="margin-bottom:10px"><span class="badge ' + statusCls + '">' + esc(r.status) + '</span> <span style="color:var(--muted);font-size:12px">' + fmtDate(r.createdAt) + '</span></div>' +
+        '<p style="font-size:13.5px;line-height:1.6">' + esc(r.description) + '</p>' +
+        (r.adminNote ? '<div style="margin-top:12px;padding:10px;background:#f0f9ff;border-left:3px solid #3b82f6;border-radius:6px"><b>💬 ' + esc(AP.i18n.t('requests.admin_note')) + ':</b><br>' + esc(r.adminNote) + '</div>' : '');
+    },
+    slot: (s) => {
+      const typeKey = s.type === 'lab' ? 'lab' : s.type === 'seminar' ? 'seminar' : s.type === 'exam' ? 'exam' : 'lecture';
+      const tc = SCHED_COLORS[typeKey];
+      return '<h3 class="modal-title">' + tc.icon + ' ' + esc(s.subject.code) + ' · ' + esc(s.subject.name) + '</h3>' +
+        '<div style="display:inline-block;padding:4px 10px;background:' + tc.bg + ';color:' + tc.c + ';border-radius:6px;font-size:12px;font-weight:600">' + esc(tc.label) + '</div>' +
+        '<table style="margin-top:14px"><tbody>' +
+          '<tr><td style="color:var(--muted);width:120px">' + esc(AP.i18n.t('admin_schedule.day')) + '</td><td>' + esc(AP.i18n.t(DOW[s.dayOfWeek])) + '</td></tr>' +
+          '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('admin_schedule.time')) + '</td><td><code>' + esc(s.startTime) + '–' + esc(s.endTime) + '</code></td></tr>' +
+          '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('admin_schedule.room')) + '</td><td>🏛 ' + esc(s.room) + '</td></tr>' +
+          (s.teacher ? '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('admin_schedule.teacher')) + '</td><td>' + esc(s.teacher.fullName) + '</td></tr>' : '') +
+          '<tr><td style="color:var(--muted)">' + esc(AP.i18n.t('admin_schedule.shift')) + '</td><td>' + esc(s.shift) + '</td></tr>' +
+          (s.weekParity && s.weekParity !== 'BOTH' ? '<tr><td style="color:var(--muted)">Həftə</td><td><span class="badge ' + (s.weekParity === 'UPPER' ? 'badge-info' : 'badge-purple') + '">' + s.weekParity + '</span></td></tr>' : '') +
+        '</tbody></table>';
+    },
+  };
+
+
+  // ─────────── STUDENT ───────────
+  // ═══ HOME: "My university today" — каждый блок грузится независимо, со своим skeleton / error / empty ═══
+  function skeletonRows(n) { return Array.from({ length: n || 3 }, () => '<div class="skel" style="height:42px;margin:8px 0"></div>').join(''); }
+  function panelError(retryFn) {
+    const id = 'retry-' + Math.random().toString(36).slice(2, 8);
+    setTimeout(() => { const b = document.getElementById(id); if (b) b.addEventListener('click', retryFn); }, 0);
+    return '<div class="empty" style="color:var(--danger)">' + esc(AP.i18n.t('home.load_error')) +
+      '<div style="margin-top:10px"><button class="btn btn-outline btn-sm" id="' + id + '">' + esc(AP.i18n.t('notif.retry')) + '</button></div></div>';
+  }
+  // academicStanding считает backend (/me/academic-summary); здесь только отображение
+  function standingView(code) {
+    const t = AP.i18n.t;
+    const M = { EXCELLENT: ['home.standing_excellent', 'badge-success'], GOOD: ['home.standing_good', 'badge-info'], SATISFACTORY: ['home.standing_ok', 'badge-warning'], AT_RISK: ['home.standing_risk', 'badge-danger'] };
+    const m = M[code] || ['home.standing_none', 'badge-gray'];
+    return { label: t(m[0]), cls: m[1] };
+  }
+  function toMinutes(hhmm) { const [h, m] = String(hhmm).split(':').map(Number); return h * 60 + (m || 0); }
+
+  function renderHomeQuickActions() {
+    const t = AP.i18n.t;
+    const qa = [
+      { page: 's-grades',      icon: ic('grades'),    label: t('home.qa_grades') },
+      { page: 's-schedule',    icon: ic('schedule'),  label: t('home.qa_schedule') },
+      { page: 's-assignments', icon: ic('clipboard'), label: t('home.qa_assignments') },
+      { page: 's-transcript',  icon: ic('doc'),       label: t('home.qa_transcript') },
+      { page: 's-requests',    icon: ic('mail'),      label: t('home.qa_request'), openNew: true },
+    ];
+    const box = document.getElementById('home-qa');
+    box.innerHTML = qa.map((q, i) => '<button class="qa-btn" data-qa="' + i + '">' + q.icon + '<span>' + esc(q.label) + '</span></button>').join('');
+    box.querySelectorAll('[data-qa]').forEach(b => b.addEventListener('click', async () => {
+      const q = qa[Number(b.dataset.qa)];
+      await showPage(q.page);
+      if (q.openNew) { const nb = document.getElementById('btn-new-request'); if (nb) nb.click(); }
+    }));
+  }
+
+  async function loadStudentDashboard() {
+    const t = AP.i18n.t;
+    const now = new Date();
+    const nameParts = String(currentUser.fullName || '').split(' ').filter(Boolean);
+    document.getElementById('home-hello').textContent = t('home.hello') + ', ' + nameParts.slice(0, 2).join(' ');
+    document.getElementById('home-date').textContent = now.toLocaleDateString(localeFor(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    renderHomeQuickActions();
+
+    const skel = { 's-stats': '', 's-today': skeletonRows(3), 's-assignments': skeletonRows(3), 's-announcements': skeletonRows(3), 's-recent-grades': skeletonRows(3) };
+    for (const [id, html] of Object.entries(skel)) document.getElementById(id).innerHTML = html;
+    document.getElementById('s-stats').innerHTML = '<div class="skel" style="height:110px"></div>'.repeat(4);
+    AP.appeals.dashboardAlert(document.getElementById('s-exam-alerts')); // «результат экзамена доступен» + Review / Appeal
+
+    const retry = () => loadStudentDashboard();
+    const [rTr, rAtt, rSched, rAsg, rAnn, rGr] = await Promise.allSettled([
+      AP.api.myAcademicSummary(), AP.api.journal.attendance.student(), AP.api.mySchedule(),
+      AP.api.myAssignments(), AP.api.myAnnouncements(), AP.api.myGrades(),
+    ]);
+
+    // ── Academic summary ──
+    let gpaVal = '—', creditsVal = '—', standing = standingView('NONE');
+    if (rTr.status === 'fulfilled') {
+      const s = rTr.value;
+      if (s.cumulativeGpa != null) gpaVal = s.cumulativeGpa.toFixed(2);
+      creditsVal = s.earnedCredits + ' / ' + s.totalCredits;
+      standing = standingView(s.academicStanding);
+    }
+    let attVal = '—';
+    if (rAtt.status === 'fulfilled') {
+      const rate = rAtt.value.totals.rate;
+      attVal = rate != null ? rate + '%' : '—';
+    }
+    const card = (icon, val, label, sub, page) =>
+      '<div class="stat-card" data-goto="' + page + '" style="cursor:pointer" role="button" tabindex="0"><div class="stat-icon" style="background:#dbeafe;color:#1e40af">' + icon + '</div>' +
+      '<div class="stat-val">' + val + '</div><div class="stat-label">' + esc(label) + '</div>' + (sub ? '<div style="margin-top:6px;font-size:11px;color:var(--muted)">' + sub + '</div>' : '') + '</div>';
+    document.getElementById('s-stats').innerHTML =
+      card('📊', esc(gpaVal), t('home.gpa'), '', 's-transcript') +
+      card('✅', esc(attVal), t('home.attendance'), '', 's-attendance') +
+      card('🎓', esc(creditsVal), t('home.credits'), esc(t('home.credits_of')), 's-transcript') +
+      card('🏅', '<span class="badge ' + standing.cls + '" style="font-size:13px;padding:4px 10px">' + esc(standing.label) + '</span>', t('home.standing'), '', 's-transcript');
+    document.querySelectorAll('#s-stats [data-goto]').forEach(el => {
+      const go = () => showPage(el.dataset.goto);
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+
+    // ── Today's classes ──
+    const todayBox = document.getElementById('s-today');
+    if (rSched.status !== 'fulfilled') todayBox.innerHTML = panelError(retry);
+    else {
+      const { slots, currentWeekParity } = rSched.value;
+      const dow = now.getDay() || 7;
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      const todays = slots.filter(s => s.dayOfWeek === dow && (s.weekParity === 'BOTH' || s.weekParity === currentWeekParity))
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+      todayBox.innerHTML = todays.length ? todays.map(s => {
+        const st = nowMin >= toMinutes(s.endTime) ? { k: 'status_done', c: 'badge-gray' }
+          : nowMin >= toMinutes(s.startTime) ? { k: 'status_now', c: 'badge-success' } : { k: 'status_next', c: 'badge-info' };
+        return '<div class="home-row"><div style="min-width:0"><div class="t">' + esc(s.subject.name) + '</div>' +
+          '<div class="s">' + esc(s.startTime) + '–' + esc(s.endTime) + (s.teacher ? ' · ' + esc(s.teacher.fullName) : '') + ' · 🏛 ' + esc(s.room) + '</div></div>' +
+          '<span class="badge ' + st.c + '">' + esc(t('home.' + st.k)) + '</span></div>';
+      }).join('') : '<div class="empty">' + esc(t('dashboard.no_classes_today')) + '</div>';
+    }
+
+    // ── Assignments ──
+    const asgBox = document.getElementById('s-assignments');
+    if (rAsg.status !== 'fulfilled') asgBox.innerHTML = panelError(retry);
+    else {
+      const done = [], overdue = [], upcoming = [];
+      for (const a of rAsg.value) {
+        const submitted = a.submission && a.submission.status && a.submission.status !== 'PENDING';
+        if (submitted) done.push(a);
+        else if (new Date(a.dueDate) < now) overdue.push(a);
+        else upcoming.push(a);
+      }
+      overdue.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      upcoming.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      const list = overdue.slice(0, 3).map(a => [a, true]).concat(upcoming.slice(0, 5 - Math.min(3, overdue.length)).map(a => [a, false]));
+      asgBox.innerHTML =
+        '<div class="pill-group"><span class="pill pill-info">' + esc(t('home.upcoming')) + ': ' + upcoming.length + '</span>' +
+        '<span class="pill pill-danger">' + esc(t('home.overdue')) + ': ' + overdue.length + '</span>' +
+        '<span class="pill pill-ok">' + esc(t('home.completed')) + ': ' + done.length + '</span></div>' +
+        (list.length ? list.map(([a, late]) =>
+          '<div class="home-row"><div style="min-width:0"><div class="t">' + esc(a.title) + '</div><div class="s">' + esc(a.subject.name) + '</div></div>' +
+          '<span class="badge ' + (late ? 'badge-danger' : 'badge-warning') + '" title="' + esc(t('home.deadline')) + '">' + esc(fmtDate(a.dueDate)) + '</span></div>'
+        ).join('') : '<div class="empty">' + esc(t('home.no_assignments')) + '</div>');
+    }
+
+    // ── Announcements ──
+    const annBox = document.getElementById('s-announcements');
+    if (rAnn.status !== 'fulfilled') annBox.innerHTML = panelError(retry);
+    else {
+      const latest = rAnn.value.slice(0, 3);
+      const prioCls = { LOW: 'badge-gray', NORMAL: 'badge-info', HIGH: 'badge-warning', URGENT: 'badge-danger' };
+      annBox.innerHTML = latest.length ? latest.map(a =>
+        '<div class="home-row" data-goto="announcements" style="cursor:pointer"><div style="min-width:0"><div class="t">' + (a.isRead ? '' : '<span class="badge badge-danger" style="margin-right:6px">' + esc(t('home.new')) + '</span>') + esc(a.title) + '</div>' +
+        '<div class="s">' + esc(fmtDate(a.createdAt)) + '</div></div>' +
+        '<span class="badge ' + (prioCls[a.priority] || 'badge-gray') + '">' + esc(t('home.prio.' + a.priority, a.priority)) + '</span></div>'
+      ).join('') : '<div class="empty">' + esc(t('home.no_announcements')) + '</div>';
+      annBox.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => showPage('announcements')));
+    }
+
+    // ── Recent grades ──
+    const grBox = document.getElementById('s-recent-grades');
+    if (rGr.status !== 'fulfilled') grBox.innerHTML = panelError(retry);
+    else {
+      const recent = rGr.value.slice(0, 5);
+      grBox.innerHTML = recent.length ? recent.map(g => { const c = gradeColor(g.maxValue ? (Number(g.value) / Number(g.maxValue)) * 100 : Number(g.value));
+        return '<div class="home-row"><div style="min-width:0"><div class="t">' + esc(g.subject.name) + '</div><div class="s">' + esc(g.subject.code) + ' · ' + esc(fmtDate(g.createdAt)) + '</div></div><span class="badge" style="background:' + c.bg + ';color:' + c.c + '">' + Number(g.value).toFixed(1) + (g.maxValue ? ' / ' + Number(g.maxValue) : '') + '</span></div>';
+      }).join('') : '<div class="empty">' + esc(t('grades.no_grades')) + '</div>';
+    }
+  }
+
+  let scheduleView = { mode: 'week', year: new Date().getFullYear(), month: new Date().getMonth(), weekOffset: 0 };
+  let scheduleCache = null;
+  let scheduleEventsCache = null;
+  let scheduleAssignmentsCache = null;
+
+  // Color legend for schedule item types
+  const SCHED_COLORS = {
+    lecture:    { bg: '#dbeafe', c: '#1e40af', label: 'Mühazirə',     icon: '🎓' },
+    seminar:    { bg: '#ede9fe', c: '#5b21b6', label: 'Seminar',      icon: '💡' },
+    lab:        { bg: '#cffafe', c: '#0e7490', label: 'Laboratoriya', icon: '🧪' },
+    exam:       { bg: '#fee2e2', c: '#991b1b', label: 'İmtahan',      icon: '📝' },
+    midterm:    { bg: '#fed7aa', c: '#9a3412', label: 'Midterm',      icon: '⚡' },
+    final:      { bg: '#fecaca', c: '#7f1d1d', label: 'Final',        icon: '🏁' },
+    deadline:   { bg: '#fef3c7', c: '#92400e', label: 'Dedline (tapşırıq)', icon: '⏰' },
+    holiday:    { bg: '#d1fae5', c: '#065f46', label: 'Bayram',       icon: '🎌' },
+    mourning:   { bg: '#e5e7eb', c: '#1f2937', label: 'Hüzn günü',    icon: '🕯' },
+    cancelled:  { bg: '#fef3c7', c: '#92400e', label: 'Təxirə salındı',icon: '⛔' },
+  };
+
+  async function loadStudentSchedule() {
+    if (!scheduleCache) scheduleCache = await AP.api.mySchedule();
+    try { if (!scheduleEventsCache) scheduleEventsCache = await AP.api.myCalendar(); } catch { scheduleEventsCache = []; }
+    try { if (!scheduleAssignmentsCache) scheduleAssignmentsCache = await AP.api.myAssignments(); } catch { scheduleAssignmentsCache = []; }
+    renderStudentSchedule();
+  }
+
+  function legendHtml() {
+    const items = ['lecture', 'seminar', 'exam', 'midterm', 'final', 'deadline', 'holiday', 'mourning'];
+    return '<div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;background:#f8fafc;border-radius:10px;margin-bottom:14px;font-size:12px">' +
+      items.map(k => { const c = SCHED_COLORS[k]; return '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:' + c.bg + ';color:' + c.c + ';border-radius:6px;font-weight:600">' + c.icon + ' ' + esc(c.label) + '</span>'; }).join('') +
+    '</div>';
+  }
+
+  function inferExamType(ev) {
+    if (!ev) return null;
+    if (ev.type === 'HOLIDAY')   return 'holiday';
+    if (ev.type === 'MOURNING')  return 'mourning';
+    if (ev.type === 'LECTURE_CANCELLED') return 'cancelled';
+    if (ev.type === 'EXAM') {
+      const t = (ev.title || '').toLowerCase();
+      if (t.includes('midterm') || t.includes('ara')) return 'midterm';
+      if (t.includes('final'))   return 'final';
+      return 'exam';
+    }
+    return null;
+  }
+
+  function renderStudentSchedule() {
+    const box = document.getElementById('s-schedule');
+    const toolbar =
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">' +
+        '<div style="display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px">' +
+          '<button class="filter-btn ' + (scheduleView.mode === 'week' ? 'active' : '') + '" data-sched-mode="week">🗓 Həftə</button>' +
+          '<button class="filter-btn ' + (scheduleView.mode === 'month' ? 'active' : '') + '" data-sched-mode="month">📅 Ay</button>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;align-items:center">' +
+          '<button class="btn btn-outline btn-sm" data-sched-nav="-1">←</button>' +
+          '<button class="btn btn-primary btn-sm" data-sched-nav="0">' + (AP.i18n.getLang() === 'ru' ? 'Сегодня' : AP.i18n.getLang() === 'en' ? 'Today' : 'Bu gün') + '</button>' +
+          '<button class="btn btn-outline btn-sm" data-sched-nav="1">→</button>' +
+          '<span id="sched-period" style="font-size:14px;font-weight:600;min-width:180px;text-align:center"></span>' +
+        '</div>' +
+      '</div>';
+    box.innerHTML = toolbar + legendHtml() + '<div id="sched-content"></div>';
+    document.querySelectorAll('[data-sched-mode]').forEach(b => b.addEventListener('click', () => {
+      scheduleView.mode = b.dataset.schedMode;
+      scheduleView.weekOffset = 0;
+      scheduleView.year = new Date().getFullYear();
+      scheduleView.month = new Date().getMonth();
+      renderStudentSchedule();
+    }));
+    document.querySelectorAll('[data-sched-nav]').forEach(b => b.addEventListener('click', () => {
+      const dir = parseInt(b.dataset.schedNav, 10);
+      if (dir === 0) { scheduleView.weekOffset = 0; scheduleView.year = new Date().getFullYear(); scheduleView.month = new Date().getMonth(); }
+      else if (scheduleView.mode === 'week') scheduleView.weekOffset += dir;
+      else { scheduleView.month += dir; if (scheduleView.month < 0) { scheduleView.month = 11; scheduleView.year--; } if (scheduleView.month > 11) { scheduleView.month = 0; scheduleView.year++; } }
+      renderStudentSchedule();
+    }));
+
+    if (scheduleView.mode === 'week') renderScheduleWeek();
+    else renderScheduleMonth();
+  }
+
+  function getWeekStart(date) {
+    const d = new Date(date);
+    const day = d.getDay() || 7;
+    d.setDate(d.getDate() - (day - 1));
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  function weekParityAt(date) {
+    const t = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    const wk = Math.ceil(((t.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+    return wk % 2 === 1 ? 'UPPER' : 'LOWER';
+  }
+  function eventForDate(date) {
+    const key = date.toISOString().slice(0, 10);
+    return (scheduleEventsCache || []).find(e => {
+      const s = new Date(e.eventDate).toISOString().slice(0, 10);
+      const en = e.endDate ? new Date(e.endDate).toISOString().slice(0, 10) : s;
+      return key >= s && key <= en;
+    });
+  }
+
+  function renderScheduleWeek() {
+    const sch = scheduleCache.slots;
+    const now = new Date();
+    const weekStart = getWeekStart(now);
+    weekStart.setDate(weekStart.getDate() + scheduleView.weekOffset * 7);
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 4);
+    const parity = weekParityAt(weekStart);
+    const parityBadge = (p) => p === 'BOTH' ? '' :
+      '<span class="badge ' + (p === 'UPPER' ? 'badge-info' : 'badge-purple') + '" style="font-size:9px;padding:1px 5px;margin-left:3px">' + p + '</span>';
+
+    const fmt = (d) => d.toLocaleDateString(localeFor(), { day: 'numeric', month: 'short' });
+    document.getElementById('sched-period').textContent = fmt(weekStart) + ' – ' + fmt(weekEnd) + ' · ' + parity;
+
+    const times = Array.from(new Set(sch.map(s => s.startTime + '|' + s.endTime))).sort();
+    let html = '<div class="schedule-grid"><div class="time-head"></div>';
+    for (let d = 1; d <= 5; d++) {
+      const dayDate = new Date(weekStart); dayDate.setDate(dayDate.getDate() + (d - 1));
+      const ev = eventForDate(dayDate);
+      const evTag = ev ? '<div style="font-size:9px;background:#fee2e2;color:#991b1b;padding:1px 4px;border-radius:3px;margin-top:2px;font-weight:600">' + esc(ev.type) + '</div>' : '';
+      html += '<div class="dow-head">' + esc(AP.i18n.t(DOW[d])) + '<div style="font-size:10px;opacity:.6;font-weight:400">' + esc(fmt(dayDate)) + '</div>' + evTag + '</div>';
+    }
+    for (const t of times) {
+      const [start, end] = t.split('|');
+      html += '<div class="time-head" style="display:flex;flex-direction:column;justify-content:center;text-align:center"><div>' + esc(start) + '</div><div style="opacity:.5">' + esc(end) + '</div></div>';
+      for (let d = 1; d <= 5; d++) {
+        const dayDate = new Date(weekStart); dayDate.setDate(dayDate.getDate() + (d - 1));
+        const ev = eventForDate(dayDate);
+        const isHoliday = ev && (ev.type === 'HOLIDAY' || ev.type === 'MOURNING' || ev.type === 'LECTURE_CANCELLED');
+        const daySlots = sch.filter(s => s.dayOfWeek === d && s.startTime === start && s.endTime === end && (s.weekParity === 'BOTH' || s.weekParity === parity));
+        if (daySlots.length === 0 || isHoliday) {
+          html += '<div' + (isHoliday ? ' style="background:#fef3c7aa"' : '') + '>' + (isHoliday ? '<div style="font-size:10px;color:#92400e;padding:4px">' + esc(ev.title) + '</div>' : '') + '</div>';
+          continue;
+        }
+        html += '<div>' + daySlots.map(slot => {
+          const typeKey = slot.type === 'lab' ? 'lab' : slot.type === 'seminar' ? 'seminar' : slot.type === 'exam' ? 'exam' : 'lecture';
+          const tc = SCHED_COLORS[typeKey];
+          const teacherBit = slot.teacher ? '<div class="slot-room" style="font-size:10px">' + esc(slot.teacher.fullName.split(' ')[0]) + '</div>' : '';
+          return '<div class="slot" data-slot-info="' + esc(JSON.stringify(slot)) + '" style="background:' + tc.bg + ';color:' + tc.c + ';margin:2px 0;padding:6px 8px;border-radius:6px;cursor:pointer;border-left:3px solid ' + tc.c + '">' +
+            '<div class="slot-code">' + tc.icon + ' ' + esc(slot.subject.code) + parityBadge(slot.weekParity) + '</div>' +
+            '<div style="font-size:11px;color:' + tc.c + ';opacity:.85">' + esc(slot.subject.name) + '</div>' +
+            '<div class="slot-room" style="color:' + tc.c + ';opacity:.7">' + esc(slot.room) + ' · ' + esc(slot.type) + '</div>' +
+            teacherBit +
+          '</div>';
+        }).join('') + '</div>';
+      }
+    }
+    html += '</div>';
+    document.getElementById('sched-content').innerHTML = html;
+  }
+
+  function renderScheduleMonth() {
+    const sch = scheduleCache.slots;
+    const { year, month } = scheduleView;
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const daysInMonth = last.getDate();
+    const startDow = (first.getDay() || 7) - 1;
+    const monthName = first.toLocaleDateString(localeFor(), { month: 'long', year: 'numeric' });
+    const today = new Date();
+    document.getElementById('sched-period').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+    const dowLabels = ['schedule.monday','schedule.tuesday','schedule.wednesday','schedule.thursday','schedule.friday','schedule.saturday','schedule.sunday'].map(k => AP.i18n.t(k));
+    let html = '<div class="card" style="overflow:hidden"><div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--border);gap:1px">' +
+      dowLabels.map(l => '<div style="background:#f8fafc;padding:8px;text-align:center;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">' + esc(l) + '</div>').join('');
+
+    for (let i = 0; i < startDow; i++) html += '<div style="background:#f8fafc;min-height:92px"></div>';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateObj = new Date(year, month, d);
+      const dow = dateObj.getDay() || 7;
+      const parity = weekParityAt(dateObj);
+      const ev = eventForDate(dateObj);
+      const evKey = inferExamType(ev);
+      const slotsToday = sch.filter(s => s.dayOfWeek === dow && (s.weekParity === 'BOTH' || s.weekParity === parity)).sort((a,b) => a.startTime.localeCompare(b.startTime));
+      const dateKey = dateObj.toISOString().slice(0, 10);
+      const deadlines = (scheduleAssignmentsCache || []).filter(a => new Date(a.dueDate).toISOString().slice(0, 10) === dateKey);
+      const isToday = dateObj.toDateString() === today.toDateString();
+      const bg = evKey && SCHED_COLORS[evKey] ? SCHED_COLORS[evKey].bg + 'aa' : (isToday ? '#eff6ff' : '#fff');
+
+      let cellHtml = '<div style="font-weight:700;font-size:13px">' + d + '</div>';
+
+      // Calendar event (holiday/mourning/exam/midterm/final)
+      if (ev && evKey) {
+        const c = SCHED_COLORS[evKey];
+        cellHtml += '<div style="background:' + c.bg + ';color:' + c.c + ';padding:2px 5px;margin-top:3px;border-radius:4px;font-size:10px;font-weight:700" title="' + esc(ev.title) + '">' + c.icon + ' ' + esc(c.label) + '</div>';
+      } else {
+        // Classes (max 2 visible)
+        cellHtml += slotsToday.slice(0, 2).map(s => {
+          const tk = s.type === 'lab' ? 'lab' : s.type === 'seminar' ? 'seminar' : 'lecture';
+          const tc = SCHED_COLORS[tk];
+          return '<div style="background:' + tc.bg + ';color:' + tc.c + ';padding:1px 5px;margin-top:2px;border-radius:4px;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(s.subject.name) + ' · ' + esc(s.startTime) + '-' + esc(s.endTime) + '">' + tc.icon + ' <b>' + esc(s.startTime) + '</b> ' + esc(s.subject.code) + '</div>';
+        }).join('');
+        if (slotsToday.length > 2) cellHtml += '<div style="font-size:10px;color:var(--muted);margin-top:2px">+' + (slotsToday.length - 2) + ' ' + esc(AP.i18n.t('schedule.lecture').toLowerCase()) + '</div>';
+      }
+
+      // Assignment deadlines (always, even on event days)
+      if (deadlines.length) {
+        const dc = SCHED_COLORS.deadline;
+        cellHtml += '<div style="background:' + dc.bg + ';color:' + dc.c + ';padding:1px 5px;margin-top:2px;border-radius:4px;font-size:10px;font-weight:700" title="' + deadlines.map(x => esc(x.title)).join(' · ') + '">' + dc.icon + ' ' + deadlines.length + ' deadline</div>';
+      }
+
+      html += '<div style="background:' + bg + ';padding:6px 8px;min-height:92px;' + (isToday ? 'outline:2px solid #3b82f6;outline-offset:-2px' : '') + '">' + cellHtml + '</div>';
+    }
+    const used = startDow + daysInMonth;
+    const target = used <= 35 ? 35 : 42;
+    for (let i = used; i < target; i++) html += '<div style="background:#f8fafc;min-height:92px"></div>';
+    html += '</div></div>';
+    document.getElementById('sched-content').innerHTML = html;
+  }
+
+  // ═══ MY SUBJECTS — всё о предмете на одной странице ═══
+  let mySubjectsFilter = { academicYear: '', term: '' };
+
+  async function loadMySubjects() {
+    await populateSemesterFilter('ms-filter', mySubjectsFilter.academicYear ? mySubjectsFilter.academicYear + '|' + mySubjectsFilter.term : '');
+    const sel = document.getElementById('ms-filter');
+    sel.onchange = () => {
+      const v = sel.value;
+      if (v) { const [ay, tr] = v.split('|'); mySubjectsFilter = { academicYear: ay, term: tr }; }
+      else   { mySubjectsFilter = { academicYear: '', term: '' }; }
+      renderMySubjects();
+    };
+    await renderMySubjects();
+  }
+
+  async function renderMySubjects() {
+    const box = document.getElementById('ms-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const filters = mySubjectsFilter.academicYear ? { academicYear: mySubjectsFilter.academicYear, term: mySubjectsFilter.term } : undefined;
+      const data = await AP.api.mySubjectsOverview(filters);
+
+      if (!data.subjects.length) {
+        box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('grades.no_grades')) + '</div></div>';
+        return;
+      }
+
+      const headerBadge = data.isCurrent
+        ? '<span class="badge badge-info">' + esc(AP.i18n.t('transcript.current_semester')) + '</span>'
+        : '<span class="badge badge-gray">' + esc(AP.i18n.t('transcript.archived')) + '</span>';
+      const periodTitle = esc(data.academicYear) + ' · ' + esc(AP.i18n.t('transcript.' + String(data.term).toLowerCase(), data.term));
+
+      const attStatusColor = (s) => ({
+        OK: '#10b981', WARNING: '#f59e0b', CRITICAL: '#fb923c', EXCEEDED: '#ef4444',
+      }[s] || '#64748b');
+      const attStatusLabel = (s) => AP.i18n.t('attendance.limit_status_' + s.toLowerCase(), s);
+
+      box.innerHTML =
+        '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">' +
+          '<div style="font-weight:700;font-size:15px">' + periodTitle + '</div>' + headerBadge +
+          '<span style="margin-left:auto;font-size:13px;color:var(--muted)">' + data.subjects.length + ' ' + esc(AP.i18n.t('nav.subjects').toLowerCase()) + '</span>' +
+        '</div></div>' +
+        data.subjects.map((item) => renderSubjectCard(item, data.isCurrent, attStatusColor, attStatusLabel)).join('');
+    } catch (e) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(e.message || 'error') + '</div></div>';
+    }
+  }
+
+  // Компактная карточка предмета в списке. По клику → детальная страница.
+  function renderSubjectCard(item, isCurrent, attStatusColor, attStatusLabel) {
+    const s = item.subject;
+    const color = s.color || '#2563eb';
+    const a = item.attendance;
+    const attColor = attStatusColor(a.status);
+    // Итог предмета считает backend (Academic Journal): итоговый /100 или текущая успеваемость по имеющимся компонентам
+    const jr = item.journal || {};
+    const jrPct = jr.total && jr.total.final ? jr.total.score : (jr.performancePct != null ? jr.performancePct : null);
+    const avgGrade = jrPct != null ? Number(jrPct).toFixed(1) : '—';
+    const gc = jrPct != null ? gradeColor(Number(jrPct)) : { bg: '#f1f5f9', c: '#475569' };
+    const teachersLine = item.teachers.length
+      ? item.teachers.map(t => esc(t.fullName) + ' (' + esc(t.type) + ')').join(' · ')
+      : AP.i18n.t('my_subjects.no_teacher');
+
+    return '<div class="card" style="margin-bottom:12px;border-left:4px solid ' + color + ';cursor:pointer;transition:all .15s" ' +
+      'onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.08)\'" ' +
+      'onmouseout="this.style.boxShadow=\'\'" ' +
+      'data-subject-code="' + esc(s.code) + '">' +
+      '<div class="card-pad" style="display:grid;grid-template-columns:minmax(0,2fr) 1fr 1fr auto;gap:16px;align-items:center">' +
+        // Name + teachers
+        '<div style="min-width:0">' +
+          '<div style="font-size:16px;font-weight:700">' + esc(s.code) + ' · ' + esc(s.name) + '</div>' +
+          '<div style="font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+            esc(teachersLine) +
+          '</div>' +
+        '</div>' +
+        // Average grade
+        '<div style="text-align:center">' +
+          '<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">' + esc(AP.i18n.t('grades.value')) + '</div>' +
+          '<div style="margin-top:4px"><span class="badge" style="background:' + gc.bg + ';color:' + gc.c + ';font-size:13px;padding:3px 10px">' + avgGrade + '</span></div>' +
+        '</div>' +
+        // Attendance mini
+        '<div>' +
+          '<div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:3px">' +
+            '<span>' + esc(AP.i18n.t('attendance.counted')) + '</span>' +
+            '<span><b>' + a.countedAbsences + '</b> / ' + a.maxAbsences + '</span>' +
+          '</div>' +
+          '<div class="prog" style="height:6px"><div class="prog-bar" style="width:' + Math.min(100, a.percentage) + '%;background:' + attColor + '"></div></div>' +
+          '<div style="margin-top:4px;font-size:10px;color:' + attColor + ';font-weight:600">' + esc(attStatusLabel(a.status)) + '</div>' +
+        '</div>' +
+        // Open button
+        '<div><button class="btn btn-primary btn-sm">' + esc(AP.i18n.t('materials.open')) + ' →</button></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Клик по компактной карточке → открываем детальный вид
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest && e.target.closest('[data-subject-code]');
+    if (!card) return;
+    const code = card.dataset.subjectCode;
+    openSubjectDetail(code);
+  });
+
+  async function openSubjectDetail(code) {
+    currentPage = 's-subject-detail';
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('pg-s-subject-detail').classList.add('active');
+    document.getElementById('page-title').textContent = code;
+    const box = document.getElementById('sd-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const filters = mySubjectsFilter.academicYear ? { academicYear: mySubjectsFilter.academicYear, term: mySubjectsFilter.term } : undefined;
+      const data = await AP.api.mySubjectDays(code, filters);
+      renderSubjectDetail(data, box);
+    } catch (err) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(err.message || 'error') + '</div></div>';
+    }
+  }
+
+  document.getElementById('sd-back').addEventListener('click', () => {
+    currentPage = 's-my-subjects';
+    showPage('s-my-subjects');
+  });
+
+  function renderSubjectDetail(data, box) {
+    const s = data.subject;
+    const color = s.color || '#2563eb';
+    const sum = data.summary;
+    const attColor = sum.status
+      ? { OK: '#10b981', WARNING: '#f59e0b', CRITICAL: '#fb923c', EXCEEDED: '#ef4444' }[sum.status]
+      : '#10b981';
+
+    document.getElementById('page-title').textContent = s.code + ' · ' + s.name;
+
+    // ── Header card ──
+    const teachersHtml = data.teachers.length
+      ? data.teachers.map(t => {
+          const typeLbl = AP.i18n.t('schedule.' + t.type, t.type);
+          const parity = t.weekParity === 'BOTH' ? '' :
+            ' <span class="badge ' + (t.weekParity === 'UPPER' ? 'badge-info' : 'badge-purple') + '" style="font-size:10px">' + t.weekParity + '</span>';
+          return '<div style="padding:4px 0"><b>' + esc(t.fullName) + '</b> ' +
+            '<span class="chip" style="background:' + color + '18;color:' + color + '">' + esc(typeLbl) + '</span>' + parity + '</div>';
+        }).join('')
+      : '<div style="color:var(--muted)">' + esc(AP.i18n.t('my_subjects.no_teacher')) + '</div>';
+
+    const header =
+      '<div class="card" style="margin-bottom:16px;border-left:4px solid ' + color + '"><div class="card-pad">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">' +
+          '<div style="min-width:0;flex:1">' +
+            '<div style="font-size:20px;font-weight:700">' + esc(s.code) + ' · ' + esc(s.name) + '</div>' +
+            '<div style="font-size:13px;color:var(--muted);margin-top:4px">' +
+              esc(AP.i18n.t('transcript.semester_num')) + ' ' + s.semester + ' · ' + esc(data.academicYear) + ' ' + esc(AP.i18n.t('transcript.' + String(data.term).toLowerCase(), data.term)) +
+            '</div>' +
+            (s.description ? '<div style="font-size:13px;color:var(--muted);margin-top:4px">' + esc(s.description) + '</div>' : '') +
+            '<div style="margin-top:12px">' + teachersHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>';
+
+    // ── KPI ──
+    const kpiCards =
+      '<div class="stat-grid" style="margin-bottom:16px">' +
+        statCard('✅', sum.present, AP.i18n.t('attendance.present')) +
+        statCard('❌', String(sum.absent) + (sum.late ? ' +' + sum.late + '⏰' : ''), AP.i18n.t('attendance.absent')) +
+        statCard('🎌', sum.holidays, AP.i18n.t('my_subjects.holidays', 'Holidays')) +
+        statCard('🎯', sum.countedAbsences + ' / ' + sum.maxAbsences, AP.i18n.t('attendance.counted')) +
+      '</div>';
+
+    // ── Прогресс-бар лимита ──
+    const attBar =
+      '<div class="card" style="margin-bottom:16px"><div class="card-pad">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><b>' + esc(AP.i18n.t('attendance.limits_title')) + '</b>' +
+        '<span class="badge" style="background:' + attColor + '22;color:' + attColor + '">' +
+          esc(AP.i18n.t('attendance.limit_status_' + String(sum.status).toLowerCase(), sum.status)) +
+        '</span></div>' +
+        '<div class="prog" style="height:10px"><div class="prog-bar" style="width:' + Math.min(100, sum.percentage) + '%;background:' + attColor + '"></div></div>' +
+        '<div style="margin-top:6px;font-size:12px;color:var(--muted)">' +
+          esc(AP.i18n.t('attendance.counted')) + ': <b>' + sum.countedAbsences + '</b> / ' + sum.maxAbsences + ' · ' +
+          esc(AP.i18n.t('attendance.remaining')) + ': <b>' + sum.remaining + '</b>' +
+        '</div>' +
+      '</div></div>';
+
+    // ── Таблица дат занятий с attendance + праздники ──
+    const daysSorted = [...data.days].reverse(); // от новых к старым
+    const eventBg = {
+      HOLIDAY: '#d1fae5', MOURNING: '#e5e7eb', EXAM: '#fee2e2',
+      LECTURE_CANCELLED: '#fef3c7', ACADEMIC: '#dbeafe', OTHER: '#f1f5f9',
+    };
+    const eventEmoji = {
+      HOLIDAY: '🎌', MOURNING: '🕯', EXAM: '📝',
+      LECTURE_CANCELLED: '⛔', ACADEMIC: 'ℹ', OTHER: '📌',
+    };
+    const attBadge = (st) => {
+      if (!st) return '<span class="badge badge-gray">—</span>';
+      const cls = st === 'PRESENT' ? 'badge-success' : st === 'EXCUSED' ? 'badge-info' : st === 'LATE' ? 'badge-warning' : 'badge-danger';
+      const emoji = st === 'PRESENT' ? '✓' : st === 'LATE' ? '⏰' : st === 'EXCUSED' ? '📋' : '✕';
+      return '<span class="badge ' + cls + '">' + emoji + ' ' + esc(AP.i18n.t('attendance.' + st.toLowerCase(), st)) + '</span>';
+    };
+
+    const daysTable =
+      '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="padding:0">' +
+        '<div style="padding:14px 20px;font-weight:700;border-bottom:1px solid var(--border)">' +
+          esc(AP.i18n.t('attendance.title')) + ' · <span style="color:var(--muted);font-weight:400;font-size:13px">' + data.days.length + ' ' + esc(AP.i18n.t('schedule.title').toLowerCase()) + '</span>' +
+        '</div>' +
+        (daysSorted.length ? '<table><thead><tr>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.date')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('admin_schedule.time')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.type')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('admin_schedule.room')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('admin_schedule.teacher')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('common.status')) + '</th>' +
+        '</tr></thead><tbody>' +
+        daysSorted.map(d => {
+          const ev = d.calendarEvent;
+          const rowStyle = ev
+            ? 'background:' + (eventBg[ev.type] || '#f8fafc') + '77'
+            : (!d.isPast ? 'opacity:.55' : '');
+          const typeLbl = AP.i18n.t('schedule.' + d.slot.type, d.slot.type);
+          const parityBadge = d.slot.weekParity === 'BOTH' ? '' :
+            ' <span class="badge ' + (d.slot.weekParity === 'UPPER' ? 'badge-info' : 'badge-purple') + '" style="font-size:10px;padding:1px 5px">' + d.slot.weekParity + '</span>';
+          const cell = (ev)
+            ? '<span style="color:#1f2937;font-weight:600">' + (eventEmoji[ev.type] || '📌') + ' ' + esc(ev.type) + '</span>' +
+              '<div style="font-size:11px;color:var(--muted)">' + esc(ev.title) + '</div>'
+            : attBadge(d.attendanceStatus);
+          const dow = AP.i18n.t(DOW[d.dayOfWeek] || '');
+          return '<tr style="' + rowStyle + '">' +
+            '<td style="padding:10px 16px"><b>' + fmtDate(d.date) + '</b><div style="font-size:11px;color:var(--muted)">' + esc(dow) + '</div></td>' +
+            '<td style="padding:10px 16px;font-family:Consolas,monospace;font-size:13px">' + esc(d.slot.startTime) + '–' + esc(d.slot.endTime) + '</td>' +
+            '<td style="padding:10px 16px"><span class="chip" style="background:' + color + '18;color:' + color + '">' + esc(typeLbl) + '</span>' + parityBadge + '</td>' +
+            '<td style="padding:10px 16px">🏛 ' + esc(d.slot.room) + '</td>' +
+            '<td style="padding:10px 16px;font-size:12px">' + (d.slot.teacher ? esc(d.slot.teacher.fullName) : '—') + '</td>' +
+            '<td style="padding:10px 16px">' + cell + '</td>' +
+          '</tr>';
+        }).join('') + '</tbody></table>'
+        : '<div class="empty">' + esc(AP.i18n.t('grades.no_grades')) + '</div>') +
+      '</div></div>';
+
+    // ── Оценки с историей ──
+    const gradesTable =
+      '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="padding:0">' +
+        '<div style="padding:14px 20px;font-weight:700;border-bottom:1px solid var(--border)">' +
+          esc(AP.i18n.t('grades.title')) + ' · <span style="color:var(--muted);font-weight:400;font-size:13px">' + data.grades.length + '</span>' +
+        '</div>' +
+        (data.grades.length ? '<table><thead><tr>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.date')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.type')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.value')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.teacher')) + '</th>' +
+          '<th style="padding:10px 16px">' + esc(AP.i18n.t('grades.comment')) + '</th>' +
+        '</tr></thead><tbody>' +
+        data.grades.map(g => {
+          const c = gradeColor(g.maxValue ? (Number(g.value) / Number(g.maxValue)) * 100 : Number(g.value));
+          const typeLbl = AP.i18n.t('grades.' + String(g.type).toLowerCase(), g.type);
+          const historyHtml = g.history.length
+            ? '<div style="font-size:11px;color:var(--muted);margin-top:4px">📜 ' + g.history.length + ' ' + esc(AP.i18n.t('transcript.attempts').toLowerCase()) + ': ' +
+              g.history.slice(0, 3).map(h => Number(h.oldValue).toFixed(0) + '→' + Number(h.newValue).toFixed(0)).join(', ') + '</div>'
+            : '';
+          return '<tr>' +
+            '<td style="padding:10px 16px">' + fmtDate(g.createdAt) + '</td>' +
+            '<td style="padding:10px 16px"><span class="badge badge-gray">' + esc(typeLbl) + '</span></td>' +
+            '<td style="padding:10px 16px"><span class="badge" style="background:' + c.bg + ';color:' + c.c + '">' + Number(g.value).toFixed(1) + (g.maxValue ? ' / ' + Number(g.maxValue) : '') + '</span></td>' +
+            '<td style="padding:10px 16px;font-size:12px">' + (g.teacher ? esc(g.teacher.fullName) : '—') + '</td>' +
+            '<td style="padding:10px 16px;font-size:12px;color:var(--muted)">' + esc(g.comment || '') + historyHtml + '</td>' +
+          '</tr>';
+        }).join('') + '</tbody></table>'
+        : '<div class="empty">' + esc(AP.i18n.t('grades.no_grades')) + '</div>') +
+      '</div></div>';
+
+    // ── Материалы ──
+    const materialsCard = data.materials.length
+      ? '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="padding:0">' +
+          '<div style="padding:14px 20px;font-weight:700;border-bottom:1px solid var(--border)">' + esc(AP.i18n.t('materials.title')) + ' · <span style="color:var(--muted);font-weight:400;font-size:13px">' + data.materials.length + '</span></div>' +
+          data.materials.map(m =>
+            '<div style="padding:12px 20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:12px">' +
+              '<div><div style="font-weight:600">' + esc(m.title) + '</div>' +
+                '<div style="font-size:11px;color:var(--muted);margin-top:2px"><span class="badge badge-gray" style="font-size:10px">' + esc(m.type) + '</span> · ' + fmtDate(m.createdAt) + (m.teacher ? ' · ' + esc(m.teacher) : '') + '</div></div>' +
+              (m.url ? '<a class="btn btn-outline btn-sm" href="' + esc(m.url) + '" target="_blank" rel="noopener noreferrer">' + esc(AP.i18n.t('materials.open')) + ' ↗</a>' : '') +
+            '</div>'
+          ).join('') +
+        '</div></div>'
+      : '';
+
+    // ── Задания ──
+    const assignmentsCard = data.assignments.length
+      ? '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="padding:0">' +
+          '<div style="padding:14px 20px;font-weight:700;border-bottom:1px solid var(--border)">' + esc(AP.i18n.t('assignments.title')) + ' · <span style="color:var(--muted);font-weight:400;font-size:13px">' + data.assignments.length + '</span></div>' +
+          data.assignments.map(asg => {
+            const sub = asg.submission;
+            const badge = sub && sub.status === 'GRADED'
+              ? '<span class="badge badge-success">✓ ' + (sub.grade != null ? Number(sub.grade).toFixed(1) : '') + '</span>'
+              : sub
+              ? '<span class="badge badge-info">' + esc(AP.i18n.t('assignments.pending')) + '</span>'
+              : new Date(asg.dueDate) < new Date()
+              ? '<span class="badge badge-danger">' + esc(AP.i18n.t('assignments.overdue')) + '</span>'
+              : '<span class="badge badge-gray">—</span>';
+            return '<div style="padding:12px 20px;border-bottom:1px solid #f1f5f9">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>' + esc(asg.title) + '</b>' + badge + '</div>' +
+              '<div style="font-size:12px;color:var(--muted);margin-top:4px">' + esc(AP.i18n.t('assignments.due_date')) + ': ' + fmtDateTime(asg.dueDate) + (asg.teacher ? ' · ' + esc(asg.teacher.fullName) : '') + '</div>' +
+            '</div>';
+          }).join('') +
+        '</div></div>'
+      : '';
+
+    box.innerHTML = header + kpiCards + attBar + daysTable + gradesTable + materialsCard + assignmentsCard;
+  }
+
+  async function ensureTranscriptCache() {
+    if (!transcriptCache) transcriptCache = await AP.api.myTranscript();
+    return transcriptCache;
+  }
+  function termLabel(t) { return AP.i18n.t('transcript.' + String(t).toLowerCase(), t); }
+  function periodLabel(p) {
+    return AP.i18n.t('transcript.semester_num') + ' ' + p.semester + ' · ' + esc(p.academicYear) + ' ' + termLabel(p.term);
+  }
+  async function populateSemesterFilter(selectId, current) {
+    const sel = document.getElementById(selectId);
+    const trans = await ensureTranscriptCache();
+    const existing = new Set();
+    const opts = ['<option value="">' + esc(AP.i18n.t('filters.all_semesters')) + '</option>'];
+    for (const p of trans.periods.slice().reverse()) {
+      const val = p.academicYear + '|' + p.term;
+      if (existing.has(val)) continue;
+      existing.add(val);
+      opts.push('<option value="' + esc(val) + '"' + (current === val ? ' selected' : '') + '>' + periodLabel(p) + '</option>');
+    }
+    sel.innerHTML = opts.join('');
+  }
+
+  async function loadStudentTranscript() {
+    transcriptCache = await AP.api.myTranscript();
+    const trans = transcriptCache;
+    const s = trans.summary;
+    document.getElementById('transcript-summary').innerHTML =
+      statCard('🎓', s.cumulativeGPA.toFixed(2), AP.i18n.t('transcript.cumulative_gpa')) +
+      statCard('📚', String(s.totalSubjects), AP.i18n.t('transcript.subjects_total')) +
+      statCard('📅', String(s.semestersCompleted) + ' / ' + trans.student.currentSemester, AP.i18n.t('transcript.semesters_completed'));
+
+    const box = document.getElementById('transcript-periods');
+    if (!trans.periods.length) { box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('grades.no_grades')) + '</div></div>'; return; }
+
+    // Отображаем от текущего к самому раннему
+    const sorted = trans.periods.slice().reverse();
+    box.innerHTML = sorted.map(p => {
+      const isCurrent = p.semester === trans.student.currentSemester;
+      const tag = isCurrent
+        ? '<span class="badge badge-info" style="margin-left:8px">' + esc(AP.i18n.t('transcript.current_semester')) + '</span>'
+        : '<span class="badge badge-gray" style="margin-left:8px">' + esc(AP.i18n.t('transcript.archived')) + '</span>';
+      const rows = p.subjects.map(x => {
+        const c = gradeColor(x.finalValue);
+        return '<tr>' +
+          '<td><b>' + esc(x.subject.code) + '</b> · ' + esc(x.subject.name) + '</td>' +
+          '<td style="text-align:center"><span class="badge" style="background:' + c.bg + ';color:' + c.c + '">' + x.finalValue.toFixed(1) + '</span></td>' +
+          '<td style="text-align:center;font-weight:700">' + esc(x.letter) + '</td>' +
+          '<td style="text-align:center">' + x.gradePoints.toFixed(1) + '</td>' +
+          '<td style="text-align:center">' + (x.hasFinal ? '<span class="badge badge-success">' + esc(AP.i18n.t('transcript.final')) + '</span>' : '<span class="badge badge-warning">' + esc(AP.i18n.t('transcript.attempts')) + ': ' + x.attemptsCount + '</span>') + '</td>' +
+          '</tr>';
+      }).join('');
+      // Незавершённые предметы (ещё нет итога по Academic Journal) — не входят в GPA
+      const ipRows = (p.inProgress || []).map(x => '<tr style="opacity:.8"><td><b>' + esc(x.subject.code) + '</b> · ' + esc(x.subject.name) + '</td><td style="text-align:center"><span class="badge badge-gray">' + Number(x.provisionalTotal).toFixed(1) + '</span></td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center"><span class="badge badge-warning">' + esc(AP.i18n.t('journal.provisional')) + '</span> <small>' + x.seminarAnswers + '/' + x.seminarRequired + '</small></td></tr>').join('');
+      return '<div class="card" style="margin-bottom:16px"><div class="card-pad">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">' +
+          '<div class="card-title" style="margin:0">' + AP.i18n.t('transcript.semester_num') + ' ' + p.semester + ' · ' + esc(p.academicYear) + ' · ' + esc(termLabel(p.term)) + tag + '</div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+            '<span class="badge badge-purple">' + esc(AP.i18n.t('transcript.semester_gpa')) + ': <b>' + p.semesterGPA.toFixed(2) + '</b></span>' +
+          '</div>' +
+        '</div>' +
+        '<table>' +
+          '<thead><tr>' +
+            '<th>' + esc(AP.i18n.t('grades.subject')) + '</th>' +
+            '<th style="text-align:center">' + esc(AP.i18n.t('grades.value')) + '</th>' +
+            '<th style="text-align:center">' + esc(AP.i18n.t('transcript.letter_grade')) + '</th>' +
+            '<th style="text-align:center">' + esc(AP.i18n.t('transcript.grade_points')) + '</th>' +
+            '<th style="text-align:center">' + esc(AP.i18n.t('assignments.status')) + '</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rows + ipRows + '</tbody>' +
+        '</table>' +
+      '</div></div>';
+    }).join('');
+  }
+
+  async function loadStudentAssignments() {
+    const items = await AP.api.myAssignments();
+    const body = document.getElementById('s-assign-body'); const empty = document.getElementById('s-assign-empty');
+    if (!items.length) { body.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    body.innerHTML = items.map(a => {
+      const sub = a.submission;
+      const overdue = !sub && new Date(a.dueDate) < new Date();
+      let statusHtml;
+      if (sub && sub.status === 'GRADED') statusHtml = '<span class="badge badge-success">' + esc(AP.i18n.t('assignments.graded')) + '</span>';
+      else if (sub && sub.status === 'LATE') statusHtml = '<span class="badge badge-warning">' + esc(AP.i18n.t('assignments.late')) + '</span>';
+      else if (sub) statusHtml = '<span class="badge badge-info">' + esc(AP.i18n.t('assignments.pending')) + '</span>';
+      else if (overdue) statusHtml = '<span class="badge badge-danger">' + esc(AP.i18n.t('assignments.overdue')) + '</span>';
+      else statusHtml = '<span class="badge badge-gray">—</span>';
+
+      const grade = sub && sub.grade != null
+        ? (function () { const c = gradeColor(Number(sub.grade)); return '<span class="badge" style="background:' + c.bg + ';color:' + c.c + '">' + Number(sub.grade).toFixed(1) + '</span>'; })()
+        : '—';
+      const btn = !sub || sub.status !== 'GRADED'
+        ? '<button class="btn btn-primary btn-sm" data-submit="' + esc(a.id) + '">' + esc(AP.i18n.t('assignments.submit')) + '</button>'
+        : '';
+      return '<tr style="cursor:pointer" data-assignment-detail="' + esc(JSON.stringify(a)) + '"><td><b>' + esc(a.subject.code) + '</b> · ' + esc(a.subject.name) + '</td><td><div style="font-weight:600">' + esc(a.title) + '</div><div style="color:var(--muted);font-size:12px">' + esc(a.description.slice(0, 120)) + '</div></td><td>' + fmtDateTime(a.dueDate) + '</td><td>' + statusHtml + '</td><td>' + grade + '</td><td>' + btn + '</td></tr>';
+    }).join('');
+    body.querySelectorAll('[data-submit]').forEach(b => b.addEventListener('click', () => {
+      document.getElementById('sf-id').value = b.dataset.submit;
+      document.getElementById('sf-file').value = '';
+      document.getElementById('sf-notes').value = '';
+      openModal('submit-modal');
+    }));
+  }
+
+  async function loadStudentMaterials() {
+    const items = await AP.api.myMaterials();
+    const box = document.getElementById('s-materials-box');
+    if (!items.length) { box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('materials.no_materials')) + '</div></div>'; return; }
+    const bySubject = {};
+    for (const m of items) { (bySubject[m.subject.code] = bySubject[m.subject.code] || { subject: m.subject, items: [] }).items.push(m); }
+    box.innerHTML = Object.values(bySubject).map(g => {
+      return '<div class="card" style="margin-bottom:16px"><div class="card-pad">' +
+        '<div class="card-title"><b>' + esc(g.subject.code) + '</b> · ' + esc(g.subject.name) + '</div>' +
+        g.items.map(m => '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;gap:12px"><div><div style="font-weight:600">' + esc(m.title) + '</div><div style="color:var(--muted);font-size:12px">' + esc(m.type) + ' · ' + fmtDate(m.createdAt) + (m.teacher && m.teacher.user ? ' · ' + esc(m.teacher.user.fullName) : '') + '</div></div>' + (m.url ? '<a class="btn btn-outline btn-sm" href="' + esc(m.url) + '" target="_blank" rel="noopener noreferrer">' + esc(AP.i18n.t('materials.open')) + '</a>' : '<span class="badge badge-gray">' + esc(m.fileName || '') + '</span>') + '</div>').join('') +
+      '</div></div>';
+    }).join('');
+  }
+
+  let calendarState = { year: new Date().getFullYear(), month: new Date().getMonth(), events: null };
+
+  // ═══ STUDENT: LIBRARY (все материалы по всем предметам + фильтр + поиск) ═══
+  let libFilter = { type: 'all', q: '' };
+  async function loadStudentLibrary() {
+    const box = document.getElementById('lib-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const items = await AP.api.myMaterials();
+      renderLibrary(items);
+      document.getElementById('lib-search').oninput = (e) => { libFilter.q = e.target.value.trim().toLowerCase(); renderLibrary(items); };
+      document.querySelectorAll('[data-lib-filter]').forEach(b => b.onclick = () => {
+        document.querySelectorAll('[data-lib-filter]').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        libFilter.type = b.dataset.libFilter;
+        renderLibrary(items);
+      });
+    } catch (e) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(e.message || 'error') + '</div></div>';
+    }
+  }
+  function renderLibrary(items) {
+    const box = document.getElementById('lib-box');
+    const filtered = items.filter(m => {
+      if (libFilter.type !== 'all' && m.type !== libFilter.type) return false;
+      if (libFilter.q && !(m.title.toLowerCase().includes(libFilter.q) || m.subject.name.toLowerCase().includes(libFilter.q) || m.subject.code.toLowerCase().includes(libFilter.q))) return false;
+      return true;
+    });
+    if (!filtered.length) { box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('materials.no_materials')) + '</div></div>'; return; }
+    const bySubject = {};
+    for (const m of filtered) { (bySubject[m.subject.code] = bySubject[m.subject.code] || { subject: m.subject, items: [] }).items.push(m); }
+    box.innerHTML = Object.values(bySubject).map(g => {
+      return '<div class="card" style="margin-bottom:16px;border-left:4px solid ' + (g.subject.color || '#2563eb') + '"><div class="card-pad">' +
+        '<div class="card-title"><b>' + esc(g.subject.code) + '</b> · ' + esc(g.subject.name) + ' <span class="badge badge-gray" style="font-size:11px">' + g.items.length + '</span></div>' +
+        g.items.map(m => '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;gap:12px">' +
+          '<div><div style="font-weight:600">' + esc(m.title) + '</div>' +
+          '<div style="color:var(--muted);font-size:12px"><span class="badge badge-gray" style="font-size:10px">' + esc(m.type) + '</span> · ' + fmtDate(m.createdAt) + (m.teacher && m.teacher.user ? ' · ' + esc(m.teacher.user.fullName) : '') + '</div></div>' +
+          (m.url ? '<a class="btn btn-outline btn-sm" href="' + esc(m.url) + '" target="_blank" rel="noopener noreferrer">' + esc(AP.i18n.t('materials.open')) + ' ↗</a>' : '<span class="badge badge-gray">' + esc(m.fileName || '—') + '</span>') + '</div>').join('') +
+        '</div></div>';
+    }).join('');
+  }
+
+  // ═══ ANNOUNCEMENTS — просмотр уведомлений от руководства ═══
+  async function loadAnnouncements() {
+    const box = document.getElementById('announcements-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const items = await AP.api.myAnnouncements();
+      if (!items.length) { box.innerHTML = '<div class="card"><div class="empty">Hələ bildiriş yoxdur</div></div>'; return; }
+      const prioIcon = { LOW: '💬', NORMAL: '📢', HIGH: '❗', URGENT: '🚨' };
+      const prioColor = { LOW: '#64748b', NORMAL: '#3b82f6', HIGH: '#f59e0b', URGENT: '#ef4444' };
+      const audLabel = { ALL: 'Hamısı', STUDENTS: 'Tələbələr', TEACHERS: 'Müəllimlər', ADMINS: 'Administratorlar', GROUP: 'Qrup' };
+      box.innerHTML = items.map(a => {
+        const c = prioColor[a.priority] || '#64748b';
+        const ic = prioIcon[a.priority] || '📢';
+        const pinned = a.pinned ? '<span class="badge badge-warning" style="font-size:10px;margin-right:6px">📌 Sabit</span>' : '';
+        const unread = !a.isRead ? '<span class="badge" style="background:#fee2e2;color:#991b1b;font-size:10px">● Yeni</span>' : '';
+        return `<div class="card" style="margin-bottom:14px;border-left:4px solid ${c};${a.isRead ? 'opacity:.85' : ''}" data-ann-id="${esc(a.id)}">
+          <div class="card-pad">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+              <div style="font-size:16px;font-weight:700">${ic} ${esc(a.title)}</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">${pinned}${unread}
+                <span class="badge" style="background:${c}22;color:${c};font-size:10px">${esc(a.priority)}</span>
+                <span class="badge badge-gray" style="font-size:10px">${esc(audLabel[a.audience] || a.audience)}${a.groupName ? ' · ' + esc(a.groupName) : ''}</span>
+              </div>
+            </div>
+            <div style="font-size:13px;line-height:1.55;color:var(--muted);white-space:pre-wrap">${esc(a.body)}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:10px">${fmtDateTime(a.createdAt)}</div>
+          </div>
+        </div>`;
+      }).join('');
+      // Отметить непрочитанные при входе
+      for (const a of items.filter(x => !x.isRead)) {
+        AP.api.markAnnouncementRead(a.id).catch(() => {});
+      }
+    } catch (e) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(e.message || 'error') + '</div></div>';
+    }
+  }
+
+  // ═══ PAYMENTS (student) ═══
+  async function loadStudentPayments() {
+    const box = document.getElementById('payments-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const data = await AP.api.myPayments();
+      const statusClr = { PAID: { bg: '#d1fae5', c: '#065f46' }, PENDING: { bg: '#fef3c7', c: '#92400e' }, PROCESSING: { bg: '#dbeafe', c: '#1e40af' }, FAILED: { bg: '#fee2e2', c: '#991b1b' }, REFUNDED: { bg: '#f1f5f9', c: '#475569' } };
+      const statusIc = { PAID: '✅', PENDING: '⏰', PROCESSING: '🔄', FAILED: '❌', REFUNDED: '↩️' };
+      const typeLbl = { TUITION: 'Təhsil haqqı', RETAKE: 'Yenidən imtahan', LIBRARY: 'Kitabxana', DORM: 'Yataqxana', ALT_GROUP: 'Alt qrup', OTHER: 'Digər' };
+      const summary = data.summary;
+      const kpis = `<div class="stat-grid" style="margin-bottom:16px">
+        ${statCard('✅', summary.totalPaid + ' AZN', 'Ödənilib')}
+        ${statCard('⏰', summary.totalPending + ' AZN', 'Ödəniləcək')}
+        ${statCard('⚠️', String(summary.overdueCount), 'Gecikmiş')}
+        ${statCard('🧾', String(data.items.length), 'Bütün sənədlər')}
+      </div>`;
+      const rows = data.items.map(p => {
+        const c = statusClr[p.status] || { bg: '#f1f5f9', c: '#475569' };
+        const ic = statusIc[p.status] || '•';
+        const canPay = p.status === 'PENDING' || p.status === 'FAILED';
+        return `<tr>
+          <td><b>${esc(typeLbl[p.type] || p.type)}</b><div style="font-size:11px;color:var(--muted)">${esc(p.description)}</div></td>
+          <td><code style="font-size:11px">${esc(p.invoiceNumber)}</code></td>
+          <td style="font-weight:700;white-space:nowrap">${Number(p.amount).toFixed(2)} ${esc(p.currency)}</td>
+          <td style="white-space:nowrap">${fmtDate(p.dueDate)}</td>
+          <td><span class="badge" style="background:${c.bg};color:${c.c}">${ic} ${esc(p.status)}</span></td>
+          <td>${canPay ? `<button class="btn btn-primary btn-sm" data-pay-id="${esc(p.id)}">💳 Ödə</button>` : (p.paidAt ? `<span style="font-size:11px;color:var(--muted)">${fmtDate(p.paidAt)}</span>` : '')}</td>
+        </tr>`;
+      }).join('');
+      box.innerHTML = kpis +
+        '<div class="card" style="overflow:hidden"><table><thead><tr><th>Növ</th><th>№</th><th>Məbləğ</th><th>Son tarix</th><th>Status</th><th></th></tr></thead><tbody>' +
+        (rows || '<tr><td colspan="6" class="empty">—</td></tr>') +
+        '</tbody></table></div>' +
+        '<div class="card" style="margin-top:16px"><div class="card-pad"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">' +
+          '<div style="font-size:12px;color:var(--muted)">💳 <b>Qəbul olunan ödəniş üsulları:</b></div>' +
+          '<span class="badge badge-info">Visa</span>' +
+          '<span class="badge badge-info">Mastercard</span>' +
+          '<span class="badge badge-gray">Bank köçürməsi</span>' +
+          '<span class="badge badge-gray">Mobile wallet</span>' +
+        '</div></div></div>';
+      box.querySelectorAll('[data-pay-id]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('Bu ödənişi demo rejimdə tamamlayaq? (Real ödəniş edilmir)')) return;
+        try { await AP.api.payMock(b.dataset.payId); toast('✅ Ödəniş uğurla tamamlandı'); await loadStudentPayments(); }
+        catch (e) { toast(e.message || 'error', true); }
+      }));
+    } catch (e) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(e.message || 'error') + '</div></div>';
+    }
+  }
+
+  // ═══ PROFILE — единая страница для всех ролей ═══
+  async function loadProfile() {
+    const box = document.getElementById('profile-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(AP.i18n.t('common.loading')) + '</div></div>';
+    try {
+      const user = await AP.api.me();
+      const initials = String(user.fullName || 'U').split(' ').filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+      const roleColor = { STUDENT: '#2563eb', TEACHER: '#7c3aed', ADMIN: '#0891b2', SUPER_ADMIN: '#0891b2' }[user.role] || '#64748b';
+      const roleIcon  = { STUDENT: '🎓', TEACHER: '👨‍🏫', ADMIN: '🏛', SUPER_ADMIN: '🏛' }[user.role] || '👤';
+      const roleLabel = { STUDENT: AP.i18n.t('login.role_student'), TEACHER: AP.i18n.t('login.role_teacher'), ADMIN: AP.i18n.t('ld.role.ADMIN'), SUPER_ADMIN: AP.i18n.t('ld.role.SUPER_ADMIN') }[user.role] || user.role;
+
+      // Role-specific fields block
+      let roleFields = '';
+      if (user.role === 'STUDENT' && user.student) {
+        const st = user.student;
+        const lvlLabel = st.level === 'MASTER' ? AP.i18n.t('level.master') : st.level === 'PHD' ? AP.i18n.t('level.phd') : AP.i18n.t('level.bachelor');
+        roleFields =
+          '<div class="grid-2" style="margin-top:18px">' +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">${esc(AP.i18n.t('my_subjects.semester'))}</div><div style="font-size:15px;font-weight:600">${st.semester} · ${esc(lvlLabel)}</div></div>` +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Kurs</div><div style="font-size:15px;font-weight:600">${st.course}</div></div>` +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Fakültə</div><div style="font-size:15px">${esc(st.faculty)}</div></div>` +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">İxtisas</div><div style="font-size:15px">${esc(st.specialty)}</div></div>` +
+            `<div style="grid-column:span 2"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Qrup</div><div style="display:inline-block;padding:8px 16px;background:${roleColor}18;color:${roleColor};border-radius:10px;font-size:16px;font-weight:700;border:2px solid ${roleColor}55">👥 ${esc(st.groupName)} <span style="font-size:11px;opacity:.7;font-weight:400;margin-left:6px">(yalnız bir qrupda)</span></div></div>` +
+          '</div>';
+      } else if (user.role === 'TEACHER' && user.teacher) {
+        const t = user.teacher;
+        roleFields =
+          '<div class="grid-2" style="margin-top:18px">' +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Vəzifə</div><div style="font-size:15px;font-weight:600">${esc(t.title)}</div></div>` +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Kafedra</div><div style="font-size:15px;font-weight:600">${esc(t.department)}</div></div>` +
+            `<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Təcrübə</div><div style="font-size:15px">${t.experience || 0} il</div></div>` +
+          '</div>';
+      }
+
+      box.innerHTML =
+        // Header card
+        `<div class="card" style="margin-bottom:16px;border-left:4px solid ${roleColor}"><div class="card-pad">` +
+          `<div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">` +
+            `<div style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,${roleColor},${roleColor}aa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700;flex-shrink:0">${esc(initials)}</div>` +
+            `<div style="flex:1;min-width:0">` +
+              `<div style="font-size:22px;font-weight:700">${esc(user.fullName)}</div>` +
+              `<div style="margin-top:4px"><span class="badge" style="background:${roleColor}22;color:${roleColor};font-size:12px;padding:4px 10px">${roleIcon} ${esc(roleLabel)}</span></div>` +
+              `<div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)">` +
+                `<span>📧 ${esc(user.email)}</span>` +
+                `<span>🪪 <code style="font-size:12px">${esc(user.loginId)}</code></span>` +
+                (user.phone ? `<span>📱 ${esc(user.phone)}</span>` : '') +
+              `</div>` +
+            `</div>` +
+          `</div>` +
+          roleFields +
+        `</div></div>` +
+        // Edit form
+        `<div class="card" style="margin-bottom:16px"><div class="card-pad">` +
+          `<div class="card-title">✏️ Redaktə et</div>` +
+          `<form id="profile-form">` +
+            `<div class="form-group"><label class="form-label">Telefon</label><input class="input" id="pf-phone" maxlength="50" placeholder="+994 XX XXX XX XX" value="${esc(user.phone || '')}"></div>` +
+            `<div class="form-group"><label class="form-label">Tərcih edilən dil</label>` +
+              `<select class="input" id="pf-lang">` +
+                `<option value="az"${user.preferredLang === 'az' ? ' selected' : ''}>🇦🇿 Azərbaycan</option>` +
+                `<option value="ru"${user.preferredLang === 'ru' ? ' selected' : ''}>🇷🇺 Русский</option>` +
+                `<option value="en"${user.preferredLang === 'en' ? ' selected' : ''}>🇬🇧 English</option>` +
+              `</select>` +
+            `</div>` +
+            `<div class="form-row"><button type="submit" class="btn btn-primary">${esc(AP.i18n.t('common.save'))}</button></div>` +
+          `</form>` +
+        `</div></div>` +
+        // Security info
+        `<div class="card"><div class="card-pad">` +
+          `<div class="card-title">🔐 Təhlükəsizlik</div>` +
+          `<table style="font-size:13px"><tbody>` +
+            `<tr><td style="color:var(--muted);width:170px;padding:8px 0">Son giriş</td><td>${user.lastLoginAt ? fmtDateTime(user.lastLoginAt) : '—'}</td></tr>` +
+            `<tr><td style="color:var(--muted);padding:8px 0">Status</td><td><span class="badge badge-success">${esc(user.status)}</span></td></tr>` +
+            `<tr><td style="color:var(--muted);padding:8px 0">Qeydiyyat</td><td>${fmtDate(user.createdAt)}</td></tr>` +
+          `</tbody></table>` +
+        `</div></div>`;
+
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          await AP.api.updateMe({
+            phone: document.getElementById('pf-phone').value.trim() || undefined,
+            preferredLang: document.getElementById('pf-lang').value,
+          });
+          toast(AP.i18n.t('user.profile_updated', 'Profil yeniləndi'));
+          // Sync UI language if changed
+          const lang = document.getElementById('pf-lang').value;
+          if (lang !== AP.i18n.getLang()) { await AP.i18n.load(lang); refreshLangBtns(); }
+          await loadProfile();
+        } catch (err) { toast(err.message || 'error', true); }
+      });
+    } catch (err) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(err.message || 'error') + '</div></div>';
+    }
+  }
+
+  async function loadCalendar(boxId) {
+    const box = document.getElementById(boxId);
+    try {
+      if (!calendarState.events) calendarState.events = await AP.api.myCalendar();
+      renderCalendarMonth(box);
+    } catch (e) {
+      box.innerHTML = '<div class="card"><div class="empty" style="color:var(--danger)">' + esc(e.message || 'error') + '</div></div>';
+    }
+  }
+
+  function calendarTypeColor(t) {
+    return ({
+      HOLIDAY:           { bg: '#d1fae5', c: '#065f46' },
+      MOURNING:          { bg: '#e5e7eb', c: '#1f2937' },
+      EXAM:              { bg: '#fee2e2', c: '#991b1b' },
+      LECTURE_CANCELLED: { bg: '#fef3c7', c: '#92400e' },
+      ACADEMIC:          { bg: '#dbeafe', c: '#1e40af' },
+      OTHER:             { bg: '#f1f5f9', c: '#475569' },
+    }[t] || { bg: '#f1f5f9', c: '#475569' });
+  }
+
+  function renderCalendarMonth(box) {
+    const { year, month, events } = calendarState;
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const daysInMonth = last.getDate();
+    const startDow = (first.getDay() || 7) - 1; // 0=Mon
+    const monthName = first.toLocaleDateString(localeFor(), { month: 'long', year: 'numeric' });
+    const today = new Date();
+    const isToday = (d) =>
+      d.getFullYear() === today.getFullYear() &&
+      d.getMonth() === today.getMonth() &&
+      d.getDate() === today.getDate();
+
+    // events covering a given day (handles multi-day via endDate)
+    function eventsForDay(d) {
+      const ds = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      return events.filter((e) => {
+        const s = new Date(e.eventDate);
+        const ed = e.endDate ? new Date(e.endDate) : s;
+        const s0 = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+        const e0 = new Date(ed.getFullYear(), ed.getMonth(), ed.getDate());
+        return ds >= s0 && ds <= e0;
+      });
+    }
+
+    const dowLabels = [
+      AP.i18n.t('schedule.monday'),
+      AP.i18n.t('schedule.tuesday'),
+      AP.i18n.t('schedule.wednesday'),
+      AP.i18n.t('schedule.thursday'),
+      AP.i18n.t('schedule.friday'),
+      AP.i18n.t('schedule.saturday'),
+      AP.i18n.t('schedule.sunday'),
+    ];
+
+    let cellsHtml = '';
+    for (let i = 0; i < startDow; i++) cellsHtml += '<div style="background:#f8fafc;min-height:90px"></div>';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const evts = eventsForDay(date);
+      const todayStyle = isToday(date) ? 'background:#eff6ff' : 'background:#fff';
+      const dayEvents = evts.map((ev) => {
+        const c = calendarTypeColor(ev.type);
+        const time = ev.startTime ? esc(ev.startTime) + ' ' : '';
+        const room = ev.roomCode ? ' · 🏛' + esc(ev.roomCode) : '';
+        return '<div style="background:' + c.bg + ';color:' + c.c + ';padding:2px 6px;margin-top:3px;border-radius:4px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(ev.title) + (ev.description ? ' — ' + esc(ev.description) : '') + '">' +
+          time + esc(ev.title) + room + '</div>';
+      }).join('');
+      cellsHtml += '<div style="' + todayStyle + ';padding:6px 8px;min-height:90px;border-top:1px solid var(--border);position:relative">' +
+        '<div style="font-weight:700;font-size:13px">' + d + '</div>' +
+        dayEvents +
+      '</div>';
+    }
+    // trailing empty cells to fill 6-row grid (max 42 cells, but at least 35)
+    const used = startDow + daysInMonth;
+    const target = used <= 35 ? 35 : 42;
+    for (let i = used; i < target; i++) cellsHtml += '<div style="background:#f8fafc;min-height:90px"></div>';
+
+    box.innerHTML =
+      '<div class="card" style="margin-bottom:16px"><div class="card-pad" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">' +
+        '<div style="display:flex;gap:8px">' +
+          '<button class="btn btn-outline btn-sm" id="cal-prev">← ' + esc(AP.i18n.t('common.cancel', 'Prev').slice(0,0) || 'Əvvəl') + '</button>' +
+          '<button class="btn btn-primary btn-sm" id="cal-today">' + esc(AP.i18n.t('dashboard.welcome').slice(0,0) || 'Bu gün') + ' Today</button>' +
+          '<button class="btn btn-outline btn-sm" id="cal-next">' + (esc(AP.i18n.t('common.cancel','Next').slice(0,0) || 'Sonra') + ' →') + '</button>' +
+        '</div>' +
+        '<div style="font-size:18px;font-weight:700;text-transform:capitalize">' + esc(monthName) + '</div>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:11px">' +
+          '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;vertical-align:middle;margin-right:4px"></span>Holiday</span>' +
+          '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#1f2937;vertical-align:middle;margin-right:4px"></span>Mourning</span>' +
+          '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#991b1b;vertical-align:middle;margin-right:4px"></span>Exam</span>' +
+          '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#92400e;vertical-align:middle;margin-right:4px"></span>Cancelled</span>' +
+        '</div>' +
+      '</div></div>' +
+      '<div class="card" style="overflow:hidden"><div style="display:grid;grid-template-columns:repeat(7,1fr);background:var(--border);gap:1px">' +
+        dowLabels.map(l => '<div style="background:#f8fafc;padding:8px;text-align:center;font-weight:700;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">' + esc(l) + '</div>').join('') +
+        cellsHtml +
+      '</div></div>';
+
+    // Simple i18n fallback for prev/today/next labels (overwrite real text)
+    box.querySelector('#cal-prev').textContent = '← ' + (AP.i18n.getLang() === 'ru' ? 'Назад' : AP.i18n.getLang() === 'en' ? 'Prev' : 'Əvvəl');
+    box.querySelector('#cal-today').textContent = AP.i18n.getLang() === 'ru' ? 'Сегодня' : AP.i18n.getLang() === 'en' ? 'Today' : 'Bu gün';
+    box.querySelector('#cal-next').textContent = (AP.i18n.getLang() === 'ru' ? 'Вперёд' : AP.i18n.getLang() === 'en' ? 'Next' : 'Sonra') + ' →';
+
+    box.querySelector('#cal-prev').addEventListener('click', () => {
+      calendarState.month--;
+      if (calendarState.month < 0) { calendarState.month = 11; calendarState.year--; }
+      renderCalendarMonth(box);
+    });
+    box.querySelector('#cal-next').addEventListener('click', () => {
+      calendarState.month++;
+      if (calendarState.month > 11) { calendarState.month = 0; calendarState.year++; }
+      renderCalendarMonth(box);
+    });
+    box.querySelector('#cal-today').addEventListener('click', () => {
+      const n = new Date();
+      calendarState.year = n.getFullYear();
+      calendarState.month = n.getMonth();
+      renderCalendarMonth(box);
+    });
+  }
+
+  let _editingRequestId = null;
+
+  let _reqTab = 'ALL';
+  async function loadStudentRequests() {
+    let [items, quota] = await Promise.all([
+      AP.api.myRequests(),
+      AP.api.myRequestQuota().catch(() => ({ used: 0, limit: 5, remaining: 5 })),
+    ]);
+
+    // Show quota + disable button if exhausted
+    const qBox = document.getElementById('s-req-quota');
+    const btnNew = document.getElementById('btn-new-request');
+    const left = quota.remaining;
+    const e = left === 0 ? '🔴' : left === 1 ? '🟡' : '🟢';
+    qBox.innerHTML = e + ' ' + esc(AP.i18n.t('requests.daily_limit', 'Gündəlik limit')) +
+      ': <b>' + quota.used + '/' + quota.limit + '</b> ' +
+      esc(AP.i18n.t('requests.daily_used', 'istifadə olunub')) +
+      ' · <b>' + left + '</b> ' + esc(AP.i18n.t('requests.daily_remaining', 'qalıb'));
+    btnNew.disabled = (left === 0);
+    btnNew.style.opacity = left === 0 ? '0.5' : '1';
+    btnNew.style.cursor = left === 0 ? 'not-allowed' : 'pointer';
+
+    // Вкладки: Все / Апелляции / Справки / Другое (фильтр по существующему Request.type)
+    const tabsEl = document.getElementById('s-req-tabs');
+    const TABS = [['ALL', AP.i18n.t('ap.tab_all')], ['APPEAL', AP.i18n.t('ap.tab_appeals')], ['CERTIFICATE', AP.i18n.t('ap.tab_certificates')], ['OTHER', AP.i18n.t('ap.tab_other')]];
+    const inTab = (r) => _reqTab === 'ALL' || r.type === _reqTab || (_reqTab === 'OTHER' && (r.type === 'OTHER' || r.type === 'TRANSFER'));
+    tabsEl.innerHTML = TABS.map(([k, l]) => '<button class="ex-tab' + (_reqTab === k ? ' on' : '') + '" data-rtab="' + k + '" role="tab">' + esc(l) + ' <span class="ex-n">' + items.filter((r) => k === 'ALL' || r.type === k || (k === 'OTHER' && (r.type === 'OTHER' || r.type === 'TRANSFER'))).length + '</span></button>').join('');
+    tabsEl.querySelectorAll('[data-rtab]').forEach((b) => b.addEventListener('click', () => { _reqTab = b.dataset.rtab; loadStudentRequests(); }));
+    items = items.filter(inTab);
+    const list = document.getElementById('s-req-list');
+    if (!items.length) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">📩</div><div>' + esc(AP.i18n.t('requests.no_requests', 'Müraciət yoxdur')) + '</div></div>';
+      return;
+    }
+    const typeMap = {
+      CERTIFICATE: AP.i18n.t('requests.certificate', 'Arayış'),
+      APPEAL: AP.i18n.t('requests.appeal', 'İtiraz'),
+      TRANSFER: AP.i18n.t('requests.transfer', 'Köçürmə'),
+      OTHER: AP.i18n.t('requests.other', 'Digər'),
+    };
+    const statusMap = {
+      PENDING:  { c: 'badge-warning', l: AP.i18n.t('requests.status.pending', 'İşlənir') },
+      UNDER_REVIEW: { c: 'badge-info', l: AP.i18n.t('requests.status.under_review') },
+      PARTIALLY_APPROVED: { c: 'badge-success', l: AP.i18n.t('requests.status.partially_approved') },
+      WITHDRAWN: { c: 'badge-gray', l: AP.i18n.t('requests.status.withdrawn') },
+      APPROVED: { c: 'badge-success', l: AP.i18n.t('requests.status.approved', 'Təsdiq edildi') },
+      REJECTED: { c: 'badge-danger',  l: AP.i18n.t('requests.status.rejected', 'Rədd edildi') },
+    };
+    list.innerHTML = items.map(r => {
+      const si = statusMap[r.status] || { c: 'badge-gray', l: r.status };
+      const noteBlock = r.adminNote
+        ? '<div style="margin-top:10px;padding:10px 12px;background:#f0fdf4;border-radius:8px;font-size:13px;color:#166534;border:1px solid #bbf7d0">📝 ' + esc(r.adminNote) + '</div>'
+        : '';
+      const canEdit = r.status === 'PENDING' && !r.appeal; // апелляция по экзамену: детали / отзыв, без удаления
+      const appealBlock = r.appeal
+        ? '<div style="margin-top:8px;font-size:13px"><b>#' + esc(r.appeal.code) + '</b> · ' + esc(r.appeal.subject || '') + ' · ' + esc(r.appeal.exam || '') + ' · ' + esc(AP.i18n.t('ap.disputed_n').replace('{n}', r.appeal.disputed)) + '</div>' +
+          '<div style="margin-top:8px"><button class="btn btn-outline btn-sm" data-appeal="' + esc(r.id) + '">' + esc(AP.i18n.t('ap.details')) + '</button></div>'
+        : '';
+      const actions = canEdit
+        ? '<div style="display:flex;gap:6px;margin-top:10px">' +
+            '<button class="btn btn-outline btn-sm" data-edit-req="' + esc(r.id) + '" data-type="' + esc(r.type) + '" data-desc="' + esc(r.description) + '">✏️ ' + esc(AP.i18n.t('common.edit', 'Redaktə et')) + '</button>' +
+            '<button class="btn btn-danger btn-sm"  data-del-req="'  + esc(r.id) + '">🗑 ' + esc(AP.i18n.t('common.delete', 'Sil')) + '</button>' +
+          '</div>'
+        : '';
+      return '<div class="card" style="margin-bottom:12px"><div class="card-pad">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">' +
+              '<span style="font-size:14px;font-weight:600">' + esc(typeMap[r.type] || r.type) + '</span>' +
+              '<span class="badge ' + si.c + '">' + esc(si.l) + '</span>' +
+            '</div>' +
+            '<p style="font-size:13px;color:var(--muted);margin:0;line-height:1.55;white-space:pre-wrap;word-wrap:break-word">' + esc(r.description) + '</p>' +
+            appealBlock +
+            noteBlock +
+            actions +
+          '</div>' +
+          '<span style="font-size:12px;color:#94a3b8;white-space:nowrap">' + fmtDate(r.createdAt) + '</span>' +
+        '</div>' +
+      '</div></div>';
+    }).join('');
+
+    list.querySelectorAll('[data-edit-req]').forEach(b => b.addEventListener('click', () => {
+      _editingRequestId = b.getAttribute('data-edit-req');
+      document.getElementById('r-type').value = b.getAttribute('data-type');
+      document.getElementById('r-desc').value = b.getAttribute('data-desc');
+      const ttl = document.querySelector('#request-modal .modal-title');
+      if (ttl) ttl.textContent = AP.i18n.t('requests.edit', 'Müraciəti redaktə et');
+      openModal('request-modal');
+    }));
+
+    list.querySelectorAll('[data-appeal]').forEach(b => b.addEventListener('click', () => AP.appeals.openRequest(b.dataset.appeal, loadStudentRequests)));
+
+    list.querySelectorAll('[data-del-req]').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm(AP.i18n.t('requests.delete_confirm', 'Müraciəti silmək istədiyinizə əminsiniz?'))) return;
+      try {
+        await AP.api.deleteMyRequest(b.getAttribute('data-del-req'));
+        toast(AP.i18n.t('requests.deleted', 'Müraciət silindi'));
+        await loadStudentRequests();
+      } catch (e) { toast(e.message || 'error', true); }
+    }));
+  }
+
+  // ─── Forms ───
+  document.getElementById('submit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await AP.api.submitAssignment(document.getElementById('sf-id').value, {
+        fileName: document.getElementById('sf-file').value || undefined,
+        notes:    document.getElementById('sf-notes').value || undefined,
+      });
+      toast(AP.i18n.t('assignments.submitted_ok'));
+      closeModal('submit-modal');
+      await loadStudentAssignments();
+    } catch (err) { toast(err.message || 'error', true); }
+  });
+
+  document.getElementById('btn-new-request').addEventListener('click', () => {
+    if (document.getElementById('btn-new-request').disabled) {
+      toast(AP.i18n.t('requests.limit_reached', 'Gündəlik limit (5) tükənib'), true);
+      return;
+    }
+    _editingRequestId = null;
+    document.getElementById('request-form').reset();
+    const ttl = document.querySelector('#request-modal .modal-title');
+    if (ttl) ttl.textContent = AP.i18n.t('requests.new_request', 'Yeni müraciət');
+    openModal('request-modal');
+  });
+  document.getElementById('request-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const dto = {
+      type:        document.getElementById('r-type').value,
+      description: document.getElementById('r-desc').value.trim(),
+    };
+    try {
+      if (_editingRequestId) {
+        await AP.api.updateMyRequest(_editingRequestId, dto);
+        toast(AP.i18n.t('requests.updated', 'Müraciət yeniləndi'));
+      } else {
+        await AP.api.createRequest(dto);
+        toast(AP.i18n.t('requests.submitted'));
+      }
+      _editingRequestId = null;
+      closeModal('request-modal');
+      document.getElementById('request-form').reset();
+      await loadStudentRequests();
+    } catch (err) { toast(err.message || 'error', true); }
+  });
+
+  // ═══ NOTIFICATIONS (backend-backed) ═══
+  const NOTIF_TYPES = ['ACADEMIC', 'ASSIGNMENT', 'SCHEDULE', 'ADMINISTRATIVE', 'REQUEST', 'PAYMENT'];
+  const NOTIF_ICON = { ACADEMIC: '🎓', ASSIGNMENT: '📝', SCHEDULE: '📅', ADMINISTRATIVE: '📢', REQUEST: '✉️', PAYMENT: '💳' };
+  const NOTIF_LINK = { grades: 's-grades', assignments: 's-assignments', calendar: 's-schedule', announcements: 'announcements', payments: 's-payments', requests: 's-requests' };
+  const notifState = { filter: 'ALL', open: false, unread: 0 };
+
+  function setBadge(n) {
+    notifState.unread = n;
+    const b = document.getElementById('notif-badge');
+    b.textContent = n > 99 ? '99+' : String(n);
+    b.classList.toggle('show', n > 0);
+    document.getElementById('notif-btn').setAttribute('aria-label', AP.i18n.t('notif.title') + (n > 0 ? ' (' + n + ')' : ''));
+    document.getElementById('notif-readall').disabled = n === 0;
+  }
+  async function refreshNotifBadge() {
+    try { setBadge((await AP.api.notifications.unreadCount()).count); } catch { /* сеть недоступна — оставляем прежний счётчик */ }
+  }
+  function closeNotifPanel() {
+    notifState.open = false;
+    document.getElementById('notif-panel').classList.remove('open');
+    document.getElementById('notif-btn').setAttribute('aria-expanded', 'false');
+  }
+  function renderNotifFilters() {
+    const t = AP.i18n.t;
+    const opts = [['ALL', t('notif.all')], ['UNREAD', t('notif.unread')]].concat(NOTIF_TYPES.map(k => [k, t('notif.type.' + k)]));
+    const box = document.getElementById('notif-filters');
+    box.innerHTML = opts.map(([k, l]) => '<button type="button" class="chip-btn' + (notifState.filter === k ? ' active' : '') + '" data-nf="' + k + '" aria-pressed="' + (notifState.filter === k) + '">' + esc(l) + '</button>').join('');
+    box.querySelectorAll('[data-nf]').forEach(b => b.addEventListener('click', () => { notifState.filter = b.dataset.nf; renderNotifFilters(); loadNotifList(); }));
+  }
+  async function loadNotifList() {
+    const t = AP.i18n.t;
+    const list = document.getElementById('notif-list');
+    list.innerHTML = '<div class="skel skel-row"></div>'.repeat(3);
+    const f = notifState.filter;
+    try {
+      const res = await AP.api.notifications.list({ unread: f === 'UNREAD', type: NOTIF_TYPES.includes(f) ? f : undefined });
+      setBadge(res.unreadCount);
+      if (!res.items.length) { list.innerHTML = '<div class="empty">' + esc(f === 'UNREAD' ? t('notif.empty_unread') : t('notif.empty')) + '</div>'; return; }
+      list.innerHTML = res.items.map(n =>
+        '<button type="button" class="notif-item' + (n.readAt ? '' : ' unread') + '" data-nid="' + esc(n.id) + '" data-nlink="' + esc(n.link || '') + '">' +
+          '<span class="notif-dot" aria-hidden="true"></span>' +
+          '<span style="min-width:0;flex:1"><div class="notif-title">' + (NOTIF_ICON[n.type] || '') + ' ' + esc(n.title) + '</div>' +
+          '<div class="notif-msg">' + esc(n.message) + '</div>' +
+          '<div class="notif-meta"><span>' + esc(t('notif.type.' + n.type)) + '</span><span>' + esc(fmtDateTime(n.createdAt)) + '</span></div></span>' +
+        '</button>').join('');
+      list.querySelectorAll('.notif-item').forEach(el => el.addEventListener('click', async () => {
+        const id = el.dataset.nid, page = NOTIF_LINK[el.dataset.nlink];
+        if (el.classList.contains('unread')) {
+          el.classList.remove('unread');
+          AP.api.notifications.markRead(id).then(r => setBadge(r.unreadCount)).catch(() => { el.classList.add('unread'); });
+        }
+        const allowed = navItemsForUser().some(i => i.key === page);
+        if (page && allowed) { closeNotifPanel(); await showPage(page); }
+      }));
+    } catch (e) {
+      list.innerHTML = '<div class="empty" style="color:var(--danger)">' + esc(t('notif.load_error')) +
+        '<div style="margin-top:10px"><button type="button" class="btn btn-outline btn-sm" id="notif-retry">' + esc(t('notif.retry')) + '</button></div></div>';
+      document.getElementById('notif-retry').addEventListener('click', loadNotifList);
+    }
+  }
+  function initNotifications() {
+    renderNotifFilters();
+    refreshNotifBadge();
+    document.getElementById('notif-btn').addEventListener('click', () => {
+      notifState.open = !notifState.open;
+      document.getElementById('notif-panel').classList.toggle('open', notifState.open);
+      document.getElementById('notif-btn').setAttribute('aria-expanded', String(notifState.open));
+      if (notifState.open) { renderNotifFilters(); loadNotifList(); }
+    });
+    document.getElementById('notif-readall').addEventListener('click', async () => {
+      try { await AP.api.notifications.markAllRead(); setBadge(0); toast(AP.i18n.t('notif.marked_all')); await loadNotifList(); }
+      catch (e) { toast(e.message || AP.i18n.t('common.error'), true); }
+    });
+    document.addEventListener('click', (e) => { if (notifState.open && !e.target.closest('#notif-wrap')) closeNotifPanel(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeNotifPanel(); closeMore(); } });
+    setInterval(() => { if (!document.hidden) refreshNotifBadge(); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshNotifBadge(); });
+  }
+
+  // Lang
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.addEventListener('click', async () => {
+      await AP.i18n.load(b.dataset.lang);
+      refreshLangBtns();
+      if (currentUser) renderNav();
+      if (currentPage) await showPage(currentPage);
+    });
+  });
+  function refreshLangBtns() { document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === AP.i18n.getLang())); }
+
+  // Logout
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    if (!confirm(AP.i18n.t('common.logout_confirm'))) return;
+    await AP.api.logout(); location.href = '/login.html';
+  });
+
+  // Click on user info → open profile
+  (function bindSbUserToProfile(){
+    const el = document.getElementById('sb-user');
+    if (!el) return;
+    const go = () => { if (currentUser) showPage('profile'); };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  })();
+
+  // Init
+  await AP.i18n.load(AP.i18n.getLang());
+  refreshLangBtns();
+
+  let user = null;
+  try { user = await AP.api.refresh(); } catch {}
+  if (!user) { try { user = await AP.api.me(); } catch {} }
+  if (!user) { location.href = '/login.html'; return; }
+  if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') { location.href = '/admin-dashboard.html'; return; }
+  if (user.role === 'PROCTOR') { location.href = '/proctor.html'; return; }
+
+  currentUser = user;
+  document.getElementById('app').style.display = 'flex';
+  if (AP.viewAs) AP.viewAs.banner();
+  if (user.role === 'TEACHER') document.body.classList.add('teacher-mode');
+  document.getElementById('sb-name').textContent = user.fullName || '—';
+  document.getElementById('sb-id').textContent   = user.loginId  || '—';
+  document.getElementById('sb-role').textContent = user.role   || '—';
+  document.getElementById('sb-avatar').textContent = String(user.fullName || 'U').split(' ').filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase() || 'U';
+
+  renderNav();
+  initNotifications();
+  const deep = /^#(review|appeal)=([\w-]+)$/.exec(location.hash || '');
+  if (deep && user.role === 'STUDENT') {
+    history.replaceState(null, '', location.pathname);
+    await showPage('s-exams');
+    AP.appeals.openReview(decodeURIComponent(deep[2]), { appeal: deep[1] === 'appeal', onDone: () => showPage('s-exams') });
+  } else showPage(user.role === 'TEACHER' ? 't-dashboard' : 's-dashboard');
+
+  // Активируем Lətif AI бота
+  if (window.AP && AP.aiChat) AP.aiChat.setUser(user);
+
+  document.addEventListener('ap:lang-changed', () => { refreshLangBtns(); if (currentUser) renderNav(); if (currentPage) showPage(currentPage); });
+
+})();
+</script>
+</body>
+</html>

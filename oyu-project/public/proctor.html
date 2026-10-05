@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invigilator — Odlar Yurdu University</title>
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/exams.css">
+<link rel="stylesheet" href="/css/exams-app.css">
+</head>
+<body>
+<div class="app-top">
+  <img src="/img/logo.png" alt="Odlar Yurdu University">
+  <div class="ttl" data-i18n="ex.pc.title">Invigilator</div>
+  <div class="sp"></div>
+  <select class="input" id="pr-room" style="width:auto;min-width:200px" aria-label="Room"></select>
+  <div class="lang-switcher"><button class="lang-btn" data-lang="az">AZ</button><button class="lang-btn" data-lang="ru">RU</button><button class="lang-btn" data-lang="en">EN</button></div>
+  <button class="btn btn-outline btn-sm" id="pr-logout" data-i18n="nav.logout">Logout</button>
+</div>
+<div class="wrap">
+  <div class="pr-layout">
+    <section>
+      <div class="ex-row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0" data-i18n="ex.pc.room">Exam room</h3><span class="ex-muted" id="pr-sync"></span></div>
+      <div id="pr-pcs"></div>
+    </section>
+    <section class="card"><div class="card-pad">
+      <div class="pr-step" id="st1"><h4><i>1</i><span data-i18n="ex.pc.find">Find student</span></h4>
+        <input class="input" id="pr-q" placeholder="Student ID / name" autocomplete="off"><div id="pr-found" class="pr-res" style="margin-top:8px;display:none"></div></div>
+      <div class="pr-step dis" id="st2"><h4><i>2</i><span data-i18n="ex.pc.verify">Verify identity</span></h4>
+        <div id="pr-stu" class="ex-note" style="margin-bottom:8px"></div>
+        <label class="tt-chk" style="display:flex;gap:8px;margin:6px 0"><input type="checkbox" id="pr-id"> <span data-i18n="ex.pc.id_ok">Student ID card checked</span></label>
+        <label class="tt-chk" style="display:flex;gap:8px;margin:6px 0"><input type="checkbox" id="pr-pass"> <span data-i18n="ex.pc.pass_ok">Passport checked</span></label></div>
+      <div class="pr-step dis" id="st3"><h4><i>3</i><span data-i18n="ex.pc.subject">Select subject · eligibility</span></h4><div id="pr-exams"></div></div>
+      <div class="pr-step dis" id="st4"><h4><i>4</i><span data-i18n="ex.pc.pc">Select workstation</span></h4><div id="pr-pcsel" class="ex-muted" data-i18n="ex.pc.pick_pc">Click a free PC in the room view</div></div>
+      <div id="pr-msg"></div>
+      <button class="btn btn-primary btn-lg" id="pr-go" style="width:100%" disabled data-i18n="ex.pc.start">START EXAM</button>
+      <div class="ex-muted" style="margin-top:8px" data-i18n="ex.pc.no_answers">You never see questions or correct answers.</div>
+    </div></section>
+  </div>
+</div>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/config.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/teacher-core.js"></script>
+<script src="/js/exams-common.js"></script>
+<script src="/js/exams-proctor.js"></script>
+</body>
+</html>

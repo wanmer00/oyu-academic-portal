@@ -1,0 +1,18 @@
+{
+  "name": "ap-portal",
+  "version": "2.1.0",
+  "description": "Odlar Yurdu University — Academic Management Portal (frontend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["ap", "portal", "university", "student", "admin"],
+  "license": "MIT"
+}

@@ -1,0 +1,50 @@
+/* Teacher workspace — использует переменные theme.css (--c-*) и portal.html */
+.tui-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.tui-bar .input{width:auto;min-width:150px;max-width:260px}
+.tui-bar .grow{flex:1;min-width:180px;max-width:none}
+.tui-spacer{flex:1}
+.tui-muted{color:var(--c-text2);font-size:12.5px}
+.tui-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--c-border);overflow-x:auto}
+.tui-tab{padding:9px 14px;border:none;background:none;font:inherit;font-weight:600;font-size:13.5px;color:var(--c-text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tui-tab.active{color:var(--teacher);border-bottom-color:var(--teacher)}
+.tui-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.tui-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
+.tui-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.tui-title{font-weight:700;font-size:15px;color:var(--c-text1)}
+.tui-kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--c-border)}
+.tui-kv:last-child{border-bottom:none}
+.tui-kv b{color:var(--c-text1)}
+.tui-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--c-border)}
+.tui-row:last-child{border-bottom:none}
+.tui-row .t{font-weight:600;font-size:14px;color:var(--c-text1)}
+.tui-row .s{font-size:12px;color:var(--c-text2);margin-top:2px}
+.tui-actions{display:flex;gap:6px;flex-wrap:wrap}
+.tui-table-wrap{overflow-x:auto}
+.tui-table-wrap table{min-width:640px}
+.tui-cb{width:17px;height:17px;cursor:pointer;accent-color:var(--teacher)}
+.tui-bulkbar{display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:12px;border-radius:10px;background:rgba(124,58,237,.10);border:1px solid rgba(124,58,237,.35)}
+.tui-bulkbar.show{display:flex}
+.tui-bar-chart{display:flex;flex-direction:column;gap:8px}
+.tui-bar-line{display:grid;grid-template-columns:64px 1fr 36px;gap:10px;align-items:center;font-size:12.5px}
+.tui-bar-track{height:14px;border-radius:99px;background:var(--c-surface2);overflow:hidden}
+.tui-bar-fill{height:100%;border-radius:99px;background:var(--primary);min-width:2px}
+.tui-att-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--c-border)}
+.tui-att-row.unmarked{background:rgba(245,158,11,.08)}
+.tui-att-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tui-pill{padding:4px 10px;border-radius:99px;font-size:12px;font-weight:600;background:var(--c-surface2);color:var(--c-text1)}
+.tui-steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;font-size:12px}
+.tui-step{padding:3px 10px;border-radius:99px;background:var(--c-surface2);color:var(--c-text2);font-weight:600}
+.tui-step.on{background:var(--teacher);color:#fff}
+.tui-note{padding:10px 12px;border-radius:8px;background:var(--c-surface);border:1px solid var(--c-border);font-size:12.5px;color:var(--c-text2);margin-bottom:12px}
+.tui-err{color:var(--danger)}
+.tui-preview{max-height:300px;overflow:auto;border:1px solid var(--c-border);border-radius:8px;margin-top:10px}
+.tui-preview table{min-width:520px}
+.tui-modal-wide{max-width:760px}
+.modal.tui-modal-wide{max-width:min(760px,100%)}
+@media(max-width:900px){.tui-grid-2{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .tui-bar .input{max-width:none;flex:1 1 140px}
+  .tui-att-row{grid-template-columns:auto 1fr;gap:8px}
+  .tui-att-row .att-choices{grid-column:1 / -1;flex-wrap:wrap}
+  .tui-bar-line{grid-template-columns:52px 1fr 30px}
+}

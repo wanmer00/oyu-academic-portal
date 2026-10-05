@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ap-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ap
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+      POSTGRES_DB: ap
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ap_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ap -d ap"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  portal-api:
+    build:
+      context: ./oyu-backend
+      dockerfile: Dockerfile
+    container_name: ap-portal-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://ap:${POSTGRES_PASSWORD}@postgres:5432/ap?schema=public
+      # Секреты обязательны: задаются в .env (см. .env.example); значений по умолчанию нет намеренно
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET in .env}
+      JWT_ACCESS_TTL: 15m
+      JWT_REFRESH_TTL: 7d
+      # Безопасные значения по умолчанию; локальное http-демо явно ослабляет их через .env (ALLOW_* флаги)
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      ALLOW_INSECURE_COOKIES: ${ALLOW_INSECURE_COOKIES:-false}
+      COOKIE_SAMESITE: ${COOKIE_SAMESITE:-strict}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      RATE_LIMIT_AI_MAX: ${RATE_LIMIT_AI_MAX:-30}
+      RATE_LIMIT_AUTH_MAX: ${RATE_LIMIT_AUTH_MAX:-10}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # Public demo: включает демо-режим (автозаполнение пустой БД, сброс владельцем). Секрет сброса не публиковать.
+      DEMO_MODE: ${DEMO_MODE:-false}
+      ALLOW_DEMO_IN_PRODUCTION: ${ALLOW_DEMO_IN_PRODUCTION:-false}
+      DEMO_RESET_TOKEN: ${DEMO_RESET_TOKEN:-}
+      EXAM_ALLOWED_NETWORKS: ${EXAM_ALLOWED_NETWORKS:-}
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  portal-web:
+    build:
+      context: ./oyu-project
+      dockerfile: Dockerfile
+    container_name: ap-portal-web
+    restart: unless-stopped
+    depends_on:
+      portal-api:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      AP_API_BASE: ${AP_API_BASE:-http://localhost:3001}
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/login.html').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+volumes:
+  ap_pg:

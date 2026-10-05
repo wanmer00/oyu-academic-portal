@@ -1,0 +1,60 @@
+/* Timetable workspace (Admin Panel → Расписание). Использует переменные темы. */
+.tt-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.tt-red{color:#dc2626}
+.tt-green{color:#16a34a}
+.tt-head .fld.grow{flex:1 1 260px}
+.tt-ul{margin:6px 0 10px 18px;font-size:13px}
+.tt-kv{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--c-border,#e2e8f0);font-size:14px}
+.tt-kv span{color:var(--c-text2,#64748b)}
+.tt-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+/* недельная сетка */
+.tt-grid{width:100%;border-collapse:collapse;min-width:760px;table-layout:fixed}
+.tt-grid th,.tt-grid td{border:1px solid var(--c-border,#e2e8f0);padding:4px;vertical-align:top;font-size:12px}
+.tt-grid thead th{background:var(--c-surface,#f8fafc);text-align:center;font-size:12px}
+.tt-grid th.tt-time{width:96px;background:var(--c-surface,#f8fafc);text-align:left;font-weight:600}
+.tt-les{border-left:4px solid #2563eb;background:var(--c-card,#fff);border-radius:6px;padding:4px 6px;margin:2px 0;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08);font-size:12px;line-height:1.35}
+.tt-les:hover,.tt-les:focus{outline:2px solid #2563eb55}
+.tt-les.locked{background:var(--c-surface,#f1f5f9)}
+.tt-les.ovr{outline:1px dashed #f59e0b}
+.tt-row{cursor:pointer}
+.tt-row:hover{background:var(--c-surface,#f8fafc)}
+
+/* день / месяц */
+.tt-dayrow{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--c-border,#e2e8f0)}
+.tt-dayrow.cancelled{opacity:.55}
+.tt-dayrow>code{min-width:92px;padding-top:6px}
+.tt-month{width:100%;border-collapse:collapse;table-layout:fixed}
+.tt-month th{padding:6px;font-size:12px;background:var(--c-surface,#f8fafc)}
+.tt-mcell{height:74px;border:1px solid var(--c-border,#e2e8f0);vertical-align:top;padding:4px;cursor:pointer;font-size:12px}
+.tt-mcell:hover{background:var(--c-surface,#f1f5f9)}
+.tt-mcell.off{opacity:.4}
+.tt-mcell.today{box-shadow:inset 0 0 0 2px #2563eb}
+.tt-cnt{display:inline-block;margin-top:6px;padding:1px 8px;border-radius:99px;background:#2563eb;color:#fff;font-weight:700}
+
+/* конфликты */
+.tt-conf{border:1px solid var(--c-border,#e2e8f0);border-left:4px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-bottom:10px;background:var(--c-card,#fff)}
+.tt-conf.critical{border-left-color:#dc2626}
+.tt-conf ul{margin:6px 0 0 18px;font-size:13px}
+.tt-conf-box{border:1px solid #fecaca;background:#fef2f2;border-radius:8px;padding:10px 12px;margin-top:10px}
+:root[data-theme="dark"] .tt-conf-box{background:#450a0a;border-color:#7f1d1d}
+.tt-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+/* выбор групп/значений */
+.tt-checks{display:flex;flex-wrap:wrap;gap:4px 14px;max-height:170px;overflow:auto;padding:6px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;margin-top:6px}
+.tt-chk{display:inline-flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;white-space:nowrap}
+.tt-wiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
+.tt-wl .tt-checks{flex-direction:column;flex-wrap:nowrap}
+.tt-weights input{max-width:100px}
+
+/* прогресс генерации */
+.tt-prog-bar{height:12px;border-radius:99px;background:var(--c-border,#e2e8f0);overflow:hidden;margin-bottom:8px}
+.tt-prog-bar i{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#16a34a);transition:width .4s}
+
+@media (max-width:720px){
+  .tt-grid{min-width:640px}
+  .tt-mcell{height:56px}
+}
+@media print{
+  .sidebar,.au-bar,.tt-tabs,.btn{display:none!important}
+}

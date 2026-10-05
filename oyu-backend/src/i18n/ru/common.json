@@ -1,0 +1,7 @@
+{
+    "forbidden":  "Доступ запрещён",
+    "not_found":  "Не найдено",
+    "validation_failed":  "Ошибка валидации данных",
+    "internal_error":  "Внутренняя ошибка сервера",
+    "unauthorized":  "Не авторизовано"
+}

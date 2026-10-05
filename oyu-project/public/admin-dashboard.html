@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Odlar Yurdu University — Administration</title>
+<meta name="description" content="Odlar Yurdu University — Academic Management Portal">
+<meta property="og:title" content="Odlar Yurdu University — Academic Portal">
+<meta property="og:description" content="Odlar Yurdu University — Academic Management Portal">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/img/logo.png">
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/ai-chat.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;-webkit-font-smoothing:antialiased}
+:root{--sidebar:#0d1b2a;--primary:#2563eb;--border:#e2e8f0;--muted:#64748b}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+#app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:248px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0}
+html,body{overflow-x:hidden}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:28px;position:relative;background:radial-gradient(ellipse at 20% 10%,rgba(37,99,235,.06),transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(14,165,233,.05),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.03),transparent 70%)}
+.main::before{content:'';position:fixed;top:50%;left:calc(50% + 124px);transform:translate(-50%,-50%);width:min(68vmin,680px);height:min(68vmin,680px);background:url('/img/logo.png') center/contain no-repeat;opacity:.045;pointer-events:none;z-index:0;filter:saturate(.6)}
+.main::after{content:'';position:fixed;top:-120px;right:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%);pointer-events:none;z-index:0;filter:blur(4px)}
+@keyframes ap-pulse{0%,100%{opacity:.045;transform:translate(-50%,-50%) scale(1)}50%{opacity:.08;transform:translate(-50%,-50%) scale(1.04)}}
+[data-theme="dark"] .main{background:radial-gradient(ellipse at 20% 10%,rgba(59,130,246,.1),transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(14,165,233,.08),transparent 55%),radial-gradient(ellipse at 50% 50%,rgba(37,99,235,.05),transparent 70%)}
+[data-theme="dark"] .main::before{opacity:.06;filter:invert(1) hue-rotate(180deg) brightness(1.2) saturate(.7)}
+[data-theme="dark"] .main::after{background:radial-gradient(circle,rgba(59,130,246,.18) 0%,transparent 70%)}
+.main > *{position:relative;z-index:1}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-logo-box{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#0d1b2a;font-size:11px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sb-logo-box img{width:92%;height:92%;object-fit:contain}
+.sb-logo-text{color:#e2e8f0;font-weight:700;font-size:16px}
+.sb-user{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;transition:background .15s}
+.sb-user:hover{background:rgba(255,255,255,.04)}
+.sb-avatar{width:36px;height:36px;border-radius:8px;background:#1e3a5f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.sb-name{color:#e2e8f0;font-size:13px;font-weight:600;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-id{color:#64748b;font-size:11px;font-family:Consolas,monospace}
+.sb-role-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:2px;display:inline-block;background:#1e3a5f;color:#93c5fd}
+.sb-nav{flex:1;padding:8px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;margin:1px 8px;border-radius:8px;cursor:pointer;color:#94a3b8;font-size:13.5px;font-weight:500;border:none;background:none;width:calc(100% - 16px);text-align:left;font-family:inherit}
+.nav-item:hover{background:#1a2d42;color:#e2e8f0}
+.nav-item.active{background:#1e3a5f;color:#fff}
+.nav-item svg{width:17px;height:17px}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.page-title{font-size:22px;font-weight:700}
+.lang-switcher{display:flex;gap:4px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px}
+.lang-btn{padding:4px 10px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:transparent;color:#64748b;font-family:inherit}
+.lang-btn.active{background:#f1f5f9;color:#0f172a}
+.card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card-pad{padding:20px}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:20px}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;background:#dbeafe;color:#1e40af;font-size:18px}
+.stat-val{font-size:26px;font-weight:700}
+.stat-label{font-size:13px;color:var(--muted);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.badge{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-success{background:#d1fae5;color:#065f46}
+.badge-warning{background:#fef3c7;color:#92400e}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-info{background:#dbeafe;color:#1e40af}
+.badge-purple{background:#ede9fe;color:#5b21b6}
+.badge-gray{background:#f1f5f9;color:#475569}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:#10b981;color:#fff}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-outline{background:#fff;color:var(--muted);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:#f8fafc;border-bottom:1px solid var(--border)}
+td{padding:11px 14px;font-size:14px;border-top:1px solid #f1f5f9}
+.bar{height:10px;border-radius:99px;background:#f1f5f9;overflow:hidden;margin:4px 0}
+.bar-fill{height:100%;border-radius:99px}
+.page{display:none}.page.active{display:block}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:10px;background:#10b981;color:#fff;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.15);opacity:0;transform:translateY(12px);transition:all .2s;z-index:100}
+.toast.show{opacity:1;transform:translateY(0)}.toast.error{background:#ef4444}
+</style>
+<link rel="stylesheet" href="/css/admin-ui.css">
+<link rel="stylesheet" href="/css/journal.css">
+<link rel="stylesheet" href="/css/timetable.css">
+<link rel="stylesheet" href="/css/exams.css">
+</head>
+<body>
+<div id="app" style="display:none">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-box"><img src="/img/logo.png" alt="Odlar Yurdu University" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'AP'}))"></div>
+      <div class="sb-logo-text">Odlar Yurdu University<span class="sb-sub">Academic Management Portal</span></div>
+    </div>
+    <div class="sb-user" id="sb-user" style="cursor:pointer" role="button" tabindex="0">
+      <div class="sb-avatar" id="sb-avatar">U</div>
+      <div style="min-width:0">
+        <div class="sb-name" id="sb-name">—</div>
+        <div class="sb-id" id="sb-id">—</div>
+        <span class="sb-role-badge" id="sb-role">—</span>
+      </div>
+    </div>
+    <nav class="sb-nav" id="nav" aria-label="Main"></nav>
+    <div style="padding:8px 0 16px;border-top:1px solid rgba(255,255,255,.08)">
+      <button class="nav-item" id="btn-logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span data-i18n="nav.logout">Çıxış</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div class="page-title" id="page-title">—</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="sa-search" id="sa-search-wrap"><input class="input" id="sa-search" autocomplete="off" aria-label="Search"><div class="sa-pop" id="sa-search-box"></div></div>
+        <div style="position:relative"><button type="button" class="sa-bell" id="sa-bell" aria-label="Notifications">🔔<span class="sa-badge" id="sa-bell-n" style="display:none">0</span></button><div class="sa-pop sa-pop-r" id="sa-bell-panel"></div></div>
+        <button type="button" class="btn btn-outline btn-sm" id="btn-viewas" style="display:none" data-i18n="va.btn">View as</button>
+        <div class="theme-toggle-wrap">
+          <span class="sun" data-theme-toggle title="Light">☀️</span>
+          <button class="theme-toggle light" data-theme-toggle title="Tema / Theme"><span class="theme-toggle-knob"></span></button>
+          <span class="moon" data-theme-toggle title="Dark">🌙</span>
+        </div>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="az">AZ</button>
+          <button class="lang-btn" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <img src="/img/logo.png" alt="Odlar Yurdu University" title="Odlar Yurdu University" style="width:36px;height:36px;object-fit:contain">
+      </div>
+    </div>
+
+    <section class="page" id="pg-dashboard"><div id="lx-dashboard"></div></section>
+    <section class="page" id="pg-journal"><div id="jr-root"></div></section>
+    <section class="page" id="pg-kpi"><div id="lx-kpi"></div></section>
+    <section class="page" id="pg-users"><div id="lx-users"></div></section>
+    <section class="page" id="pg-requests"><div id="lx-requests"></div></section>
+    <section class="page" id="pg-schedule"><div id="lx-schedule"></div></section>
+    <section class="page" id="pg-rooms"><div id="lx-rooms"></div></section>
+    <section class="page" id="pg-calendar"><div id="lx-calendar"></div></section>
+    <section class="page" id="pg-announcements"><div id="lx-announcements"></div></section>
+    <section class="page" id="pg-payments"><div id="lx-payments"></div></section>
+    <section class="page" id="pg-debts"><div id="sa-debts"></div></section>
+    <section class="page" id="pg-projects"><div id="sa-projects"></div></section>
+    <section class="page" id="pg-org"><div id="sa-org"></div></section>
+    <section class="page" id="pg-students"><div id="sa-students"></div></section>
+    <section class="page" id="pg-teachers"><div id="sa-teachers"></div></section>
+    <section class="page" id="pg-groups"><div id="sa-groups"></div></section>
+    <section class="page" id="pg-subjects"><div id="sa-subjects"></div></section>
+    <section class="page" id="pg-curricula"><div id="sa-curricula"></div></section>
+    <section class="page" id="pg-ex-windows"><div id="ex-windows"></div></section>
+    <section class="page" id="pg-ex-review"><div id="ex-review"></div></section>
+    <section class="page" id="pg-ex-workstations"><div id="ex-workstations"></div></section>
+    <section class="page" id="pg-ex-paper"><div id="ex-paper"></div></section>
+    <section class="page" id="pg-ex-resits"><div id="ex-resits"></div></section>
+    <section class="page" id="pg-ex-retakes"><div id="ex-retakes"></div></section>
+    <section class="page" id="pg-ex-results"><div id="ex-results"></div></section>
+    <section class="page" id="pg-ex-analytics"><div id="ex-analytics"></div></section>
+    <section class="page" id="pg-ex-audit"><div id="ex-audit"></div></section>
+    <section class="page" id="pg-attendance"><div id="jr-att"></div></section>
+    <section class="page" id="pg-roles"><div id="sa-roles"></div></section>
+    <section class="page" id="pg-sessions"><div id="sa-sessions"></div></section>
+    <section class="page" id="pg-sec-overview"><div id="ax-overview"></div></section>
+    <section class="page" id="pg-sec-anomalies"><div id="ax-anomalies"></div></section>
+    <section class="page" id="pg-sec-audit"><div id="ax-audit"></div></section>
+    <section class="page" id="pg-sec-logins"><div id="ax-logins"></div></section>
+    <section class="page" id="pg-sec-journal"><div id="jr-sec"></div></section>
+    <section class="page" id="pg-sys-health"><div id="sa-health"></div></section>
+    <section class="page" id="pg-sys-config"><div id="ax-config"></div></section>
+    <section class="page" id="pg-sys-deps"><div id="ax-deps"></div></section>
+    <section class="page" id="pg-sys-demo"><div id="sa-demo"></div></section>
+    <section class="page" id="pg-profile"><div id="profile-box"></div></section>
+    <footer class="app-footer" data-i18n="app.footer">© 2026 Odlar Yurdu University</footer>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/config.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/teacher-core.js"></script>
+<script src="/js/journal.js"></script>
+<script src="/js/charts.js"></script>
+<script src="/js/view-as.js"></script>
+  <script src="/js/auditor.js"></script>
+  <script src="/js/superadmin.js"></script>
+  <script src="/js/exams-common.js"></script>
+  <script src="/js/exams-admin.js"></script>
+  <script src="/js/exam-appeals.js"></script>
+  <script src="/js/leadership.js"></script>
+  <script src="/js/timetable-settings.js"></script>
+  <script src="/js/timetable.js"></script>
+<script src="/js/ai-chat.js"></script>
+<script>
+(async function () {
+  let currentPage = 'dashboard';
+  const t = (k, fb) => AP.i18n.t(k, fb);
+  function toast(msg, isErr) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.toggle('error', !!isErr); el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2400); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // ── Навигация: группы с раскрывающимися подменю. Все пункты ведут на уже существующие модули ──
+  const I = {
+    dashboard: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+    academic: '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/>',
+    schedule: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+    infra: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    people: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>',
+    kpi: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+    requests: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+    announcements: '<path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+    payments: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+    exams: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+    security: '<path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/>',
+    system: '<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/>',
+    dot: '<circle cx="12" cy="12" r="2"/>',
+    chev: '<polyline points="9 18 15 12 9 6"/>',
+  };
+  // sa: true — только SUPER_ADMIN (сервер проверяет права в любом случае). tab/sub/wizard — переход внутрь страницы расписания.
+  const NAV = [
+    { id: 'dashboard', icon: 'dashboard', title: 'ld.nav.dashboard' },
+    { group: 'academic', icon: 'academic', items: [
+      { id: 'org', title: 'nav2.org' }, { id: 'journal', title: 'journal.title' }, { id: 'students', title: 'nav2.students' }, { id: 'teachers', title: 'nav2.teachers' }, { id: 'groups', title: 'nav2.groups' },
+      { id: 'subjects', title: 'nav2.subjects' }, { id: 'curricula', title: 'nav2.curricula' }, { id: 'attendance', title: 'nav2.attendance' }, { id: 'debts', title: 'nav2.debts' }, { id: 'projects', title: 'nav2.projects' } ] },
+    { group: 'schedule', icon: 'schedule', items: [
+      { id: 'sch-main', page: 'schedule', title: 'nav2.sch_main', open: { tab: 'schedule' } }, { id: 'sch-gen', page: 'schedule', title: 'nav2.sch_gen', open: { tab: 'schedule', wizard: true } },
+      { id: 'sch-load', page: 'schedule', title: 'nav2.sch_load', open: { tab: 'requirements' } }, { id: 'sch-slots', page: 'schedule', title: 'nav2.sch_slots', open: { tab: 'settings', sub: 'slots' } },
+      { id: 'sch-conf', page: 'schedule', title: 'nav2.sch_conf', open: { tab: 'conflicts' } }, { id: 'sch-versions', page: 'schedule', title: 'nav2.sch_versions', open: { tab: 'versions' } },
+      { id: 'sch-set', page: 'schedule', title: 'nav2.sch_set', open: { tab: 'settings', sub: 'general' } } ] },
+    { group: 'exams', icon: 'exams', items: [
+      { id: 'ex-windows', title: 'ex.n.windows' }, { id: 'ex-review', title: 'ex.n.review' }, { id: 'ex-workstations', title: 'ex.n.workstations' }, { id: 'ex-paper', title: 'ex.n.paper' }, { id: 'ex-resits', title: 'ex.n.resits' },
+      { id: 'ex-retakes', title: 'ex.n.retakes' }, { id: 'ex-results', title: 'ex.n.results' }, { id: 'ex-analytics', title: 'ex.n.analytics' }, { id: 'ex-audit', title: 'ex.n.audit' } ] },
+    { group: 'infra', icon: 'infra', items: [ { id: 'rooms', title: 'ld.nav.rooms' }, { id: 'calendar', title: 'ld.nav.calendar' } ] },
+    { group: 'people', icon: 'people', items: [ { id: 'users', title: 'nav2.all_users' }, { id: 'roles', title: 'nav2.roles', sa: true }, { id: 'sessions', title: 'nav2.sessions', sa: true } ] },
+    { id: 'kpi', icon: 'kpi', title: 'nav2.analytics' },
+    { id: 'requests', icon: 'requests', title: 'ld.nav.requests' },
+    { id: 'announcements', icon: 'announcements', title: 'ld.nav.announcements' },
+    { id: 'payments', icon: 'payments', title: 'ld.nav.payments' },
+    { group: 'security', icon: 'security', sa: true, items: [
+      { id: 'sec-overview', title: 'nav2.sec_overview' }, { id: 'sec-anomalies', title: 'nav2.sec_anomalies' }, { id: 'sec-audit', title: 'nav2.sec_audit' },
+      { id: 'sec-logins', title: 'nav2.sec_logins' }, { id: 'sec-journal', title: 'nav2.sec_journal' } ] },
+    { group: 'system', icon: 'system', sa: true, items: [
+      { id: 'sys-health', title: 'nav2.sys_health' }, { id: 'sys-config', title: 'nav2.sys_config' }, { id: 'sys-deps', title: 'nav2.sys_deps' }, { id: 'sys-demo', title: 'nav2.sys_demo' } ] },
+  ];
+  const TITLES = { profile: 'nav.profile' };
+  let isSuper = false;
+  const visible = () => NAV.filter((n) => isSuper || !n.sa).map((n) => n.group ? Object.assign({}, n, { items: n.items.filter((i) => isSuper || !i.sa) }) : n).filter((n) => !n.group || n.items.length);
+  const find = (key) => { for (const n of NAV) { if (n.group) { const i = n.items.find((x) => x.id === key); if (i) return { item: i, group: n.group }; } else if (n.id === key) return { item: n, group: null }; } return null; };
+  const OPEN_KEY = 'ap_nav_open';
+  const openSet = new Set((() => { try { return JSON.parse(sessionStorage.getItem(OPEN_KEY) || '[]'); } catch { return []; } })());
+  const saveOpen = () => { try { sessionStorage.setItem(OPEN_KEY, JSON.stringify([...openSet])); } catch { /* ignore */ } };
+  const svg = (name) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' + I[name] + '</svg>';
+
+  function renderNav() {
+    const cur = find(currentPage);
+    document.getElementById('nav').innerHTML = visible().map((n) => {
+      if (!n.group) return '<button class="nav-item' + (n.id === currentPage ? ' active' : '') + '" data-page="' + n.id + '"' + (n.id === currentPage ? ' aria-current="page"' : '') + '>' + svg(n.icon) + '<span>' + esc(t(n.title)) + '</span></button>';
+      const has = cur && cur.group === n.group, open = openSet.has(n.group) || has;
+      return '<button class="nav-group' + (open ? ' open' : '') + (has ? ' has-active' : '') + '" data-group="' + n.group + '" aria-expanded="' + open + '">' + svg(n.icon) + '<span>' + esc(t('nav2.g_' + n.group)) + '</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' + I.chev + '</svg></button>' +
+        '<div class="nav-sub' + (open ? ' open' : '') + '">' + n.items.map((i) => '<button class="nav-item' + (i.id === currentPage ? ' active' : '') + '" data-page="' + i.id + '"' + (i.id === currentPage ? ' aria-current="page"' : '') + '><span>' + esc(t(i.title)) + '</span></button>').join('') + '</div>';
+    }).join('');
+    document.querySelectorAll('#nav [data-page]').forEach((b) => b.addEventListener('click', () => showPage(b.dataset.page)));
+    document.querySelectorAll('#nav [data-group]').forEach((b) => b.addEventListener('click', () => {
+      const g = b.dataset.group; openSet.has(g) ? openSet.delete(g) : openSet.add(g); saveOpen(); renderNav();
+    }));
+  }
+
+  const ui = AP.leadershipUI.create({ toast, showPage });
+  const tt = AP.timetableUI.create({ toast, showPage });
+  const au = AP.auditorUI.create({ toast, showPage: (k) => showPage({ overview: 'sec-overview', anomalies: 'sec-anomalies', audit: 'sec-audit', logins: 'sec-logins', journal: 'sec-journal', config: 'sys-config', deps: 'sys-deps' }[k] || k) });
+  const sa = AP.superAdminUI.create({ toast, showPage });
+  const exm = AP.examsAdmin.create({ toast, showPage });
+
+  // ключ страницы → обработчик (существующие модули переиспользуются, новых копий нет)
+  const HANDLERS = {
+    journal: () => AP.journal.mount('jr-root', { role: 'LEADERSHIP' }),
+    attendance: async () => { await AP.journal.mount('jr-att', { role: 'LEADERSHIP' }); const seg = document.querySelector('#jr-att .jr-segb[data-mode="attendance"]'); if (seg && !seg.classList.contains('on')) seg.click(); },
+    dashboard: async () => { await ui.dashboard(); const r = document.getElementById('lx-dashboard'); if (r) r.insertAdjacentHTML('afterbegin', '<div class="card" style="margin-bottom:16px;border-left:4px solid #133e7c"><div class="card-pad" style="display:flex;align-items:center;gap:16px"><img src="/img/logo.png" alt="" style="width:52px;height:52px;object-fit:contain"><div><div style="font-size:18px;font-weight:700">' + esc(t('app.welcome')) + '</div><div class="au-muted">' + esc(t('app.welcome_sub')) + ((window.__orgScope && window.__orgScope.label) ? ' · <b>' + esc(t('pos.' + window.__orgScope.position, window.__orgScope.position)) + '</b>: ' + esc(window.__orgScope.label) : '') + '</div></div></div></div>'); if (isSuper) await sa.dashboardExtras(); },
+    org: () => sa.org(), debts: () => sa.debts(), projects: () => sa.projects(), students: () => sa.students(), teachers: () => sa.teachers(), groups: () => sa.groups(), subjects: () => sa.subjects(), curricula: () => sa.curricula(),
+    roles: () => sa.roles(), sessions: () => sa.sessions(), 'sys-health': () => sa.health(), 'sys-demo': () => sa.demo(),
+    'sec-overview': () => au.overview(), 'sec-anomalies': () => au.anomalies(), 'sec-audit': () => au.audit(), 'sec-logins': () => au.logins(),
+    'sec-journal': () => AP.journal.mount('jr-sec', { role: 'IT_AUDITOR' }), 'sys-config': () => au.config(), 'sys-deps': () => au.deps(),
+    schedule: () => tt.schedule(), rooms: () => tt.rooms(),
+    'ex-windows': () => exm.windows(), 'ex-review': () => exm.review(), 'ex-workstations': () => exm.workstations(), 'ex-paper': () => exm.paper(), 'ex-resits': () => exm.resits(),
+    'ex-retakes': () => exm.retakes(), 'ex-results': () => exm.results(), 'ex-analytics': () => exm.analytics(), 'ex-audit': () => exm.audit(),
+  };
+
+  async function showPage(key) {
+    const f = find(key);
+    const section = (f && f.item.page) || key;
+    currentPage = key;
+    document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === 'pg-' + section));
+    renderNav();
+    document.getElementById('page-title').textContent = t((f && f.item.title) || TITLES[key] || key);
+    const main = document.querySelector('.main'); if (main) main.scrollTo({ top: 0 });
+    try {
+      if (key === 'profile') await loadProfile();
+      else if (f && f.item.open) await tt.open(f.item.open);
+      else if (HANDLERS[key]) await HANDLERS[key]();
+      else if (ui[key]) await ui[key]();
+    } catch (e) { toast(e.message || t('common.error'), true); }
+  }
+  async function loadProfile() {
+    const box = document.getElementById('profile-box');
+    box.innerHTML = '<div class="card"><div class="empty">' + esc(t('common.loading')) + '</div></div>';
+    try {
+      const user = await AP.api.me();
+      const initials = String(user.fullName || 'U').split(' ').filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+      box.innerHTML =
+        '<div class="card" style="margin-bottom:16px;border-left:4px solid #0891b2"><div class="card-pad"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">' +
+          '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0891b2,#0e7490);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;font-weight:700">' + esc(initials) + '</div>' +
+          '<div style="flex:1;min-width:0"><div style="font-size:21px;font-weight:700">' + esc(user.fullName) + '</div><div style="margin-top:4px"><span class="badge badge-info">' + esc(t('ld.role.' + user.role, user.role)) + '</span></div>' +
+          '<div class="au-muted" style="margin-top:8px">📧 ' + esc(user.email) + ' · 🪪 <code>' + esc(user.loginId) + '</code></div></div></div></div></div>' +
+        '<div class="card"><div class="card-pad"><form id="ap-form"><div class="form-grid">' +
+          '<div class="form-group"><div class="form-label">' + esc(t('common.phone')) + '</div><input class="input" id="apf-phone" maxlength="30" value="' + esc(user.phone || '') + '"></div>' +
+          '<div class="form-group"><div class="form-label">' + esc(t('ld.language')) + '</div><select class="input" id="apf-lang"><option value="az"' + (user.preferredLang === 'az' ? ' selected' : '') + '>Azərbaycan</option><option value="ru"' + (user.preferredLang === 'ru' ? ' selected' : '') + '>Русский</option><option value="en"' + (user.preferredLang === 'en' ? ' selected' : '') + '>English</option></select></div>' +
+        '</div><button type="submit" class="btn btn-primary">' + esc(t('common.save')) + '</button></form></div></div>';
+      document.getElementById('ap-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          await AP.api.updateMe({ phone: document.getElementById('apf-phone').value.trim() || undefined, preferredLang: document.getElementById('apf-lang').value });
+          toast(t('ld.saved'));
+          const l = document.getElementById('apf-lang').value;
+          if (l !== AP.i18n.getLang()) await AP.i18n.load(l);
+        } catch (err) { toast(err.message || 'error', true); }
+      });
+    } catch (e) { box.innerHTML = '<div class="card"><div class="empty au-err">' + esc(e.message) + '</div></div>'; }
+  }
+
+  (function bindSbUser() {
+    const el = document.getElementById('sb-user');
+    const go = () => showPage('profile');
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  })();
+  function refreshLang() { document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === AP.i18n.getLang())); }
+  document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', async () => { await AP.i18n.load(b.dataset.lang); }));
+  document.getElementById('btn-logout').addEventListener('click', async () => {
+    if (!(await AP.tui.confirmDialog({ message: t('common.logout_confirm'), confirmLabel: t('nav.logout') }))) return;
+    await AP.api.logout();
+    location.href = '/login.html';
+  });
+
+  await AP.i18n.load(AP.i18n.getLang());
+  refreshLang();
+  let user = null;
+  try { user = await AP.api.refresh(); } catch {}
+  if (!user) { location.href = '/login.html'; return; }
+  // Навигация по роли — только удобство; доступ к данным проверяет бэкенд (403 для чужих ролей)
+  if (user.role === 'STUDENT' || user.role === 'TEACHER') { location.href = '/portal.html'; return; }
+  if (user.role === 'PROCTOR') { location.href = '/proctor.html'; return; }
+
+  isSuper = user.role === 'SUPER_ADMIN';
+  sa.mountSearch(document.getElementById('sa-search'), document.getElementById('sa-search-box'));
+  sa.mountBell(document.getElementById('sa-bell'), document.getElementById('sa-bell-n'), document.getElementById('sa-bell-panel'));
+  if (user.role === 'SUPER_ADMIN') { const vb = document.getElementById('btn-viewas'); vb.style.display = ''; vb.textContent = '👁 ' + t('va.btn'); vb.addEventListener('click', () => AP.viewAs.openPicker()); }
+  AP.viewAs.banner();
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('sb-name').textContent = user.fullName;
+  document.getElementById('sb-id').textContent = user.loginId;
+  const os = user.orgScope || {};
+  document.getElementById('sb-role').textContent = os.position ? t('pos.' + os.position, os.position) : user.role;
+  if (os.label) { const el = document.createElement('div'); el.className = 'sb-id'; el.style.marginTop = '3px'; el.textContent = os.label; document.getElementById('sb-role').after(el); }
+  window.__orgScope = os;
+  document.getElementById('sb-avatar').textContent = String(user.fullName || 'U').split(' ').filter(Boolean).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+  if (window.AP && AP.aiChat) AP.aiChat.setUser(user);
+
+  const startKey = (location.hash || '').slice(1);
+  showPage(find(startKey) ? startKey : 'dashboard');
+  document.addEventListener('ap:lang-changed', () => { refreshLang(); showPage(currentPage); });
+})();
+</script>
+</body>
+</html>
